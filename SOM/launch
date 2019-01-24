@@ -1,0 +1,5 @@
+. export CINECA_SCRATCH=/gss/gss_work/try14_bolzon/plazzari
+. export OPA_HOME=PERSEUS-BAU
+./media.sh
+python do_file_for_som.py ave*nc
+

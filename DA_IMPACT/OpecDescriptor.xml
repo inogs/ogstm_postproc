@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+
+<prefix  string="OPATMBFM3"  ></prefix>
+
+<weekly>
+<native>
+<dataset long_name="Diatoms biomass (in Carbon)"            file="_Cdia.nc"      ogstm_varname="P1c" OPECname="C-Diat"     units="mg C m-3"></dataset>
+<dataset long_name="NanoFlagellates biomass (in Carbon)"    file="_Cnflag.nc"    ogstm_varname="P2c" OPECname="C-Nflag"    units="mg C m-3"></dataset>
+<dataset long_name="PicoPhytoplankton biomass (in Carbon)"  file="_Cpicophy.nc"  ogstm_varname="P3c" OPECname="C-PicoPhy"  units="mg C m-3"></dataset>
+<dataset long_name="LargePhytoplankton biomass (in Carbon)" file="_Clargephy.nc" ogstm_varname="P4c" OPECname="C-LargePhy" units="mg C m-3"></dataset>
+</native>
+
+<aggregate>
+<aggvar long_name="P_c" file="_TotalPhytoC.nc" OPECname="TotphytoC" conversionFactor="1.0" units="mg C m-3">
+<ogstm_var name="P1c"></ogstm_var>
+<ogstm_var name="P2c"></ogstm_var>
+<ogstm_var name="P3c"></ogstm_var>
+<ogstm_var name="P4c"></ogstm_var>
+</aggvar>
+
+<aggvar long_name="P_i" file="_Totalchlorophyll.nc" OPECname="Totchl" conversionFactor="1.0" units="mg m-3">
+<ogstm_var name="P1i"></ogstm_var>
+<ogstm_var name="P2i"></ogstm_var>
+<ogstm_var name="P3i"></ogstm_var>
+<ogstm_var name="P4i"></ogstm_var>
+</aggvar>
+
+<aggvar long_name="P_n" file="_Totalchlorophyll.nc" OPECname="Totchl" conversionFactor="1.0" units="mg m-3">
+<ogstm_var name="P1n"></ogstm_var>
+<ogstm_var name="P2n"></ogstm_var>
+<ogstm_var name="P3n"></ogstm_var>
+<ogstm_var name="P4n"></ogstm_var>
+</aggvar>
+
+<aggvar long_name="P_p" file="_Totalchlorophyll.nc" OPECname="Totchl" conversionFactor="1.0" units="mg m-3">
+<ogstm_var name="P1p"></ogstm_var>
+<ogstm_var name="P2p"></ogstm_var>
+<ogstm_var name="P3p"></ogstm_var>
+<ogstm_var name="P4p"></ogstm_var>
+</aggvar>
+
+</aggregate>
+</weekly>
+
+</root>
