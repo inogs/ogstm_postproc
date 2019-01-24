@@ -54,8 +54,12 @@ function ncattget {
 ncks -M -m ${3} | grep -E -i "^${2} attribute [0-9]+: ${1}" | cut -f 11- -d ' ' | sort 
  }
 
-DIR=/pico/scratch/userexternal/gbolzon0/REANALYSIS_2016/wrkdir/POSTPROC/output/PROD
-TIME_TO_CHECK=201601
+function ncattget {
+ncks -M -m ${3} | grep ${2} | grep ${1} | awk '{print $3}' | cut -d "f" -f 1
+}
+
+DIR=/gpfs/work/OGS18_PRACE_P_0/PROD_COPERNICUS/prodotti/REAN/
+TIME_TO_CHECK=201701
 
 
 
@@ -101,8 +105,18 @@ for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
 done
 
 
-
-
+filename=/gpfs/work/OGS18_PRACE_P_0/PROD_COPERNICUS/bin_prod/prodotti/MED_BIO_006_008_coordinates.nc
+echo "PRODUCT MEDSEA_REANALYSIS_BIO_006_008"
+echo $filename
+dim_check $filename e1t
+dim_check $filename e2t
+dim_check $filename e3t
+echo "PRODUCT MEDSEA_REANALYSIS_BIO_006_008"
+echo $filename
+filename=/gpfs/work/OGS18_PRACE_P_0/PROD_COPERNICUS/bin_prod/prodotti/MED_BIO_006_008_mask_bathy.nc
+dim_check $filename mask
+dim_check $filename deptho
+dim_check $filename deptho_lev
 
 
 echo "#####  PU_IT_TF_VarLimits   "
@@ -117,14 +131,16 @@ for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
    
 done 
 
+fi
 
+exit 0
 
 for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
  try_send $filename
 done
 
 
-fi
+
 
 
 
