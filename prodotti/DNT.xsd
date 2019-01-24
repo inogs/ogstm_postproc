@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+         <!-- XML Schema Generated from XML Document on Mon Jan 08 2018 14:27:11 GMT+0100 (CET) -->
+         <!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+         <xs:element name="delivery">
+               <xs:complexType>
+                     <xs:sequence>
+                           <xs:element name="dataset" maxOccurs="unbounded">
+                                 <xs:complexType>
+                                       <xs:sequence>
+                                             <xs:element name="file" maxOccurs="unbounded">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="KeyWord" minOccurs="0" maxOccurs="unbounded" type="xs:string"></xs:element>
+                                                               <xs:element name="resendAttempt" minOccurs="0" maxOccurs="unbounded">
+                                                                     <xs:complexType>
+                                                                           <xs:attribute name="DueToErrorCode" type="xs:string"></xs:attribute>
+                                                                           <xs:attribute name="DueToErrorMsg" type="xs:string"></xs:attribute>
+                                                                           <xs:attribute name="NumberOfAttempts" type="xs:int"></xs:attribute>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                         </xs:sequence>
+                                                         <xs:attribute name="FileName" type="xs:string"></xs:attribute>
+                                                         <xs:attribute name="StartUploadTime" type="xs:string"></xs:attribute>
+                                                         <xs:attribute name="StopUploadTime" type="xs:string"></xs:attribute>
+                                                         <xs:attribute name="Checksum" type="xs:string"></xs:attribute>
+                                                         <xs:attribute name="FinalStatus" type="xs:string"></xs:attribute>
+														 <xs:attribute name="FileType" type="xs:string"></xs:attribute>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                       </xs:sequence>
+                                       <xs:attribute name="DatasetName" type="xs:string"></xs:attribute>
+                                 </xs:complexType>
+                           </xs:element>
+                     </xs:sequence>
+                     <xs:attribute name="product" type="xs:string"></xs:attribute>
+                     <xs:attribute name="PushingEntity" type="xs:string"></xs:attribute>
+                     <xs:attribute name="date" type="xs:string"></xs:attribute>
+               </xs:complexType>
+         </xs:element>
+   </xs:schema>
+
