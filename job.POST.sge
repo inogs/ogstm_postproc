@@ -1,0 +1,78 @@
+#!/bin/bash
+
+#$ -j y
+#$ -S /bin/bash
+#$ -pe mpich 50
+#$ -cwd
+#$ -e POST2.err
+#$ -o POST2.out
+
+module purge
+module load openmpi-x86_64
+module load python-2.7
+
+eval "export `mpirun env | grep OMPI_MCA_orte_precondition_transports `"
+
+export OPA_HOME=OPA_872_OP-R01
+
+cd $CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/bin
+
+date
+
+MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
+ ARCHIVE_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/Archive
+     TMP_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/TMP
+  CHLSUP_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/CHL_SUP
+
+      OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/
+
+export    MASKFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/meshmask.nc
+export SUBMASKFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/submask.nc
+
+python Descriptor_checker.py -f 1 -d VarDescriptor_1.xml
+
+mpirun python postproc.py -l ave*N1p.nc -i $MODEL_AVEDIR -a $ARCHIVE_DIR  -d VarDescriptor_1.xml -t $TMP_DIR  -c $CHLSUP_DIR
+mpirun python aveScan.py  -l ave*nc     -i $TMP_DIR -o $OUTDIR -t $TMPS   -d VarDescriptor_1.xml -s -p punti.dat
+
+ANS=$?
+# ---------- cleaning
+if [ $ANS == 0 ] ; then  
+   cd $TMPS
+   rm -f tmp.*
+fi
+
+
+
+
+########  LOW FREQUENCY ######################################################
+
+cd $CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/bin
+
+MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
+ ARCHIVE_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/Archive
+     TMP_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/TMP
+  CHLSUP_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/CHL_SUP
+
+      OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/
+
+mpirun python postproc.py -l ave*N1p.nc -i $MODEL_AVEDIR -a $ARCHIVE_DIR  -d VarDescriptor_1.xml -t $TMP_DIR  -c $CHLSUP_DIR
+mpirun python aveScan.py  -l ave*nc     -i $TMP_DIR -o $OUTDIR -t $TMPS   -d VarDescriptor_1.xml -s -p punti.dat
+
+ANS=$?
+# ---------- cleaning
+if [ $ANS == 0 ] ; then  
+   cd $TMPS
+   rm -f tmp.*
+fi
+
+
+# for (( year=1999; year=2010; year++)) ;  do
+#   mpirun python monthly_average.py  $year
+
+
+mpirun python compress.py -i $ARCHIVE_DIR -o $ARCHIVE_DIR -l ave*nc  --erase
+
+date
+
+
+
