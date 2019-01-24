@@ -58,7 +58,7 @@ OUTPUTDIR = addsep(args.outputdir)
 TIMELIST   = file2stringlist(args.time)
 
 
-bulletin_date = "20170601"
+bulletin_date = "20190115"
 DType="re"
 tr='m' #monthly mean
 
@@ -165,7 +165,7 @@ def create_Structure(filename):
 def V2_filename(timeobj,FGroup):
     return timeobj.strftime('%Y%m') + "01_" + tr + "-OGS--" + FGroup + "-ogstm_bfm4-MED-b" + bulletin_date +"_" + DType + "-fv06.00.nc"
 def V3_filename(timeobj,FGroup):    
-    return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM1-MED-b" + bulletin_date +"_" + DType + "-sv04.10.nc"
+    return timeobj.strftime('%Y%m01_') + tr + "-OGS--" + FGroup + "-MedBFM1-MED-b" + bulletin_date +"_" + DType + "-sv04.10.nc"
 def V3_1_filename(timeobj,FGroup):    
     return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM2-MED-b" + bulletin_date +"_" + DType + "-sv03.00.nc"
 
@@ -182,7 +182,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncOUT,'title','Nitrate and Phosphate (3D) - Monthly Mean')
             
             ncvar = ncOUT.createVariable('nit', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
-            setattr(ncvar,'missing_value',1.e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'millimol m-3')
             setattr(ncvar,'long_name'    ,'Mole concentration of Nitrate in sea water')
             setattr(ncvar,'standard_name','mole_concentration_of_nitrate_in_sea_water')
@@ -192,7 +192,7 @@ for timestr in TIMELIST[rank::nranks]:
             
             
             ncvar = ncOUT.createVariable('pho', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
-            setattr(ncvar,'missing_value',1.e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'millimol m-3')
             setattr(ncvar,'long_name'    ,'Mole concentration of Phosphate in sea water')
             setattr(ncvar,'standard_name','mole_concentration_of_phosphate_in_sea_water')
@@ -206,7 +206,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncOUT,'title','Carbon and Chlorophyll content of phytoplankton functional type(3D) - Monthly Mean')
 
             ncvar = ncOUT.createVariable('pcb', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
-            setattr(ncvar,'missing_value',1.e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'mol m-3')
             setattr(ncvar,'long_name'    ,'Concentration of Phytoplankton Biomass in sea water')
             setattr(ncvar,'standard_name','mole_concentration_of_phytoplankton_expressed_as_carbon_in_sea_water')
@@ -223,7 +223,7 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar[:] = pcb
             
             ncvar = ncOUT.createVariable('chl', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
-            setattr(ncvar,'missing_value',1.e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'milligram m-3')
             setattr(ncvar,'long_name'    ,'Concentration of Chlorophyll in sea water')
             setattr(ncvar,'standard_name','concentration_of_chlorophyll_in_sea_water')
@@ -241,7 +241,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncOUT, 'title', "Net Primary Production and Dissolved Oxygen (3D) - Monthly Mean")
             
             ncvar = ncOUT.createVariable('dox', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
-            setattr(ncvar,'missing_value',1.e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'millimol m-3')
             setattr(ncvar,'long_name'    ,'Mole concentration of Dissolved Molecular Oxygen in sea water')
             setattr(ncvar,'standard_name','mole_concentration_of_dissolved_molecular_oxygen_in_sea_water')
@@ -249,8 +249,8 @@ for timestr in TIMELIST[rank::nranks]:
             O2o = readdata(timestr,"O2o")
             ncvar[:] = O2o
             
-            ncvar = ncOUT.createVariable('ppn', 'f', ('time','depth','latitude','longitude'),zlib=True)
-            setattr(ncvar,'missing_value',1.e+20)
+            ncvar = ncOUT.createVariable('ppn', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'mol m-3 s-1')
             setattr(ncvar,'long_name'    ,'Net Primary Production in sea water')
             setattr(ncvar,'standard_name','tendency_of_mole_concentration_of_particulate_organic_matter_expressed_as_carbon_in_sea_water_due_to_net_primary_production')
@@ -265,7 +265,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncOUT, 'title',"Ocean pCO2 and Ocean Acidity (3D) - Monthly Mean")
             
             ncvar = ncOUT.createVariable('pco', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
-            setattr(ncvar,'missing_value',1.e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'Pa')
             setattr(ncvar,'long_name'    ,'ocean_pco2_expresses_as_carbon_dioxide_partial_pressure')
             setattr(ncvar,'standard_name','surface_partial_pressure_of_carbon_dioxide_in_sea_water')
@@ -274,7 +274,7 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar[:] = pco
             
             ncvar = ncOUT.createVariable('ph', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
-            setattr(ncvar,'missing_value',1.e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'1')
             setattr(ncvar,'long_name'    ,'PH')
             setattr(ncvar,'standard_name','sea_water_ph_reported_on_total_scale')
