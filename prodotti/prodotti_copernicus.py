@@ -301,7 +301,7 @@ for timestr in TIMELIST[rank::nranks]:
 
             ncvar = ncOUT.createVariable('dic', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
-            setattr(ncvar,'units'        ,'umol/kg')
+            setattr(ncvar,'units'        ,'umol kg-1')
             setattr(ncvar,'long_name'    ,"Dissolved Inorganic Carbon")
             setattr(ncvar,'standard_name','dissolved_inorganic_carbon')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
@@ -315,7 +315,7 @@ for timestr in TIMELIST[rank::nranks]:
             #if args.tr=='monthly': setattr(ncOUT, 'title',"Surface CO2 flux (2D) - Monthly Mean")
             ncvar = ncOUT.createVariable('co2airflux', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
-            setattr(ncvar,'units'        ,'umol/kg')
+            setattr(ncvar,'units'        ,'mmol m-2 day-1')
             setattr(ncvar,'long_name'    ,"Surface CO2 flux")
             setattr(ncvar,'standard_name','carbon_dioxide_flux_at_air_sea_inferface')
             setattr(ncvar,'coordinates'  ,'time latitude longitude')
