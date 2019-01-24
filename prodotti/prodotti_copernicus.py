@@ -282,9 +282,9 @@ for timestr in TIMELIST[rank::nranks]:
             
             ncvar = ncOUT.createVariable('pco', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
-            setattr(ncvar,'units'        ,'Pa')
+            setattr(ncvar,'units'        ,'uatm')
             setattr(ncvar,'long_name'    ,'ocean_pco2_expressed_as_carbon_dioxide_partial_pressure')
-            setattr(ncvar,'standard_name','surface_partial_pressure_of_carbon_dioxide_in_sea_water')
+            setattr(ncvar,'standard_name','partial_pressure_of_carbon_dioxide_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             pco = readdata(timestr, "pCO2")#pc0
             ncvar[0,:] = pco
