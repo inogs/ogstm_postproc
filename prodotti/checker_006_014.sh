@@ -1,20 +1,8 @@
 #! /bin/bash
 
-function print_file_attr_d {
-  basenamefile=$( basename ${1} )
-  [[ $basenamefile == *BIOL* ]] && DATASET=med-ogs-bio-an-fc-d
-  [[ $basenamefile == *CARB* ]] && DATASET=med-ogs-car-an-fc-d
-  [[ $basenamefile == *NUTR* ]] && DATASET=med-ogs-nut-an-fc-d
-  [[ $basenamefile == *PFTC* ]] && DATASET=med-ogs-pft-an-fc-d
-  [[ $basenamefile == *CO2F* ]] && DATASET=med-ogs-co2-an-fc-d  
-  
-  echo ""
-  echo "PRODUCT MEDSEA_ANALYSIS_FORECAST_BIO_006_014"
-  echo "Dataset: $DATASET"
-  echo "File: $basenamefile"
+CHECKFOR=monthly
 
-}
-
+if [ $CHECKFOR == monthly ] ; then
 function print_file_attr {
   basenamefile=$( basename ${1} )
   [[ $basenamefile == *BIOL* ]] && DATASET=med-ogs-bio-an-fc-m
@@ -30,6 +18,25 @@ function print_file_attr {
 
 }
 
+else
+
+function print_file_attr {
+  basenamefile=$( basename ${1} )
+  [[ $basenamefile == *BIOL* ]] && DATASET=med-ogs-bio-an-fc-d
+  [[ $basenamefile == *CARB* ]] && DATASET=med-ogs-car-an-fc-d
+  [[ $basenamefile == *NUTR* ]] && DATASET=med-ogs-nut-an-fc-d
+  [[ $basenamefile == *PFTC* ]] && DATASET=med-ogs-pft-an-fc-d
+  [[ $basenamefile == *CO2F* ]] && DATASET=med-ogs-co2-an-fc-d
+  
+  echo ""
+  echo "PRODUCT MEDSEA_ANALYSIS_FORECAST_BIO_006_014"
+  echo "Dataset: $DATASET"
+  echo "File: $basenamefile"
+
+}
+
+
+fi
 
 function try_send {
   ZIPPED_DIR=/pico/scratch/userexternal/gbolzon0/REANALYSIS_2016/wrkdir/POSTPROC/output/ZIPPED
@@ -73,7 +80,7 @@ function ncattget {
 ncks -M -m ${3} | grep ${2} | grep ${1} | awk '{print $3}' | cut -d "f" -f 1
 }
 
-DIR=/gpfs/work/OGS18_PRACE_P_0/PROD_COPERNICUS/prodotti/MONTHLY/
+DIR=/gpfs/work/OGS18_PRACE_P_0/PROD_COPERNICUS/prodotti/  #MONTHLY/
 TIME_TO_CHECK=20170101
 
 
