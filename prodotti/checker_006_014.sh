@@ -9,7 +9,7 @@ function print_file_attr_d {
   [[ $basenamefile == *CO2F* ]] && DATASET=med-ogs-co2-an-fc-d  
   
   echo ""
-  echo "PRODUCT MEDSEA_REANALYSIS_BIO_006_014"
+  echo "PRODUCT MEDSEA_ANALYSIS_FORECAST_BIO_006_014"
   echo "Dataset: $DATASET"
   echo "File: $basenamefile"
 
@@ -24,7 +24,7 @@ function print_file_attr {
   [[ $basenamefile == *CO2F* ]] && DATASET=med-ogs-co2-an-fc-m
   
   echo ""
-  echo "PRODUCT MEDSEA_REANALYSIS_BIO_006_014"
+  echo "PRODUCT MEDSEA_ANALYSIS_FORECAST_BIO_006_014"
   echo "Dataset: $DATASET"
   echo "File: $basenamefile"
 
@@ -102,8 +102,8 @@ echo "#####  PU_IT_TF_VarDimension   "
 for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
   print_file_attr $filename
   if echo $filename | grep -q BIOL ; then
-     dim_check $filename dox
-     dim_check $filename ppn
+     dim_check $filename o2
+     dim_check $filename nppv
   fi
   if echo $filename | grep -q CARB ; then
      dim_check $filename ph
@@ -111,11 +111,11 @@ for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
      dim_check $filename dic
   fi 
   if echo $filename | grep -q NUTR ; then
-     dim_check $filename nit
-     dim_check $filename pho
+     dim_check $filename no3
+     dim_check $filename po4
   fi  
   if echo $filename | grep -q PFTC ; then
-     dim_check $filename pcb
+     dim_check $filename phyc
      dim_check $filename chl
   fi
   if echo $filename | grep -q CO2F ; then
