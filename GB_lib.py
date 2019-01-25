@@ -264,15 +264,15 @@ def WriteBigAve(Mask,N1pfile, outfile, VARS):
         ncvar[:]=nc.variables[var].data.copy()
         setattr(ncvar,"actual_range",nc.variables[var].actual_range)
         setattr(ncvar,"units"       ,nc.variables[var].units)
-    nc.close()        
+    nc.close()
 
     setattr(ncOUT.variables['lon'],"long_name","Longitude")    
     setattr(ncOUT.variables['lat'],"long_name","Latitude")
 
 
     for var in VARS:
-        avefile=getfileForRead(N1pfile, outfile, var)        
-        ncIN = NC.netcdf_file(avefile,"r")    
+        avefile=getfileForRead(N1pfile, outfile, var)
+        ncIN = NC.netcdf_file(avefile,"r")
         ncvar=ncOUT.createVariable(var,'f',('time','depth','lat','lon'))
         ncvar[:]=ncIN.variables[var].data.copy()
         setattr(ncvar,"long_name",var)
@@ -290,10 +290,10 @@ def writeChlSup(avefile, chlfile, chlvar):
     AVE=NC.netcdf_file(avefile,"r")
     CHL=NC.netcdf_file(chlfile,"w")
     fillValue=1.e+20
-    
+
     a=AVE.variables[chlvar].data[0,0,:,:].copy()      
     a[a>fillValue]=fillValue
-    
+
     DIMS=AVE.dimensions
     CHL.createDimension('time',None)
     CHL.createDimension('lon',DIMS['lon'])
@@ -315,12 +315,12 @@ if __name__ == "__main__" :
 
 
     RD=read_descriptor.read_descriptor('VarDescriptor_2.xml')
-        
     
+
     var='P_i'
     INPUT_AVEDIR = "MODEL/AVE_FREQ_1/"
     AGGREGATE_AVEDIR="POSTPROC/TMP/"
-    
+
     avelist=["ave.20130101-12:00:00.N1p.nc","ave.20130102-12:00:00.N1p.nc","ave.20130103-12:00:00.N1p.nc"]
     avelist=["ave.20130101-12:00:00.nc","ave.20130102-12:00:00.nc","ave.20130103-12:00:00.nc"]
     avelist=[INPUT_AVEDIR + f for f in avelist]
@@ -331,4 +331,4 @@ if __name__ == "__main__" :
     print F.get_filename(filename, 'vozocrtx',INPUT_AVEDIR,AGGREGATE_AVEDIR)
 
     #print F.get_filename(filename, var,INPUT_AVEDIR,AGGREGATE_AVEDIR)
-    
+
