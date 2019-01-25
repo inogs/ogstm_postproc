@@ -1,0 +1,108 @@
+#!/bin/bash
+
+#SBATCH --job-name=POST
+#SBATCH -N1
+#SBATCH --ntasks-per-node=36
+#SBATCH --time=0:30:00
+#SBATCH --mem=100gb
+#SBATCH --account=OGS18_PRACE_P_0
+#SBATCH --partition=gll_usr_prod
+
+cd $SLURM_SUBMIT_DIR
+
+module purge
+module load autoload
+module load profile/advanced intelmpi/2017--binary netcdf/4.4.1--intelmpi--2017--binary
+module load python/2.7.12 #numpy/1.9.1--python--2.7.9 matplotlib/1.4.3--python--2.7.9
+module load hdf5/1.8.17--intelmpi--2017--binary
+module load mpi4py/1.3.1--intelmpi--2017--binary
+source /gpfs/work/OGS18_PRACE_P_0/COPERNICUS/py_env_2.7.12/bin/activate
+export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bit.sea
+
+export OPA_HOME=TRANSITION_24
+
+date
+
+ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+OUTPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2_compressed
+mkdir -p $OUTPUTDIR
+mpirun python netcdf4_compress.py -i $INPUTDIR -o $OUTPUTDIR -l *nc
+
+# general use of compress.py or uncompress.py
+mpirun python compress.py -i $ARCHIVE_DIR -o $ARCHIVE_DIR -l ave*nc  --erase
+
+
+ARCHIVE_DIR=/pico/scratch/userexternal/ddelross/eas2_v6_out/
+UNZIPPED_DIR=/pico/scratch/userexternal/plazzari/eas2_v6/FORCINGS/UNZIPPED/
+mpirun python uncompress.py -i $ARCHIVE_DIR -o $UNZIPPED_DIR -l *20141*gz
+mpirun python compress.py -i $ARCHIVE_DIR -o $ARCHIVE_DIR -l ave*nc  --erase
+date
+
+
+# general ARCHIVE procedure
+
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+mkdir $INPUTDIR/zipped
+mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *nc
+TARDIR=$ARCHIVE_DIR/tar
+mkdir -p $TARDIR
+#ls ave.201001* | cut -d "." -f 3 > allvarlist.txt
+mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v allvarlist.txt
+date
+
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+mkdir $INPUTDIR/zipped
+mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *nc
+TARDIR=$ARCHIVE_DIR/tar
+mkdir -p $TARDIR
+mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v HF_varlist.txt
+date
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
+mkdir $INPUTDIR/zipped
+mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *nc
+TARDIR=$ARCHIVE_DIR/tar
+mkdir -p $TARDIR
+#ls *N1p.nc | cut -d "-" -f 1 > rsttimes
+mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v rsttimes
+date
+
+
+exit 0
+
+
+
+
+# PROCEDURA PER L'ARCHIVIAZIONE DEI DA files
+cd MODEL/RESTARTS
+
+mkdir -p links true_restarts/tosave
+for I in `ls `; do if [ -L $I ] ; then mv $I links ; fi done
+mv *-00:00:00* true_restarts/
+cd links
+rename  RST. RST.after. RST*nc
+
+cd ../../DA__FREQ_1
+mkdir -p links
+for I in `ls `; do if [ -L $I ] ; then mv $I links ; fi done
+rename RST. RST.before. RST*nc
+mv ../RESTARTS/links/RST.after* .
+
+
+
+mpirun python compress.py -i $DA__FREQ_1 -o $DA__FREQ_1 -l *nc
+rm -f *nc
+ls chl.*nc | cut -c 5-12 > daTimes  # dates with yyyymmdd
+mpirun python packDA.py -i $DA__FREQ_1 -o $TARDIR -v daTimes
+
+
+RESTARTS=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/true_restarts/tosave
+mpirun python compress.py -i $RESTARTS -o $RESTARTS -l *nc
+TARDIR=$RESTARTS/tar
+mkdir $TARDIR
+mpirun python packDA.py -i $RESTARTS -o $TARDIR -v rst_times.txt
+
+
+
