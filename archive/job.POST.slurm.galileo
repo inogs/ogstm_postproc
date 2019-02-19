@@ -14,7 +14,7 @@ module purge
 module load profile/base
 module load intel/pe-xe-2018--binary intelmpi/2018--binary
 module load autoload
-module load hdf5/1.8.17--intelmpi--2018--binary netcdf/4.6.1--intelmpi--2018--binary
+module load hdf5/1.8.18--intel--pe-xe-2018--binary netcdf/4.6.1--intelmpi--2018--binary
 module load mpi4py/3.0.0--intelmpi--2018--binary
 source /gpfs/work/OGS18_PRACE_P_0/COPERNICUS/py_env_2.7.12/bin/activate
 export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bit.sea
