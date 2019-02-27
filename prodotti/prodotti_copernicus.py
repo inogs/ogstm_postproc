@@ -277,18 +277,10 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar[0,:] = ppn
             
         if FGroup == 'CARB':
-            if args.tr=='daily'  : setattr(ncOUT, 'title',"DIC, Ocean pCO2 and Ocean Acidity (3D) - Daily Mean")
+            if args.tr=='daily'  : setattr(ncOUT, 'title',"DIC, Ocean Acidity (3D) - Daily Mean")
             if args.tr=='monthly': setattr(ncOUT, 'title',"DIC, Ocean pCO2 and Ocean Acidity (3D) - Monthly Mean")
             
-            ncvar = ncOUT.createVariable('pco', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
-            setattr(ncvar,'missing_value',ncvar._FillValue)
-            setattr(ncvar,'units'        ,'uatm')
-            setattr(ncvar,'long_name'    ,'ocean_pco2_expressed_as_carbon_dioxide_partial_pressure')
-            setattr(ncvar,'standard_name','partial_pressure_of_carbon_dioxide_in_sea_water')
-            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            pco = readdata(timestr, "pCO2")#pc0
-            ncvar[0,:] = pco
-            
+
             ncvar = ncOUT.createVariable('ph', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'1')
@@ -299,20 +291,22 @@ for timestr in TIMELIST[rank::nranks]:
             ph = readdata(timestr, "pH")
             ncvar[0,:] =ph
 
-            ncvar = ncOUT.createVariable('dic', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            ncvar = ncOUT.createVariable('dissic', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
-            setattr(ncvar,'units'        ,'umol kg-1')
-            setattr(ncvar,'long_name'    ,"Dissolved Inorganic Carbon")
-            setattr(ncvar,'standard_name','dissolved_inorganic_carbon')
+            setattr(ncvar,'units'        ,'mol m-3')
+            setattr(ncvar,'long_name'    ,"Mole concentration of dissolved inorganic carbon in sea water")
+            setattr(ncvar,'standard_name','mole_concentration_of_dissolved_inorganic_carbon_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            dic = readdata(timestr, "DIC")
+            setattr(ncvar, 'conversions' , 'In order to calculate DIC in micro mol / kg of seawater, dissic has to be multiplied by 1.e+6 / seawater density [kg/m3]')
+            dic = readdata(timestr, "O3c")/(12*1000) # conversion mg/mol
+            dic[~tmask] = 1.e+20
             ncvar[0,:] =dic
 
 
         if FGroup == 'CO2F':
-            setattr(ncOUT, 'title',"Surface CO2 flux")
-            #if args.tr=='daily'  : setattr(ncOUT, 'title',"Surface CO2 flux (2D) - Daily Mean")
-            #if args.tr=='monthly': setattr(ncOUT, 'title',"Surface CO2 flux (2D) - Monthly Mean")
+            #setattr(ncOUT, 'title',"Surface CO2 flux")
+            if args.tr=='daily'  : setattr(ncOUT, 'title',"Ocean pCO2 and Surface CO2 flux (2D) - Daily Mean")
+            if args.tr=='monthly': setattr(ncOUT, 'title',"Ocean pCO2 and Surface CO2 flux (2D) - Monthly Mean")
             ncvar = ncOUT.createVariable('co2airflux', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'mmol m-2 day-1')
@@ -322,6 +316,15 @@ for timestr in TIMELIST[rank::nranks]:
             co2_airflux = readdata(timestr, "CO2airflux", ndims=2)
             ncvar[0,:] =co2_airflux
 
-
+            ncvar = ncOUT.createVariable('spc02', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'Pa')
+            setattr(ncvar,'long_name'    ,'Surface partial pressure of carbon dioxide in sea water')
+            setattr(ncvar,'standard_name','surface_partial_pressure_of_carbon_dioxide_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time latitude longitude')
+            setattr(ncvar, 'convention'  , 'Unit of the partial pressure of CO2 is Pascal. According to model calculation 1 ppm = 1 microatm = 1.e-6 * 101325 Pa')
+            pco2 = readdata(timestr, "pCO2") *0.101325 #conversion microatm --> Pascal
+            pco2[~tmask] = 1.e+20
+            ncvar[0,:] = pco2[0,:,:]
         ncOUT.close()
         
