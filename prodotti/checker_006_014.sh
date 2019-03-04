@@ -1,6 +1,6 @@
 #! /bin/bash
 
-CHECKFOR=monthly
+CHECKFOR=daily
 
 if [ $CHECKFOR == monthly ] ; then
 function print_file_attr {
@@ -80,8 +80,8 @@ function ncattget {
 ncks -M -m ${3} | grep ${2} | grep ${1} | awk '{print $3}' | cut -d "f" -f 1
 }
 
-DIR=/gpfs/work/OGS18_PRACE_P_0/PROD_COPERNICUS/prodotti/  #MONTHLY/
-TIME_TO_CHECK=20170101
+DIR=/gpfs/scratch/userexternal/gbolzon0/OPEN_BOUNDARY/TEST_07/wrkdir/POSTPROC/output/AVE_FREQ_1/PROD  #MONTHLY/
+TIME_TO_CHECK=20190101
 
 
 
@@ -114,8 +114,7 @@ for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
   fi
   if echo $filename | grep -q CARB ; then
      dim_check $filename ph
-     dim_check $filename pco
-     dim_check $filename dic
+     dim_check $filename dissic
   fi 
   if echo $filename | grep -q NUTR ; then
      dim_check $filename no3
@@ -126,7 +125,8 @@ for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
      dim_check $filename chl
   fi
   if echo $filename | grep -q CO2F ; then
-     dim_check $filename co2airflux
+     dim_check $filename fpco2
+     dim_check $filename spco2
   fi  
 done
 

@@ -112,13 +112,13 @@ def readdata(time, var, ndims=3):
     inputfile = INPUTDIR + "ave."  + time + "-12:00:00." + var + ".nc"
     return readfile(inputfile,var,ndims=ndims)
 
-def create_Structure(filename):
+def create_Structure(filename, fgroup):
     ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_ANALYSIS_FORECAST_BIO_006_014 - http://marine.copernicus.eu/'
     inst  ='OGS (Istituto Nazionale di Oceanografia e di Geofisica Sperimentale) , Sgonico (Trieste) - Italy'
     ncOUT = netCDF4.Dataset(filename,"w",format="NETCDF4")
     ncOUT.createDimension('longitude', jpi-cut)    # =722-52
     ncOUT.createDimension('latitude' ,jpj)
-    ncOUT.createDimension('depth'    ,jpk)
+    if (fgroup != 'CO2F') : ncOUT.createDimension('depth'    ,jpk)
     ncOUT.createDimension('time'     ,  1)
     
     setattr(ncOUT,'Conventions'  ,'CF-1.0' )
@@ -146,16 +146,16 @@ def create_Structure(filename):
     setattr(ncvar,'calendar'     ,'standard')
     ncvar[:] = Diff.days*3600*24 + Diff.seconds
     
-
-    ncvar = ncOUT.createVariable('depth'   ,'f', ('depth',))
-    setattr(ncvar,'units'        ,'m')
-    setattr(ncvar,'long_name'    ,'depth')
-    setattr(ncvar,'standard_name','depth')
-    setattr(ncvar,'positive'     ,'down')
-    setattr(ncvar,'axis'         ,'Z')
-    setattr(ncvar,'valid_min'    ,nav_lev.min())
-    setattr(ncvar,'valid_max'    ,nav_lev.max())
-    ncvar[:] = nav_lev
+    if (fgroup != 'CO2F') :
+        ncvar = ncOUT.createVariable('depth'   ,'f', ('depth',))
+        setattr(ncvar,'units'        ,'m')
+        setattr(ncvar,'long_name'    ,'depth')
+        setattr(ncvar,'standard_name','depth')
+        setattr(ncvar,'positive'     ,'down')
+        setattr(ncvar,'axis'         ,'Z')
+        setattr(ncvar,'valid_min'    ,nav_lev.min())
+        setattr(ncvar,'valid_max'    ,nav_lev.max())
+        ncvar[:] = nav_lev
     
     ncvar = ncOUT.createVariable('latitude','f' ,('latitude',))
     setattr(ncvar, 'units'        ,'degrees_north')
@@ -190,7 +190,7 @@ for timestr in TIMELIST[rank::nranks]:
     for FGroup in FGROUPS:
         product_file = V5_filename(timeobj, FGroup)
         print "rank =", rank, product_file
-        ncOUT = create_Structure(OUTPUTDIR + product_file)
+        ncOUT = create_Structure(OUTPUTDIR + product_file,FGroup)
         
         
         if FGroup == 'NUTR':
@@ -277,8 +277,8 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar[0,:] = ppn
             
         if FGroup == 'CARB':
-            if args.tr=='daily'  : setattr(ncOUT, 'title',"DIC, Ocean Acidity (3D) - Daily Mean")
-            if args.tr=='monthly': setattr(ncOUT, 'title',"DIC, Ocean pCO2 and Ocean Acidity (3D) - Monthly Mean")
+            if args.tr=='daily'  : setattr(ncOUT, 'title',"Dissolved Inorganic Carbon and Ocean Acidity (3D) - Daily Mean")
+            if args.tr=='monthly': setattr(ncOUT, 'title',"Dissolved Inorganic Carbon and Ocean Acidity (3D) - Monthly Mean")
             
 
             ncvar = ncOUT.createVariable('ph', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
@@ -286,6 +286,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'units'        ,'1')
             setattr(ncvar,'long_name'    ,'PH')
             setattr(ncvar,'standard_name','sea_water_ph_reported_on_total_scale')
+            setattr(ncvar,'info'         , 'pH reported on total scale at in situ Temp and Press conditions')
             #setattr(ncvar,'standard_name','ocean_acididity_expressed_as_seawater_ph_reported_on_seawater_scale')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             ph = readdata(timestr, "pH")
@@ -297,33 +298,32 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'long_name'    ,"Mole concentration of dissolved inorganic carbon in sea water")
             setattr(ncvar,'standard_name','mole_concentration_of_dissolved_inorganic_carbon_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            setattr(ncvar, 'conversions' , 'In order to calculate DIC in micro mol / kg of seawater, dissic has to be multiplied by 1.e+6 / seawater density [kg/m3]')
+            setattr(ncvar,'info'         , 'In order to calculate DIC in [micro mol / kg of seawater], dissic has to be multiplied by (1.e+6 / seawater density [kg/m3])')
             dic = readdata(timestr, "O3c")/(12*1000) # conversion mg/mol
             dic[~tmask] = 1.e+20
             ncvar[0,:] =dic
 
 
         if FGroup == 'CO2F':
-            #setattr(ncOUT, 'title',"Surface CO2 flux")
-            if args.tr=='daily'  : setattr(ncOUT, 'title',"Ocean pCO2 and Surface CO2 flux (2D) - Daily Mean")
-            if args.tr=='monthly': setattr(ncOUT, 'title',"Ocean pCO2 and Surface CO2 flux (2D) - Monthly Mean")
-            ncvar = ncOUT.createVariable('co2airflux', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            if args.tr=='daily'  : setattr(ncOUT, 'title',"Ocean surface pCO2 and air-sea surface CO2 flux (2D) - Daily Mean")
+            if args.tr=='monthly': setattr(ncOUT, 'title',"Ocean surface pCO2 and air-sea surface CO2 flux (2D) - Monthly Mean")
+            ncvar = ncOUT.createVariable('fpco2', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
-            setattr(ncvar,'units'        ,'mmol m-2 day-1')
-            setattr(ncvar,'long_name'    ,"Surface CO2 flux")
-            setattr(ncvar,'standard_name','carbon_dioxide_flux_at_air_sea_inferface')
+            setattr(ncvar,'units'        ,'kg m-2 s-1')
+            setattr(ncvar,'long_name'    ,"surface downward flux at air-sea interface of carbon dioxide expressed as kg of carbon per square meter per second")
+            setattr(ncvar,'standard_name','surface_downward_mass_flux_of_carbon_dioxide_expressed_as_carbon')
             setattr(ncvar,'coordinates'  ,'time latitude longitude')
-            co2_airflux = readdata(timestr, "CO2airflux", ndims=2)
+            co2_airflux = readdata(timestr, "CO2airflux", ndims=2) *12 * 1.e-6 /86400 # conversion from mmol m-2 day-1 to kg/m2/s
+            co2_airflux[~tmask[0,:,:]] = 1.e+20
             ncvar[0,:] =co2_airflux
 
-            ncvar = ncOUT.createVariable('spc02', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            ncvar = ncOUT.createVariable('spco2', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'Pa')
             setattr(ncvar,'long_name'    ,'Surface partial pressure of carbon dioxide in sea water')
             setattr(ncvar,'standard_name','surface_partial_pressure_of_carbon_dioxide_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time latitude longitude')
-            setattr(ncvar, 'convention'  , 'Unit of the partial pressure of CO2 is Pascal. According to model calculation 1 ppm = 1 microatm = 1.e-6 * 101325 Pa')
-            pco2 = readdata(timestr, "pCO2") *0.101325 #conversion microatm --> Pascal
+            pco2 = readdata(timestr, "pCO2") *0.101325 #conversion microatm --> Pascal  1 ppm = 1 microatm = 1.e-6 * 101325 Pa
             pco2[~tmask] = 1.e+20
             ncvar[0,:] = pco2[0,:,:]
         ncOUT.close()
