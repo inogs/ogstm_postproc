@@ -219,8 +219,8 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar[0,:] = M
         
         if FGroup == 'PFTC':
-            if args.tr=='daily'   : setattr(ncOUT,'title','Carbon and Chlorophyll content of phytoplankton functional type (3D) - Daily Mean')
-            if args.tr=='monthly' : setattr(ncOUT,'title','Carbon and Chlorophyll content of phytoplankton functional type (3D) - Monthly Mean')
+            if args.tr=='daily'   : setattr(ncOUT,'title','Phytoplankton Carbon Biomass and Chlorophyll (3D) - Daily Mean')
+            if args.tr=='monthly' : setattr(ncOUT,'title','Phytoplankton Carbon Biomass and Chlorophyll (3D) - Monthly Mean')
 
             ncvar = ncOUT.createVariable('phyc', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
@@ -255,8 +255,8 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar[0,:] = chl
             
         if FGroup == 'BIOL':
-            if args.tr=='daily'  : setattr(ncOUT, 'title', "Net Primary Production and Dissolved Oxygen (3D) - Daily Mean")
-            if args.tr=='monthly': setattr(ncOUT, 'title', "Net Primary Production and Dissolved Oxygen (3D) - Monthy Mean")
+            if args.tr=='daily'  : setattr(ncOUT, 'title', "Primary Production and Oxygen (3D) - Daily Mean")
+            if args.tr=='monthly': setattr(ncOUT, 'title', "Primary Production and Oxygen (3D) - Monthy Mean")
             
             ncvar = ncOUT.createVariable('o2', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
@@ -277,8 +277,8 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar[0,:] = ppn
             
         if FGroup == 'CARB':
-            if args.tr=='daily'  : setattr(ncOUT, 'title',"Dissolved Inorganic Carbon and Ocean Acidity (3D) - Daily Mean")
-            if args.tr=='monthly': setattr(ncOUT, 'title',"Dissolved Inorganic Carbon and Ocean Acidity (3D) - Monthly Mean")
+            if args.tr=='daily'  : setattr(ncOUT, 'title',"Dissolved Inorganic Carbon and pH (3D) - Daily Mean")
+            if args.tr=='monthly': setattr(ncOUT, 'title',"Dissolved Inorganic Carbon and pH (3D) - Monthly Mean")
             
 
             ncvar = ncOUT.createVariable('ph', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
@@ -305,8 +305,8 @@ for timestr in TIMELIST[rank::nranks]:
 
 
         if FGroup == 'CO2F':
-            if args.tr=='daily'  : setattr(ncOUT, 'title',"Ocean surface pCO2 and air-sea surface CO2 flux (2D) - Daily Mean")
-            if args.tr=='monthly': setattr(ncOUT, 'title',"Ocean surface pCO2 and air-sea surface CO2 flux (2D) - Monthly Mean")
+            if args.tr=='daily'  : setattr(ncOUT, 'title',"Surface partial pressure of CO2 and Surface CO2 flux (2D) - Daily Mean")
+            if args.tr=='monthly': setattr(ncOUT, 'title',"Surface partial pressure of CO2 and Surface CO2 flux (2D) - Monthly Mean")
             ncvar = ncOUT.createVariable('fpco2', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'kg m-2 s-1')
