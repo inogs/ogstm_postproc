@@ -3,10 +3,10 @@
 HOST=nrt.cmems-du.eu
 PRODUCT=MEDSEA_ANALYSIS_FORECAST_BIO_006_014
 
-for YEAR in $(seq 2015 2018 ) ; do 
-	for group in bio car nut pft ; do
-	    dataset=sv03-med-ogs-${group}-an-fc-d
-		/marconi/home/usera07ogs/a07ogs00/OPA/V3C/HOST/marconi/bin/ncftp -P 21 -u cmems_med_ogs -p 9J2e+uLU $HOST <<EOF
+for YEAR in $(seq 2017 2022 ) ; do
+	for group in bio car nut pft co2 ; do
+	    dataset=med-ogs-${group}-an-fc-d_201904
+		/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bin/ncftp -P 21 -u cmems_med_ogs -p 9J2e+uLU $HOST <<EOF
 cd /${PRODUCT}/${dataset}
 mkdir ${YEAR}
 cd ${YEAR}
