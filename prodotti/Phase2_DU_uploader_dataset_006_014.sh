@@ -31,7 +31,7 @@ for I in 1 2 3 ; do
 done
 
 
-BINDIR=/marconi/home/usera07ogs/a07ogs00/OPA/V3C/HOST/marconi/bin
+BINDIR=/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bin/
 
 ARCHIVE_DIR=/marconi/home/usera07ogs/a07ogs00/OPA/V3C/archive/
 #
@@ -40,16 +40,19 @@ RUNDATE=20180313
 FILES_TO_SEND="${YEAR}*${type}*.nc"
 
 if [[ "$type" == "BIOL" ]]; then
-   dataset=sv03-med-ogs-bio-an-fc-d
+   dataset=med-ogs-bio-an-fc-d_201904
 fi
 if [[ "$type" == "CARB" ]]; then
-   dataset=sv03-med-ogs-car-an-fc-d
+   dataset=med-ogs-car-an-fc-d_201904
 fi
 if [[ "$type" == "NUTR" ]]; then
-   dataset=sv03-med-ogs-nut-an-fc-d
+   dataset=med-ogs-nut-an-fc-d_201904
 fi
 if [[ "$type" == "PFTC" ]]; then
-   dataset=sv03-med-ogs-pft-an-fc-d
+   dataset=med-ogs-pft-an-fc-d_201904
+fi
+if [[ "$type" == "CO2F" ]]; then
+   dataset=med-ogs-co2-an-fc-d_201904
 fi
 
 
