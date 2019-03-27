@@ -119,7 +119,7 @@ def create_Structure(filename, fgroup):
     ncOUT.createDimension('longitude', jpi-cut)    # =722-52
     ncOUT.createDimension('latitude' ,jpj)
     if (fgroup != 'CO2F') : ncOUT.createDimension('depth'    ,jpk)
-    ncOUT.createDimension('time'     ,  1)
+    ncOUT.createDimension('time'     ,  0)
     
     setattr(ncOUT,'Conventions'  ,'CF-1.0' )
     setattr(ncOUT,'references'   , ref     )
