@@ -8,6 +8,7 @@ mkdir -p $OUTPUTDIR
 HERE=$PWD
 cd $INPUTDIR
 ls ave.20190101*N1p.nc | cut -c 5-12 > $HERE/timelist
+python tuesday.py -i $INPUTDIR
 
 cd $HERE
 
