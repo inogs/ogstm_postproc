@@ -78,8 +78,9 @@ for req in MONTHLY_REQS[rank::nranks]:
         t = TL.Timelist[k]
         filename = INPUTDIR + "ave." + t.strftime("%Y%m%d-%H:%M:%S") + "." + inputvar + ".nc"
         filelist.append(filename)
-    try:
+    if netcdf4.dimfile(filename, var)==3:
         M3d = TimeAverager3D(filelist, weights, inputvar, TheMask)
-    except:
-        M3d = TimeAverager2D(filelist, weights, inputvar, TheMask)
-    netcdf4.write_3d_file(M3d, var, outfile, TheMask)
+        netcdf4.write_3d_file(M3d, var, outfile, TheMask)
+    else:
+        M2d = TimeAverager2D(filelist, weights, inputvar, TheMask)
+        netcdf4.write_2d_file(M3d, var, outfile, TheMask)
