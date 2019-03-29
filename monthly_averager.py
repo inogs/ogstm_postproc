@@ -83,4 +83,4 @@ for req in MONTHLY_REQS[rank::nranks]:
         netcdf4.write_3d_file(M3d, var, outfile, TheMask)
     else:
         M2d = TimeAverager2D(filelist, weights, inputvar, TheMask)
-        netcdf4.write_2d_file(M3d, var, outfile, TheMask)
+        netcdf4.write_2d_file(M2d, var, outfile, TheMask)
