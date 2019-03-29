@@ -229,13 +229,17 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'standard_name','mole_concentration_of_phytoplankton_expressed_as_carbon_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             
-            P1c = readdata(timestr, "P1c")
-            P2c = readdata(timestr, "P2c")
-            P3c = readdata(timestr, "P3c")
-            P4c = readdata(timestr, "P4c")
-            pcb = (P1c + P2c + P3c +P4c)*(1./12.) 
-            #CONVERSION from "mgC m-3" to "mmolC m-3"
-            # conversion factor: 1/12
+            try:
+                pcb = readdata(timestr, 'P_c') * (1./12.)
+            except:
+                print "using native P1c, P2c, P3c, P4c"
+                P1c = readdata(timestr, "P1c")
+                P2c = readdata(timestr, "P2c")
+                P3c = readdata(timestr, "P3c")
+                P4c = readdata(timestr, "P4c")
+                pcb = (P1c + P2c + P3c +P4c)*(1./12.)
+                #CONVERSION from "mgC m-3" to "mmolC m-3"
+                # conversion factor: 1/12
             pcb[~tmask] = 1.e+20
             ncvar[0,:] = pcb
             
@@ -246,11 +250,15 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'standard_name','mass_concentration_of_chlorophyll_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             
-            P1l = readdata(timestr, "P1l")
-            P2l = readdata(timestr, "P2l")
-            P3l = readdata(timestr, "P3l")
-            P4l = readdata(timestr, "P4l")
-            chl = (P1l + P2l + P3l +P4l)
+            try:
+                chl = readdata(timestr, "P_l")
+            except:
+                print "using native P1l, P2l, P3l, P4l"
+                P1l = readdata(timestr, "P1l")
+                P2l = readdata(timestr, "P2l")
+                P3l = readdata(timestr, "P3l")
+                P4l = readdata(timestr, "P4l")
+                chl = (P1l + P2l + P3l +P4l)
             chl[~tmask] = 1.e+20
             ncvar[0,:] = chl
             
