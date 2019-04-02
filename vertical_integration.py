@@ -1,7 +1,12 @@
 import argparse
 def argument():
     parser = argparse.ArgumentParser(description = '''
-    Creates Float_Index.txt files.
+    Integrates vertically ave files.
+    Saves both:
+       - an integrated 2d file for each time and layer
+       - a 4D [nFrames,nlayers,jpj,jpi] file, redundant, but useful for some other readers
+
+    User should edit code for Time Interval and Layer List
     ''', formatter_class=argparse.RawTextHelpFormatter)
 
 
@@ -38,6 +43,7 @@ from commons.utils import addsep
 import GB_lib
 import numpy as np
 import netCDF4
+from commons import netcdf3
 
 var=args.var
 
@@ -49,6 +55,7 @@ _,jpj,jpi = TheMask.shape
 TI=TimeInterval("2017","2018","%Y")
 TL=TimeList.fromfilenames(TI, INPUTDIR, "ave*nc", filtervar=var)
 LAYERLIST=[Layer(0,50), Layer(50,100), Layer(100,150)]
+LAYERLIST = [Layer(0,200)]
 
 nFrames = TL.nTimes
 ndepth  = len(LAYERLIST)
@@ -66,8 +73,8 @@ def dump_integrated_file(outfile, M, varname, lon, lat):
     ncvar = ncOUT.createVariable('latitude', 'f', ('latitude',))
     ncvar[:] = lat
     ncvar = ncOUT.createVariable(varname, 'f', ('nFrames', 'layers','latitude','longitude'))
-    setattr(ncvar,'fillValue'    ,1.e+20)
-    setattr(ncvar,'missing_value',1.e+20)
+    setattr(ncvar,'fillValue'    ,np.float32(1.e+20))
+    setattr(ncvar,'missing_value',np.float32(1.e+20))
 
     ncvar[:] = M
     ncOUT.close() 
@@ -81,12 +88,12 @@ for iFrame, filename in enumerate(TL.filelist):
     F=GB_lib.filename_manager(filename)
     De=DataExtractor(TheMask,filename,var)
     for ilayer, layer in enumerate(LAYERLIST):
-        #outfile= "%s%s.%s.%s.%s.nc" %( OUTDIR, F.prefix, F.datestr, F.varname, layer.string())
-        #print outfile
+        outfile= "%s%s.%s.%s.%s.nc" %( OUTDIR, F.prefix, F.datestr, F.varname, layer.string())
+        print outfile
         mask=TheMask.mask_at_level(layer.top)
         integrated = MapBuilder.get_layer_integral(De, layer)
         integrated[~mask] = 1.e+20
         M[iFrame,ilayer,:,:] = integrated
-        #netcdf3.write_2d_file(integrated,var,outfile,TheMask)
+        netcdf3.write_2d_file(integrated,var,outfile,TheMask)
 outfile=OUTDIR + var + ".nc"
 dump_integrated_file(outfile, M, var, longitude, latitude)
