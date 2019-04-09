@@ -7,8 +7,8 @@ from basins import V2 as OGS
 
 annaCoast = False
 
-maskfile    = os.getenv("MASKFILE"); 
-if maskfile is None : 
+maskfile    = os.getenv("MASKFILE");
+if maskfile is None :
     print "Error: Environment variable MASKFILE must be defined "
     sys.exit(1)
 
@@ -32,12 +32,12 @@ e3t     =  TheMask.dz
 
 MEDmask      = tmask.copy()
 MEDmask[:, Lon < -5.3] = False# Atlantic buffer 
-
-mask200_2D   = TheMask.mask_at_level(200.0)
-#mask200_2D[Lon < -5.3] = False # Atlantic buffer
-mask200_3D = np.zeros((jpk,jpj,jpi),dtype=np.bool)
-for i in range(jpk):
-    mask200_3D[i,:,:]=mask200_2D
+if (nav_lev.max() > 200.0):
+    mask200_2D   = TheMask.mask_at_level(200.0)
+    #mask200_2D[Lon < -5.3] = False # Atlantic buffer
+    mask200_3D = np.zeros((jpk,jpj,jpi),dtype=np.bool)
+    for i in range(jpk):
+        mask200_3D[i,:,:]=mask200_2D
 
 if annaCoast:
     # Read k means class for coastal areas
@@ -57,8 +57,9 @@ COASTNESS_LIST=['coast', 'open_sea','everywhere']
 if annaCoast: COASTNESS_LIST=['coast','open_sea','everywhere','coast1','coast2']
     
 COASTNESS = np.ones((jpk,jpj,jpi) ,dtype=[(coast,np.bool) for coast in COASTNESS_LIST])
-COASTNESS['open_sea']  =  mask200_3D;
-COASTNESS['coast']     = ~mask200_3D;
+if (nav_lev.max() > 200.0):
+    COASTNESS['open_sea']  =  mask200_3D;
+    COASTNESS['coast']     = ~mask200_3D;
 
 if annaCoast:
     COASTNESS['coast1']  =  kmask1;
@@ -71,7 +72,7 @@ Bottom_list =[200, 600, 6000]
 if annaCoast:
     DEPTHlist   =['shallow','deep']
     Bottom_list =[200, 6000]
-    
+
 
 DEPTH  = np.zeros((jpk,jpj,jpi),dtype=[(depth,np.bool) for depth in DEPTHlist])
 tk_top = 0
@@ -79,16 +80,6 @@ for idepth, depth in enumerate(DEPTHlist):
     tk_bottom = TheMask.getDepthIndex(Bottom_list[idepth])+1
     DEPTH[depth][tk_top:tk_bottom ,:,:] = True
     tk_top = tk_bottom
-
-
-# tk_1     = TheMask.getDepthIndex(200.0)+1
-# tk_2     = TheMask.getDepthIndex(600.0)+1
-# 
-# DEPTH['shallow'][0:tk_1   ,:,:] = True
-# DEPTH['mid'    ][tk_1:tk_2,:,:] = True
-# DEPTH['deep'   ][tk_2:    ,:,:] = True
-
-
 
 
 Volume=np.zeros((jpk,jpj,jpi),dtype=np.double)
