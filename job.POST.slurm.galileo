@@ -21,6 +21,8 @@ export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bit.sea
 
 
 
+
+
 export OPA_HOME=TRANSITION_24
 
 export    MASKFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/meshmask.nc
