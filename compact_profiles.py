@@ -27,6 +27,7 @@ from commons.Timelist import TimeInterval,TimeList
 import netCDF4
 import numpy as np
 from commons import netcdf4
+from maskload import *
 import pickle,os
 from commons.utils import addsep
 try:
@@ -61,6 +62,19 @@ def get_info(filename):
     D.close()
     return VARLIST, nSub, nCoast, jpk, nStat
 
+
+FrameDesc   =""
+SubDescr    =""
+CoastDescr  =""
+DepthDescr  =""
+StatDescr   = "Mean, Std, min, p05, p25, p50, p75, p95, max"
+
+for i in TL.filelist       : FrameDesc  +=str(i).split('.')[1] + ", "
+for i in SUBlist           : SubDescr   +=str(i)               + ", "
+for i in COASTNESS_LIST    : CoastDescr +=str(i)               + ", "
+for i in DEPTHlist         : DepthDescr +=str(i)               + ", "
+
+
 VARLIST, nSub, nCoast, jpk, nStat =get_info(TL.filelist[0])
 
 for var in VARLIST[rank::nranks]:
@@ -70,8 +84,8 @@ for var in VARLIST[rank::nranks]:
     for iFrame, filename in enumerate(TL.filelist):
         A = netcdf4.readfile(filename, var)
         A[A==0]=np.nan
-        TIMESERIES[iFrame,:,:,:,:] = A 
-    
+        TIMESERIES[iFrame,:,:,:,:] = A
+        
     L = [TIMESERIES,TL]
     fid = open(outfile,"wb")
     pickle.dump(L, fid) 
@@ -85,5 +99,11 @@ for var in VARLIST[rank::nranks]:
     
     ncvar=ncOUT.createVariable(var,'f',('nFrames','nSub','nCoast','depth', 'nStat'))
     ncvar[:] =TIMESERIES
-    
+
+    setattr(ncOUT,"frame_list"  ,  FrameDesc)
+    setattr(ncOUT,"sub___list"  ,  SubDescr[:-2])
+    setattr(ncOUT,"coast_list"  ,CoastDescr[:-2])
+    setattr(ncOUT,"depth_list"  ,DepthDescr[:-2])
+    setattr(ncOUT,"stat__list"  , StatDescr    )
+
     ncOUT.close()
