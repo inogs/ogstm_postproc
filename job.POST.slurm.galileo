@@ -37,7 +37,7 @@ MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
         TMPS=$OUTDIR/TMPS
   CHLSUP_DIR=$OUTDIR/CHL_SUP
 
-
+# TODO: python timelist_generator.py -l ave*N1p.nc -i $MODEL_AVEDIR -o $OUTDIR/STAT_PROFILES/
 mpirun python var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE
 mpirun python aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $TMP_DIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s # -p punti.dat
 
@@ -88,82 +88,5 @@ mkdir -p $OUTPUTDIR
 for var in N1p N3n ppn ; do
  mpirun -np 24 python monthly_averager.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v $var
 done
-
-#################################################
-
-# general use of compress.py or uncompress.py
-
-ARCHIVE_DIR=/pico/scratch/userexternal/ddelross/eas2_v6_out/
-UNZIPPED_DIR=/pico/scratch/userexternal/plazzari/eas2_v6/FORCINGS/UNZIPPED/
-mpirun python uncompress.py -i $ARCHIVE_DIR -o $UNZIPPED_DIR -l *20141*gz
-mpirun python compress.py -i $ARCHIVE_DIR -o $ARCHIVE_DIR -l ave*nc  --erase
-date
-
-
-# general ARCHIVE procedure
-
-
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
-mkdir $INPUTDIR/zipped
-mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *nc
-TARDIR=$ARCHIVE_DIR/tar
-mkdir -p $TARDIR
-#ls ave.201001* | cut -d "." -f 3 > allvarlist.txt
-mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v allvarlist.txt
-date
-
-
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
-mkdir $INPUTDIR/zipped
-mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *nc
-TARDIR=$ARCHIVE_DIR/tar
-mkdir -p $TARDIR
-mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v HF_varlist.txt
-date
-
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
-mkdir $INPUTDIR/zipped
-mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *nc
-TARDIR=$ARCHIVE_DIR/tar
-mkdir -p $TARDIR
-#ls *N1p.nc | cut -d "-" -f 1 > rsttimes
-mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v rsttimes
-date
-
-
-exit 0
-
-
-
-
-# PROCEDURA PER L'ARCHIVIAZIONE DEI DA files
-cd MODEL/RESTARTS
-
-mkdir -p links true_restarts/tosave
-for I in `ls `; do if [ -L $I ] ; then mv $I links ; fi done
-mv *-00:00:00* true_restarts/
-cd links
-rename  RST. RST.after. RST*nc
-
-cd ../../DA__FREQ_1
-mkdir -p links
-for I in `ls `; do if [ -L $I ] ; then mv $I links ; fi done
-rename RST. RST.before. RST*nc
-mv ../RESTARTS/links/RST.after* .
-
-
-
-mpirun python compress.py -i $DA__FREQ_1 -o $DA__FREQ_1 -l *nc
-rm -f *nc
-ls chl.*nc | cut -c 5-12 > daTimes  # dates with yyyymmdd
-mpirun python packDA.py -i $DA__FREQ_1 -o $TARDIR -v daTimes
-
-
-RESTARTS=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/true_restarts/tosave
-mpirun python compress.py -i $RESTARTS -o $RESTARTS -l *nc
-TARDIR=$RESTARTS/tar
-mkdir $TARDIR
-mpirun python packDA.py -i $RESTARTS -o $TARDIR -v rst_times.txt
-
 
 
