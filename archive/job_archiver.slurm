@@ -3,8 +3,8 @@
 #SBATCH --job-name=DREScopy
 #SBATCH -N1 -n 1
 #SBATCH --time=3:00:00
-#SBATCH --account=OGS_dev_0
-#SBATCH --partition=bdw_all_serial
+#SBATCH --account=OGS_dev_1
+#SBATCH --partition=gll_all_serial
 
 cd $SLURM_SUBMIT_DIR
 date

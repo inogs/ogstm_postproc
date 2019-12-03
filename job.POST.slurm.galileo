@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=36
 #SBATCH --time=0:30:00
 #SBATCH --mem=100gb
-#SBATCH --account=OGS18_PRACE_P_0
+#SBATCH --account=OGS20_PRACE_P
 #SBATCH --partition=gll_usr_prod
 
 cd $SLURM_SUBMIT_DIR
@@ -16,8 +16,8 @@ module load intel/pe-xe-2018--binary intelmpi/2018--binary
 module load autoload
 module load hdf5/1.8.18--intel--pe-xe-2018--binary netcdf/4.6.1--intel--pe-xe-2018--binary
 module load mpi4py/3.0.0--intelmpi--2018--binary
-source /gpfs/work/OGS18_PRACE_P_0/COPERNICUS/py_env_2.7.12/bin/activate
-export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bit.sea
+source /gpfs/work/OGS20_PRACE_P/COPERNICUS/py_env_2.7.12/bin/activate
+export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS20_PRACE_P/COPERNICUS/bit.sea
 
 
 
