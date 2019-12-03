@@ -60,7 +60,7 @@ if [ $ANS -eq 0 ] ; then
    rm -rf ${ZIPPED_DIR}
    echo "${INPUT_RSTDIR} can be removed"
 else
-   echo "Error in tar generation of ${ZIPPED_AVEDIR}"
+   echo "Error in tar generation of ${ZIPPED_DIR}"
    exit 1
 fi
 date
