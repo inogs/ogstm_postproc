@@ -19,7 +19,12 @@ def argument():
                                 type = str,
                                 default = "*.nc",
                                 help = 'ave*.N1p.nc')
-  
+    parser.add_argument(   '--cutlevel',"-c",
+                                required= False, 
+                                type = int,
+                                default = None,
+                                help = 'depth levels on output files')  
+ 
     return parser.parse_args()
 
 
@@ -95,14 +100,17 @@ def WRITE_AVE(inputfile, outfile,var):
     ncIN.close()
     ncOUT.close()
 
-def WRITE_RST_DA(inputfile, outfile,var):
+def WRITE_RST_DA(inputfile, outfile,var,jkcut=None):
     
     ncIN = netCDF4.Dataset(inputfile,"r")    
     ncOUT = netCDF4.Dataset(outfile,"w",format="NETCDF4")
-        
+
     DIMS=ncIN.dimensions
     for dimName,dimObj in DIMS.items():
-        ncOUT.createDimension(dimName,dimObj.size)
+        if ((jkcut is not None ) & (dimName=="z")) :
+            ncOUT.createDimension(dimName,jkcut)
+        else:
+            ncOUT.createDimension(dimName,dimObj.size)
 
     if not DIMS.has_key('time'):
         ncOUT.createDimension('time',1)
@@ -110,9 +118,14 @@ def WRITE_RST_DA(inputfile, outfile,var):
     ncvar = ncOUT.createVariable("TRN" + var, 'f', dims ,zlib=True, fill_value=1.0e+20)
     setattr(ncvar,'missing_value',ncvar._FillValue)
     if var in ncIN.variables:
-        ncvar[:] = np.array(ncIN[var])
+        x=np.array(ncIN[var])
     else:
-        ncvar[:] = np.array(ncIN["TRN" + var])
+        x=np.array(ncIN["TRN" + var])
+
+    if (len(x.shape)==4):
+        ncvar[:] = np.array(ncIN[var])[:,:jkcut,:,:]
+    else:
+        ncvar[0,:] = np.array(ncIN[var])[:jkcut,:,:]
     ncIN.close()
     ncOUT.close()
 
@@ -144,9 +157,9 @@ for filename in FILELIST[rank::nranks]:
         WRITE_AVE(filename, outfile, var)
     if prefix == "RST":
         if datestr.count("0000"):
-            WRITE_RST_DA(filename, outfile, var)
+            WRITE_RST_DA(filename, outfile, var, args.cutlevel)
         else:
             WRITE_RST(filename, outfile, var)
-    if prefix in ["RST_after", "RST_before"]:
-        WRITE_RST_DA(filename, outfile, var)
+    if prefix in ["RST_after", "RSTbefore"]:
+        WRITE_RST_DA(filename, outfile, var, args.cutlevel)
 
