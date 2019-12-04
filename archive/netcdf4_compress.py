@@ -30,7 +30,7 @@ import numpy as np
 import os
 from commons.utils import addsep
 import glob
-
+from commons.netcdf4 import lon_dimension_name, lat_dimension_name, depth_dimension_name
 
 try:
     from mpi4py import MPI
@@ -106,7 +106,8 @@ def WRITE_RST_DA(inputfile, outfile,var):
 
     if not DIMS.has_key('time'):
         ncOUT.createDimension('time',1)
-    ncvar = ncOUT.createVariable("TRN" + var, 'f', ('time','z','y','x'),zlib=True, fill_value=1.0e+20)
+    dims=('time',depth_dimension_name(ncIN),lat_dimension_name(ncIN) ,lon_dimension_name(ncIN))
+    ncvar = ncOUT.createVariable("TRN" + var, 'f', dims ,zlib=True, fill_value=1.0e+20)
     setattr(ncvar,'missing_value',ncvar._FillValue)
     if var in ncIN.variables:
         ncvar[:] = np.array(ncIN[var])
@@ -146,5 +147,6 @@ for filename in FILELIST[rank::nranks]:
             WRITE_RST_DA(filename, outfile, var)
         else:
             WRITE_RST(filename, outfile, var)
-
+    if prefix in ["RST_after", "RST_before"]:
+        WRITE_RST_DA(filename, outfile, var)
 
