@@ -99,7 +99,7 @@ rename RST. RST.before. RST*nc
 mv ../RESTARTS/links/RST.after* .
 
 
-
+mpirun python netcdf4_compress.py -i $DA__FREQ_1 -o $DA__FREQ_1/gz -l RSTbefore* -c 60 # because RSTbefore are on jpk
 mpirun python compress.py -i $DA__FREQ_1 -o $DA__FREQ_1 -l *nc
 rm -f *nc
 ls chl.*nc | cut -c 5-12 > daTimes  # dates with yyyymmdd
