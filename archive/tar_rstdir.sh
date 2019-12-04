@@ -33,7 +33,7 @@ mkdir -p $OUTPUT_TARDIR
 
 date
 echo "Start compression"
-mpirun -np $NCPUS python compress.py -i ${INPUT_RSTDIR} -o ${ZIPPED_DIR} -l RST*nc
+mpirun -np $NCPUS python netcdf4_compress.py -i ${INPUT_RSTDIR} -o ${ZIPPED_DIR} -l RST*nc
 ANS=$?
 
 if [ $ANS -eq 0 ] ; then
