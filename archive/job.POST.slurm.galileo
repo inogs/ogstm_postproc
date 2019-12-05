@@ -86,23 +86,16 @@ exit 0
 # PROCEDURA PER L'ARCHIVIAZIONE DEI DA files
 cd MODEL/RESTARTS
 
-mkdir -p links true_restarts/tosave
-for I in `ls `; do if [ -L $I ] ; then mv $I links ; fi done
-mv *-00:00:00* true_restarts/
-cd links
-rename  RST. RST.after. RST*nc
 
-cd ../../DA__FREQ_1
+cd DA__FREQ_1
 mkdir -p links
 for I in `ls `; do if [ -L $I ] ; then mv $I links ; fi done
-rename RST. RST.before. RST*nc
-mv ../RESTARTS/links/RST.after* .
-
 
 mpirun python netcdf4_compress.py -i $DA__FREQ_1 -o $DA__FREQ_1/gz -l RSTbefore* -c 60 # because RSTbefore are on jpk
 mpirun python compress.py -i $DA__FREQ_1 -o $DA__FREQ_1 -l *nc
 rm -f *nc
 ls chl.*nc | cut -c 5-12 > daTimes  # dates with yyyymmdd
+cat MODEL/daTimes | cut -c 1-8 | uniq > daTimes # in case of multivariate
 mpirun python packDA.py -i $DA__FREQ_1 -o $TARDIR -v daTimes
 
 
