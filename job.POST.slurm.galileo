@@ -48,9 +48,7 @@ if [ $ANS == 0 ] ; then
    rm -f tmp.*
    cd $SLURM_SUBMIT_DIR
 fi
-python compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/
-
-#mpirun python compress.py -i $ARCHIVE_DIR -o $ARCHIVE_DIR -l ave*nc  --erase
+mpirun python compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/
 
 
 ########  LOW FREQUENCY ######################################################
