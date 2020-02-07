@@ -123,9 +123,9 @@ def WRITE_RST_DA(inputfile, outfile,var,jkcut=None):
         x=np.array(ncIN["TRN" + var])
 
     if (len(x.shape)==4):
-        ncvar[:] = np.array(ncIN[var])[:,:jkcut,:,:]
+        ncvar[:] = x[:,:jkcut,:,:]
     else:
-        ncvar[0,:] = np.array(ncIN[var])[:jkcut,:,:]
+        ncvar[0,:] = x[:jkcut,:,:]
     ncIN.close()
     ncOUT.close()
 
