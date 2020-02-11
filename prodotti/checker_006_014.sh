@@ -2,6 +2,25 @@
 
 CHECKFOR=daily
 
+function dataset_substr {
+   filename=$1
+   basenamefile=$( basename $filename )
+   echo ${basenamefile:16:4}
+}
+
+function get_dataset {
+   parameter=$1
+   case $parameter in
+   BIOL) DATASET=med00-ogs-bio-an-fc-d ;;
+   CARB) DATASET=med00-ogs-car-an-fc-d ;;
+   NUTR) DATASET=med00-ogs-nut-an-fc-d ;;
+   PFTC) DATASET=med00-ogs-pft-an-fc-d ;;
+   CO2F) DATASET=med00-ogs-co2-an-fc-d ;;
+   *)  echo "ERROR"; exit 1 ;;
+   esac
+   echo $DATASET
+}
+
 if [ $CHECKFOR == monthly ] ; then
 function print_file_attr {
   basenamefile=$( basename ${1} )
@@ -21,17 +40,14 @@ function print_file_attr {
 else
 
 function print_file_attr {
-  basenamefile=$( basename ${1} )
-  [[ $basenamefile == *BIOL* ]] && DATASET=med-ogs-bio-an-fc-d
-  [[ $basenamefile == *CARB* ]] && DATASET=med-ogs-car-an-fc-d
-  [[ $basenamefile == *NUTR* ]] && DATASET=med-ogs-nut-an-fc-d
-  [[ $basenamefile == *PFTC* ]] && DATASET=med-ogs-pft-an-fc-d
-  [[ $basenamefile == *CO2F* ]] && DATASET=med-ogs-co2-an-fc-d
-  
+  filename=$1
+  dataset_substring=`dataset_substr $filename`
+  DATASET=`get_dataset $dataset_substring`
+
   echo ""
   echo "PRODUCT MEDSEA_ANALYSIS_FORECAST_BIO_006_014"
   echo "Dataset: $DATASET"
-  echo "File: $basenamefile"
+  echo "File: " $( basename $1 )
 
 }
 
@@ -80,8 +96,10 @@ function ncattget {
 ncks -M -m ${3} | grep ${2} | grep ${1} | awk '{print $3}' | cut -d "f" -f 1
 }
 
-DIR=/gpfs/scratch/userexternal/gbolzon0/OPEN_BOUNDARY/TEST_07/wrkdir/POSTPROC/output/AVE_FREQ_1/PROD  #MONTHLY/
-TIME_TO_CHECK=20190101
+
+PIT=CMEMS-PIT-MED-202003.xlsx
+DIR=/marconi_scratch/userexternal/gbolzon0/PROD/PRODOTTI/
+TIME_TO_CHECK=20180101
 
 
 
@@ -99,11 +117,11 @@ done
 
 echo "#####  PU_IT_TF_DatasetTitle "
 for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
- print_file_attr $filename
- title_check $filename
+  dataset_substring=`dataset_substr $filename`
+  DATASET=`get_dataset $dataset_substring`
+  #python check_title.py -f $filename -p $PIT -d $DATASET
 done
 
- 
 
 echo "#####  PU_IT_TF_VarDimension   "
 for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
