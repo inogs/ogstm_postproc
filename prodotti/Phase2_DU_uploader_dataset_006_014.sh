@@ -40,19 +40,19 @@ RUNDATE=20180313
 FILES_TO_SEND="${YEAR}*${type}*.nc"
 
 if [[ "$type" == "BIOL" ]]; then
-   dataset=med-ogs-bio-an-fc-d_201904
+   dataset=med00-ogs-bio-an-fc-d_202003
 fi
 if [[ "$type" == "CARB" ]]; then
-   dataset=med-ogs-car-an-fc-d_201904
+   dataset=med00-ogs-car-an-fc-d_202003
 fi
 if [[ "$type" == "NUTR" ]]; then
-   dataset=med-ogs-nut-an-fc-d_201904
+   dataset=med00-ogs-nut-an-fc-d_202003
 fi
 if [[ "$type" == "PFTC" ]]; then
-   dataset=med-ogs-pft-an-fc-d_201904
+   dataset=med00-ogs-pft-an-fc-d_202003
 fi
 if [[ "$type" == "CO2F" ]]; then
-   dataset=med-ogs-co2-an-fc-d_201904
+   dataset=med00-ogs-co2-an-fc-d_202003
 fi
 
 

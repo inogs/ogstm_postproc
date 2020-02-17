@@ -3,9 +3,9 @@
 HOST=nrt.cmems-du.eu
 PRODUCT=MEDSEA_ANALYSIS_FORECAST_BIO_006_014
 
-for YEAR in $(seq 2017 2022 ) ; do
+for YEAR in $(seq 2017 2023 ) ; do
 	for group in bio car nut pft co2 ; do
-	    dataset=med-ogs-${group}-an-fc-d_201904
+	    dataset=med00-ogs-${group}-an-fc-d_202003
 		/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bin/ncftp -P 21 -u cmems_med_ogs -p 9J2e+uLU $HOST <<EOF
 cd /${PRODUCT}/${dataset}
 mkdir ${YEAR}
