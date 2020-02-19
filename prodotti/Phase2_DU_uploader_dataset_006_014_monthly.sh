@@ -82,7 +82,7 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
     yyyy=${basefile:0:4}
       mm=${basefile:4:2}
     remotedir=/${product}/${dataset}/$yyyy  #/$mm
-    remotefile="${basefile}"
+    remotefile="${yyyy}/${basefile}"
     md5s=`md5sum $file|awk '{print $1}'`
 	StarTime=`date --utc +%Y%m%dT%H%M%SZ`
 	EndTime=${StarTime}
