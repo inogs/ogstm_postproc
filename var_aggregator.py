@@ -41,6 +41,10 @@ def argument():
     parser.add_argument(   '--maskfile',"-m",
                                 type = str,
                                 help = '''Path of the mask file''')
+    parser.add_argument(   '--serial', '-s',
+                                action='store_true',
+                                help = """Serial mode. No use of mpi4py.
+                                """)
 
     return parser.parse_args()
 
@@ -52,14 +56,18 @@ import GB_lib as G
 import read_descriptor
 from commons.mask import Mask
 
-try :
-    from mpi4py import MPI
-    comm  = MPI.COMM_WORLD
-    rank  = comm.Get_rank()
-    nranks = comm.size 
-except:
+if args.serial:
     rank   = 0
     nranks = 1
+else:
+    try:
+        from mpi4py import MPI
+        comm  = MPI.COMM_WORLD
+        rank  = comm.Get_rank()
+        nranks = comm.size
+    except:
+        raise ValueError("mpi4py not found; use the -s flag to force serial execution")
+
 
 def addsep(string):    
     if string[-1] != os.sep:
