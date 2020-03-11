@@ -23,37 +23,57 @@ fi
 for I in 1 2 3 ; do
    case $1 in
       "-i" ) PROD_DIR=$2;;
-      "-t" ) type=$2;;
+      "-t" ) TYPE=$2;;
       "-y" ) YEAR=$2;;
         *  ) echo "Unrecognized option $1." ; usage;  exit 1;;
    esac
    shift 2
 done
 
+function decide_action {
+   # arg1 = local product file
+   # arg2 = remote product file
+   # returns in the exit_status a code for the actions to do
+
+   # 1 means nothing to do
+   # 2 means send
+   # 3 means send and delete
+   # 4 means error
+
+   local_file=$1
+   remotefile=$2
+
+   remotebul_time=${remotefile:34:8}
+       remotetype=${remotefile:43:2}
+   local_bul_time=${local_file:34:8}
+       local_type=${local_file:43:2}
+
+   if [[ $remotefile == $local_file ]]   ; then return 1 ; fi
+   if [[ $remotefile == "" ]]            ; then return 2 ; fi
+
+   if ( [[ $remotetype == fc ]] || [[ $remotetype == sm ]]  ) && [[ $local_type == an ]] ; then return 3 ; fi
+   if [[ $remotetype == fc ]] && [[ $local_type == sm ]]                                 ; then return 3 ; fi
+   if [[ $remotetype == an ]] && ( [[ $local_type == sm ]] || [[ $local_type == fc ]] )  ; then return 4 ; fi
+   if [[ $remotetype == sm ]] && [[ $local_type == fc ]]                                 ; then return 4 ; fi
+
+   if [[ $local_bul_time > $remotebul_time ]]                                            ; then return 3 ; fi
+   if [[ $remotetype == $local_type ]] && [[ $local_bul_time < $remotebul_time ]]        ; then return 4 ; fi
+
+}
+
 
 BINDIR=/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bin/
+FILES_TO_SEND="${YEAR}*${TYPE}*.nc"
 
-ARCHIVE_DIR=/marconi/home/usera07ogs/a07ogs00/OPA/V3C/archive/
-#
-RUNDATE=20180313
 
-FILES_TO_SEND="${YEAR}*${type}*.nc"
-
-if [[ "$type" == "BIOL" ]]; then
-   dataset=med00-ogs-bio-an-fc-d_202003
-fi
-if [[ "$type" == "CARB" ]]; then
-   dataset=med00-ogs-car-an-fc-d_202003
-fi
-if [[ "$type" == "NUTR" ]]; then
-   dataset=med00-ogs-nut-an-fc-d_202003
-fi
-if [[ "$type" == "PFTC" ]]; then
-   dataset=med00-ogs-pft-an-fc-d_202003
-fi
-if [[ "$type" == "CO2F" ]]; then
-   dataset=med00-ogs-co2-an-fc-d_202003
-fi
+case $TYPE in
+   "BIOL" ) dataset=med00-ogs-bio-an-fc-d_202003 ;;
+   "CARB" ) dataset=med00-ogs-car-an-fc-d_202003 ;;
+   "NUTR" ) dataset=med00-ogs-nut-an-fc-d_202003 ;;
+   "PFTC" ) dataset=med00-ogs-nut-an-fc-d_202003 ;;
+   "CO2F" ) dataset=med00-ogs-co2-an-fc-d_202003 ;;
+   * )  echo Wrong type ; usage; exit 1 ;;
+esac
 
 
 PushingEntity="MED-OGS-TRIESTE-IT"
@@ -62,7 +82,7 @@ PushingEntity="MED-OGS-TRIESTE-IT"
 product=MEDSEA_ANALYSIS_FORECAST_BIO_006_014
 username=cmems_med_ogs
 password=9J2e+uLU
-host=nrt.cmems-du.eu
+host=nrt-dev.cmems-du.eu
 logDir=. #log
 port=21
 ###
@@ -78,9 +98,23 @@ echo "    <dataset DatasetName=\"${dataset}\">" >> $DNT_FILE
 
 
 for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
+
+
     basefile=`basename $file `
     yyyy=${basefile:0:4}
       mm=${basefile:4:2}
+     day=${basefile:0:8}
+
+    # -------------------------------------
+    remote_name=`./get_daily_product_in_DU.sh -d $day -t $TYPE `
+    decide_action $basefile $remote_name
+    ACTION=$?
+    # -------------------------------------
+
+ case $ACTION in
+   1) echo "$basfile already in DU" ;;
+   2|3) echo "$basefile has to be sent"
+    if [ $ACTION -eq 3 ]; then echo " and $remote_name will be removed "; fi
     remotedir=/${product}/${dataset}/$yyyy/$mm
     remotefile="${yyyy}/${mm}/${basefile}"
     md5s=`md5sum $file|awk '{print $1}'`
@@ -88,12 +122,10 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
 	EndTime=${StarTime}
 	NumberOfAttempts=1
 	errCod=0
-	to_remove_file=$( python rolling_archive.py -p $basefile -d $RUNDATE -g $type -a $ARCHIVE_DIR )
-	echo "python rolling_archive.py -p $basefile -d $RUNDATE -g $type -a $ARCHIVE_DIR"
-	if [ ${to_remove_file} != "None"  ] ; then
-	    DELETE_STR="<file FileName=\"${to_remove_file}\" > <KeyWord>Delete</KeyWord> </file>"
-	fi
 	
+	to_remove_file=/$yyyy/$mm/$remote_name
+	DELETE_STR="<file FileName=\"${to_remove_file}\" > <KeyWord>Delete</KeyWord> </file>"
+
 	TOTAL_RESEND_STR= 
    
 	for i in `seq 1 10`;do
@@ -130,18 +162,24 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
 	fi
 	FINAL_STR="<file FileName=\"${remotefile}\" StartUploadTime=\"${StarTime}\"  StopUploadTime=\"${EndTime}\" Checksum=\"${md5s}\"  FinalStatus=\"${status}\"${close}>"
 	echo "             $FINAL_STR" >> $DNT_FILE
-	if [ $status == Delivered ] && [ ${to_remove_file} != "None"  ] ; then 
+	if [ $status == Delivered ] && [ $ACTION -eq 3 ] ; then
 	    echo "             $DELETE_STR"  >> $DNT_FILE
 	fi
 	
-	
+
 	if [ ${NumberOfAttempts} -ne 1 ]; then
 	  close=""
 	  RESEND_STR="<resendAttempt DueToErrorCode=\"${lastErrCod}\" DueToErrorMsg=\"${lastError}\" NumberOfAttempts=\"${NumberOfAttempts}\"/>"
 	  echo "                         $RESEND_STR" >> $DNT_FILE
 	  echo "                </file>" >> $DNT_FILE
 	fi
+    ;;
 
+   4) echo "ERROR in send algorithm "
+      echo "You are trying to replace: a product with a lower quality one"
+      ;;
+   *) echo "wrong decide_action exit status"; exit 1 ;;
+ esac
 
 done
 
