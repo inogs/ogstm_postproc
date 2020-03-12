@@ -82,7 +82,7 @@ PushingEntity="MED-OGS-TRIESTE-IT"
 product=MEDSEA_ANALYSIS_FORECAST_BIO_006_014
 username=cmems_med_ogs
 password=9J2e+uLU
-host=nrt-dev.cmems-du.eu
+host=nrt.cmems-du.eu
 logDir=. #log
 port=21
 ###
@@ -96,6 +96,7 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" >  $DNT_FILE
 echo "<delivery product=\"${product}\" PushingEntity=\"${PushingEntity}\" date=\"${DntTime}\">" >> $DNT_FILE
 echo "    <dataset DatasetName=\"${dataset}\">" >> $DNT_FILE
 
+upload_xml=False
 
 for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
 
@@ -112,8 +113,9 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
     # -------------------------------------
 
  case $ACTION in
-   1) echo "$basfile already in DU" ;;
+   1) echo "$basefile already in DU" ;;
    2|3) echo "$basefile has to be sent"
+    upload_xml=True
     if [ $ACTION -eq 3 ]; then echo " and $remote_name will be removed "; fi
     remotedir=/${product}/${dataset}/$yyyy/$mm
     remotefile="${yyyy}/${mm}/${basefile}"
@@ -126,7 +128,6 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
 	to_remove_file=/$yyyy/$mm/$remote_name
 	DELETE_STR="<file FileName=\"${to_remove_file}\" > <KeyWord>Delete</KeyWord> </file>"
 
-	TOTAL_RESEND_STR= 
    
 	for i in `seq 1 10`;do
 
@@ -185,3 +186,9 @@ done
 
 echo "    </dataset>"  >> $DNT_FILE
 echo "</delivery>" >> $DNT_FILE
+
+if [ $upload_xml == "True" ] ; then
+   echo "Now upload $DNT_FILE"
+else
+   echo "Don't upload $DNT_FILE"
+fi
