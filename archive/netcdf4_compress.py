@@ -107,7 +107,7 @@ def WRITE_RST_DA(inputfile, outfile,var,jkcut=None):
 
     DIMS=ncIN.dimensions
     for dimName,dimObj in DIMS.items():
-        if ((jkcut is not None ) & (dimName=="z")) :
+        if ((jkcut is not None ) & (dimName in ["z","depth"])) :
             ncOUT.createDimension(dimName,jkcut)
         else:
             ncOUT.createDimension(dimName,dimObj.size)
