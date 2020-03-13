@@ -51,7 +51,7 @@ case $TYPE in
    "BIOL" ) dataset=med00-ogs-bio-an-fc-d ;;
    "CARB" ) dataset=med00-ogs-car-an-fc-d ;;
    "NUTR" ) dataset=med00-ogs-nut-an-fc-d ;;
-   "PFTC" ) dataset=med00-ogs-nut-an-fc-d ;;
+   "PFTC" ) dataset=med00-ogs-pft-an-fc-d ;;
    "CO2F" ) dataset=med00-ogs-co2-an-fc-d ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac   

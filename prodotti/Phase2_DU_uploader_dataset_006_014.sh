@@ -70,7 +70,7 @@ case $TYPE in
    "BIOL" ) dataset=med00-ogs-bio-an-fc-d_202003 ;;
    "CARB" ) dataset=med00-ogs-car-an-fc-d_202003 ;;
    "NUTR" ) dataset=med00-ogs-nut-an-fc-d_202003 ;;
-   "PFTC" ) dataset=med00-ogs-nut-an-fc-d_202003 ;;
+   "PFTC" ) dataset=med00-ogs-pft-an-fc-d_202003 ;;
    "CO2F" ) dataset=med00-ogs-co2-an-fc-d_202003 ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac
