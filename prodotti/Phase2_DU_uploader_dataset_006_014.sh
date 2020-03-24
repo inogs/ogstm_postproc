@@ -163,9 +163,9 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
 	fi
 	FINAL_STR="<file FileName=\"${remotefile}\" StartUploadTime=\"${StarTime}\"  StopUploadTime=\"${EndTime}\" Checksum=\"${md5s}\"  FinalStatus=\"${status}\"${close}>"
 	echo "             $FINAL_STR" >> $DNT_FILE
-	if [ $status == Delivered ] && [ $ACTION -eq 3 ] ; then
-	    echo "             $DELETE_STR"  >> $DNT_FILE
-	fi
+    if [ $status == Delivered ] && [ $ACTION -eq 3 ] ; then
+        echo "             $DELETE_STR"  >> $DNT_FILE
+    fi
 	
 
 	if [ ${NumberOfAttempts} -ne 1 ]; then
