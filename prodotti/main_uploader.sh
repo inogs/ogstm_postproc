@@ -1,5 +1,6 @@
 #! /bin/bash
 
+PATH=$PATH:/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bin/
 PROD_DIR=/gpfs/scratch/userexternal/gbolzon0/OPEN_BOUNDARY/TEST_07/wrkdir/POSTPROC/bin_prod/prodotti/REAN_PRODS
 
 YEAR=2015
