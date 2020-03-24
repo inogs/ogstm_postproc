@@ -131,7 +131,7 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
    
 	for i in `seq 1 10`;do
 
-   		  stderr=$( $BINDIR/ncftpput -P $port -u $username -p $password -T .tmp. $host $remotedir ${file} 2>&1 >/dev/tty )
+                  stderr=$( $BINDIR/ncftpput -P $port -u $username -p $password -T .tmp. $host $remotedir ${file} 2>&1 )
 		  errCod=$?
 
 		  if [ ${errCod} -eq 0 ];then
