@@ -47,7 +47,7 @@ function decide_action {
    local_bul_time=${local_file:34:8}
    local_type=${local_file:43:2}
    
-   if [[ $local_type == fc ]] || [[ $local_type == sm ]]  ; return 4 ; fi 
+   if [[ $local_type == fc ]] || [[ $local_type == sm ]]  ; then return 4 ; fi
    if [[ $remotefile == $local_file ]]   ; then return 1 ; fi
    if [[ $remotefile == "" ]]            ; then return 2 ; fi
 
