@@ -117,7 +117,7 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
 	NumberOfAttempts=1
 	errCod=0
 
-    to_remove_file=/$yyyy/$remote_name
+    to_remove_file=$yyyy/$remote_name
 	DELETE_STR="<file FileName=\"${to_remove_file}\" > <KeyWord>Delete</KeyWord> </file>"
 
    
