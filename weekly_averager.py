@@ -1,4 +1,4 @@
-from commons.Timelist import TimeInterval, TimeList
+from commons.Timelist import TimeList
 from commons.mask import Mask
 from commons.time_averagers import TimeAverager3D, TimeAverager2D
 import netCDF4 as NC
@@ -22,9 +22,7 @@ OUTPUTDIR="/marconi_scratch/userexternal/gbolzon0/TRANSITION_24/CFR/EAS2/AVE_FRE
 
 TheMask=Mask('/marconi_scratch/userexternal/gbolzon0/TRANSITION_24/wrkdir/MODEL/meshmask.nc')
 
-TI = TimeInterval("20160101","20180101","%Y%m%d")
-
-TL=TimeList.fromfilenames(TI, INPUTDIR, "ave*nc", filtervar="N3n")
+TL=TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar="N3n")
 
 
 

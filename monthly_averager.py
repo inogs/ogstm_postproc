@@ -33,7 +33,7 @@ def argument():
 
 args = argument()
 
-from commons.Timelist import TimeInterval, TimeList
+from commons.Timelist import TimeList
 from commons.mask import Mask
 from commons.time_averagers import TimeAverager3D, TimeAverager2D
 import netCDF4 as NC
@@ -55,9 +55,7 @@ OUTPUTDIR=addsep(args.outdir)
 
 TheMask=Mask(args.maskfile)
 
-TI = TimeInterval("2015","2018","%Y")
-
-TL=TimeList.fromfilenames(TI, INPUTDIR, "ave*N1p.nc", filtervar="N1p")
+TL=TimeList.fromfilenames(None, INPUTDIR, "ave*N1p.nc", filtervar="N1p")
 
 var = args.var
 
