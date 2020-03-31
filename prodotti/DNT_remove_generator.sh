@@ -117,7 +117,7 @@ case $ACTION in
    1) echo "$day $TYPE not in DU" ;;
    2) echo "$remote_name has to be deleted"
       upload_xml=True
-      to_remove_file=$yyyy/$mm/$remote_name
+      to_remove_file=$yyyy/$remote_name
 	  DELETE_STR="<file FileName=\"${to_remove_file}\" > <KeyWord>Delete</KeyWord> </file>"
 	  echo "             $DELETE_STR"  >> $DNT_FILE
 	  ;;
