@@ -9,7 +9,8 @@
 
 
 usage() {
-echo "Uploads chain product files"
+echo "Generates DNT files for removing product files from DU"
+echo "Generated DNT removes both daily and associated monthly files"
 echo "SYNOPSYS"
 echo "DNT_remove_generator.sh  [ -y $YEAR ] [ -m $MONTH] [ -t TYPE ] "
 echo ""
@@ -97,6 +98,34 @@ for day in $DATELIST ; do
 done
 
 echo "    </dataset>"  >> $DNT_FILE
+
+########   Monthly Section     ###########
+
+case $TYPE in
+   "BIOL" ) dataset=med00-ogs-bio-an-fc-m_202003 ;;
+   "CARB" ) dataset=med00-ogs-car-an-fc-m_202003 ;;
+   "NUTR" ) dataset=med00-ogs-nut-an-fc-m_202003 ;;
+   "PFTC" ) dataset=med00-ogs-pft-an-fc-m_202003 ;;
+   "CO2F" ) dataset=med00-ogs-co2-an-fc-m_202003 ;;
+   * )  echo Wrong type ; usage; exit 1 ;;
+esac
+echo "    <dataset DatasetName=\"${dataset}\">" >> $DNT_FILE
+remote_name=`./get_monthly_product_in_DU.sh -d $yyyy$mm -t $TYPE`
+decide_action $remote_name
+ACTION=$?
+case $ACTION in
+   1) echo "$day $TYPE not in DU" ;;
+   2) echo "$remote_name has to be deleted"
+      upload_xml=True
+      to_remove_file=$yyyy/$mm/$remote_name
+	  DELETE_STR="<file FileName=\"${to_remove_file}\" > <KeyWord>Delete</KeyWord> </file>"
+	  echo "             $DELETE_STR"  >> $DNT_FILE
+	  ;;
+   3) echo "ERROR: only analysis files are supposed to be removable" ;;
+   *) echo "wrong decide_action exit status"; exit 1 ;;
+esac
+
+echo "    </dataset>"  >> $DNT_FILE
 echo "</delivery>" >> $DNT_FILE
 
 if [ $upload_xml == "True" ] ; then
@@ -104,3 +133,4 @@ if [ $upload_xml == "True" ] ; then
 else
    echo "Don't upload $DNT_FILE"
 fi
+
