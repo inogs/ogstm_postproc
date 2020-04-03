@@ -7,6 +7,7 @@
 #SBATCH --mem=100gb
 #SBATCH --account=OGS20_PRACE_P
 #SBATCH --partition=gll_usr_prod
+#SBATCH --qos=gll_qos_dbg
 
 cd $SLURM_SUBMIT_DIR
 
@@ -92,8 +93,14 @@ mkdir -p links
 for I in `ls `; do if [ -L $I ] ; then mv $I links ; fi done
 
 mpirun python netcdf4_compress.py -i $DA__FREQ_1 -o $DA__FREQ_1/gz -l RSTbefore* -c 60 # because RSTbefore are on jpk
-mpirun python compress.py -i $DA__FREQ_1 -o $DA__FREQ_1 -l *nc
-rm -f *nc
+mpirun python netcdf4_compress.py -i $DA__FREQ_1 -o $DA__FREQ_1/gz -l RST_after*
+mpirun python compress.py         -i $DA__FREQ_1 -o $DA__FREQ_1/gz -l [2cl]*nc # *corr.nc, limcorr.nc, chl*nc
+
+mv $DA__FREQ_1/*dat $DA__FREQ_1/gz
+mv $DA__FREQ_1/OceanVar* $DA__FREQ_1/gz
+
+
+# rm -f *nc
 ls chl.*nc | cut -c 5-12 > daTimes  # dates with yyyymmdd
 cat MODEL/daTimes | cut -c 1-8 | uniq > daTimes # in case of multivariate
 mpirun python packDA.py -i $DA__FREQ_1 -o $TARDIR -v daTimes
