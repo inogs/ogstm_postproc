@@ -38,7 +38,7 @@ done
 function ncftp_check {
 filename=$1
 
-HOST=nrt-dev.cmems-du.eu
+HOST=nrt.cmems-du.eu
 ncftp -P 21 -u MED_OGS_TRIESTE_IT -p NEdifupa $HOST <<EOF
 dir $filename
 EOF
