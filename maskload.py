@@ -96,15 +96,23 @@ SUBlist=[ sub.name for sub in OGS.P.basin_list ]
 if not submask_on_the_fly:
     mydtype = [(sub.name, np.bool) for sub in OGS.P.basin_list ]
     SUBM = np.zeros((jpk,jpj,jpi),dtype=mydtype)
-    for sub in SUBlist[:-1]:
-        index= SUBlist.index(sub)
-        basin = OGS.P.basin_list[index]
-        s=SubMask(basin,maskobject = TheMask)
-        SUBM[sub] = s.mask
-#  SUBM med is calculated as OR of all the others
-    for sub in OGS.Pred.basin_list:
-        SUBM['med']=(SUBM['med'] | SUBM[sub.name])
- 
+    if 'med' in SUBlist:
+        index_med=SUBlist.index('med')
+        for sub in SUBlist[:index_med]:
+            index= SUBlist.index(sub)
+            basin = OGS.P.basin_list[index]
+            s=SubMask(basin,maskobject = TheMask)
+            SUBM[sub] = s.mask
+    #  SUBM med is calculated as OR of all the others
+        for sub in OGS.Pred.basin_list:
+            SUBM['med']=(SUBM['med'] | SUBM[sub.name])
+    else:
+        for sub in SUBlist:
+            index= SUBlist.index(sub)
+            basin = OGS.P.basin_list[index]
+            s=SubMask(basin,maskobject = TheMask)
+            SUBM[sub] = s.mask
+
 
 def SUB(sub):
     ''' sub is a string '''
