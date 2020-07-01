@@ -98,8 +98,9 @@ if not submask_on_the_fly:
     SUBM = np.zeros((jpk,jpj,jpi),dtype=mydtype)
     if 'med' in SUBlist:
         index_med=SUBlist.index('med')
-        for sub in SUBlist[:index_med]:
+        for sub in SUBlist:
             index= SUBlist.index(sub)
+            if index==index_med: continue
             basin = OGS.P.basin_list[index]
             s=SubMask(basin,maskobject = TheMask)
             SUBM[sub] = s.mask
