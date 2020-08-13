@@ -20,9 +20,16 @@
 <var name="pH"  ></var>
 <var name="pCO2"></var>
 
-<var name="R2c" ></var>
-<var name="R6c" ></var>
 <var name="ruPPYc" ></var>
+
+<var name="R1c" ></var>
+<var name="R1n" ></var>
+<var name="R1p" ></var>
+<var name="R2c" ></var>
+<var name="R3c" ></var>
+<var name="R6c" ></var>
+
+<var name="O5c" ></var>
 
 </native>
 
