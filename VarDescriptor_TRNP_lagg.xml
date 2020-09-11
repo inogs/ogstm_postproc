@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+<vars_for_All_Statistics description="point profiles, subbasin statistic profiles, volume integrals">
+
+<native>
+</native>
+
+<aggregate>
+
+<aggvar name="TRNP_l" formula="TRNP_l = TRNP1l + TRNP2l + TRNP3l + TRNP4l" > </aggvar>
+<aggvar name="TRNP_c" formula="TRNP_c = TRNP1c + TRNP2c + TRNP3c + TRNP4c" > </aggvar>
+<aggvar name="TRNP_n" formula="TRNP_n = TRNP1n + TRNP2n + TRNP3n + TRNP4n" > </aggvar>
+<aggvar name="TRNP_p" formula="TRNP_p = TRNP1p + TRNP2p + TRNP3p + TRNP4p" > </aggvar>
+<aggvar name="TRNP_s" formula="TRNP_s = TRNP1s " > </aggvar>
+
+</aggregate>
+</vars_for_All_Statistics>
+
+
+
+<var_for_Some_Statistics>
+</var_for_Some_Statistics>
+
+
+<toArchive>
+</toArchive>
+
+
+<var2D>
+<vars_for_All>
+<native>
+</native>
+</vars_for_All>
+</var2D>
+
+</root>
+

@@ -161,7 +161,10 @@ def WriteAggregateAvefiles(mask, N1pfile,INPUT_AVEDIR, AGGREGATE_AVEDIR, OUTDIR,
     for formula in VarDescriptor.AGGR_FORMULAS:
         LS, RS, aggrlist = recognize_terms(formula)
         var=LS
-        outfile = OUTDIR + F.prefix + "." + F.datestr + "." + var + ".nc"
+        if var.find('TRN')>-1:
+            avevar = var[var.find('TRN')+3:]
+        else: avevar = var
+        outfile = OUTDIR + F.prefix + "." + F.datestr + "." + avevar + ".nc"
         ncOUT=NC.netcdf_file(outfile,"w")
         setattr(ncOUT,"Convenctions","COARDS")
         ncOUT.createDimension('time',  1)
@@ -182,9 +185,12 @@ def WriteAggregateAvefiles(mask, N1pfile,INPUT_AVEDIR, AGGREGATE_AVEDIR, OUTDIR,
 
         ncvar=ncOUT.createVariable(var,'f',('time','depth','lat','lon'))
         for lvar in aggrlist:
+            if lvar.find('TRN')>-1:
+                avevar = lvar[lvar.find('TRN')+3:]
+            else: avevar = lvar
             #avefile=getfileForRead(N1pfile, lvar)
-            avefile = F.get_filename(N1pfile, lvar, INPUT_AVEDIR, AGGREGATE_AVEDIR)
-            DE = DataExtractor(mask,avefile,lvar)
+            avefile = F.get_filename(N1pfile, avevar, INPUT_AVEDIR, AGGREGATE_AVEDIR)
+            DE = DataExtractor(mask,avefile,lvar,dimvar=3)
             commandstr=lvar + "= DE.values"
             exec(commandstr)
         junk = eval(RS)
@@ -206,7 +212,10 @@ def WriteAggregateAvefiles_old(mask, N1pfile,OUTDIR,VarDescriptor):
     F = filename_manager(N1pfile)
 
     for var in VarDescriptor.AGGREGATE_DICT.keys():
-        outfile = OUTDIR + F.prefix + "." + F.datestr + "." + var + ".nc"
+        if var.find('TRN')>-1:
+            avevar = var[var.find('TRN')+3:]
+        else: avevar = var
+        outfile = OUTDIR + F.prefix + "." + F.datestr + "." + avevar + ".nc"
         ncOUT=NC.netcdf_file(outfile,"w")
         setattr(ncOUT,"Convenctions","COARDS")
         ncOUT.createDimension('time',  1)
@@ -228,7 +237,10 @@ def WriteAggregateAvefiles_old(mask, N1pfile,OUTDIR,VarDescriptor):
         ncvar=ncOUT.createVariable(var,'f',('time','depth','lat','lon'))
         junk = np.zeros((jpk,jpj,jpi),np.float32)
         for lvar in VarDescriptor.AGGREGATE_DICT[var]:
-            avefile=getfileForRead(N1pfile, lvar)
+            if lvar.find('TRN')>-1:
+                avevar = lvar[lvar.find('TRN')+3:]
+            else: avevar = lvar
+            avefile=getfileForRead(N1pfile, avevar)
             DE = DataExtractor(mask,avefile,lvar)
             junk +=DE.values
         junk[~mask.mask] = 1.e+20

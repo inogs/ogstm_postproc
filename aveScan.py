@@ -577,7 +577,11 @@ if isParallel : comm.Barrier()
 
 for ip in PROCESSES[rank::nranks]:
     (ifile, ivar) = divmod(ip,nvars)
-    var     = VARLIST[ivar]
+    lvar     = VARLIST[ivar]
+    if lvar.find('TRN')>-1:
+        var = lvar[lvar.find('TRN')+3:]
+    else:
+        var = lvar
     avefile =aveLIST[ifile]
     dim     = var_dim[ivar]
 

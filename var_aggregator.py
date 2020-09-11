@@ -114,4 +114,8 @@ for N1pfile in SingleVar_filelist[rank::nranks]:
         F = G.filename_manager(N1pfile)
         chl3dfile = TMPOUTdir + F.prefix + "." + F.datestr + ".P_l.nc"
         chl2dfile = CHLSUPdir + "chl."         + F.datestr + ".nc"
-        G.writeChlSup(chl3dfile, chl2dfile, 'P_l')
+        if chl3dfile.find('after')>-1:
+           chlvar = 'TRNP_l'
+        else:
+           chlvar = 'P_l'
+        G.writeChlSup(chl3dfile, chl2dfile,chlvar)

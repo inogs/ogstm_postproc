@@ -1,0 +1,82 @@
+#!/bin/bash
+
+#SBATCH --job-name=POST
+#SBATCH -N1
+#SBATCH --ntasks-per-node=36
+#SBATCH --time=0:30:00
+#SBATCH --mem=100gb
+#SBATCH --account=OGS20_PRACE_P
+#SBATCH --partition=gll_usr_prod
+
+cd $SLURM_SUBMIT_DIR
+
+module purge
+module load profile/base
+module load intel/pe-xe-2018--binary intelmpi/2018--binary
+module load autoload
+module load hdf5/1.8.18--intel--pe-xe-2018--binary netcdf/4.6.1--intel--pe-xe-2018--binary
+module load mpi4py/3.0.0--intelmpi--2018--binary
+source /gpfs/work/OGS20_PRACE_P/COPERNICUS/py_env_2.7.12/bin/activate
+export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS20_PRACE_P/COPERNICUS/bit.sea
+
+
+
+
+
+export OPA_HOME=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_11/
+
+export    MASKFILE=$OPA_HOME/wrkdir/MODEL/meshmask.nc
+#export  KCOASTFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/mapser.npy
+
+date
+      REFDIR=/gpfs/scratch/userexternal/ateruzzi/REA_24_ELAB/INCREMENTS/
+
+      DA_DIR=$REFDIR/RST_DAlinks/
+    BFOUTDIR=$REFDIR/output/DA__FREQ_1before/
+
+     TMP_DIR=$BFOUTDIR/TMP
+        TMPS=$BFOUTDIR/TMPS
+  CHLSUP_DIR=$BFOUTDIR/CHL_SUP
+
+. ./profile.inc
+
+my_prex_or_die "mpirun python var_aggregator.py -l RSTbefore*12:00:00*P1l.nc -i $DA_DIR -d VarDescriptor_P_lagg.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE"
+my_prex_or_die "mpirun python aveScan.py  -l RSTbefore*12:00:00*nc     -i $DA_DIR -f P1l -a $TMP_DIR -d VarDescriptor_P_lagg.xml -o $BFOUTDIR -t $TMPS  -s " # -p punti.dat
+
+ANS=$?
+# ---------- cleaning
+if [ $ANS == 0 ] ; then  
+   cd $TMPS
+   rm -f tmp.*
+   cd $SLURM_SUBMIT_DIR
+fi
+my_prex_or_die "mpirun python compact_profiles.py -i $BFOUTDIR/STAT_PROFILES/ -o $BFOUTDIR/STAT_PROFILES/"
+
+    AFOUTDIR=$REFDIR/output/DA__FREQ_1_after/
+
+     TMP_DIR=$AFOUTDIR/TMP
+        TMPS=$AFOUTDIR/TMPS
+  CHLSUP_DIR=$AFOUTDIR/CHL_SUP
+
+. ./profile.inc
+
+my_prex_or_die "mpirun python var_aggregator.py -l RST_after*12:00:00*P1l.nc -i $DA_DIR -d VarDescriptor_TRNP_lagg.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE"
+my_prex_or_die "mpirun python aveScan.py  -l RST_after*12:00:00*nc     -i $DA_DIR -f P1l -a $TMP_DIR -d VarDescriptor_P_lagg.xml -o $AFOUTDIR -t $TMPS  -s " # -p punti.dat
+
+ANS=$?
+# ---------- cleaning
+if [ $ANS == 0 ] ; then  
+   cd $TMPS
+   rm -f tmp.*
+   cd $SLURM_SUBMIT_DIR
+fi
+my_prex_or_die "mpirun python compact_profiles.py -i $AFOUTDIR/STAT_PROFILES/ -o $AFOUTDIR/STAT_PROFILES/"
+
+
+OUTINC=$REFDIR/output/DA__FREQ_1_INC/STAT_PROFILES/
+
+mkdir -p $OUTINC
+
+my_prex_or_die "python deltaRST_STAT_PROFILES.py -b $BFOUTDIR -a $AFOUTDIR -o $OUTINC"
+
+
