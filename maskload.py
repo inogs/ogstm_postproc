@@ -105,7 +105,7 @@ if not submask_on_the_fly:
             s=SubMask(basin,maskobject = TheMask)
             SUBM[sub] = s.mask
     #  SUBM med is calculated as OR of all the others
-        for sub in OGS.Pred.basin_list:
+        for sub in OGS.Pred.basin_list[:-1]: # removing atlantic
             SUBM['med']=(SUBM['med'] | SUBM[sub.name])
     else:
         for sub in SUBlist:
