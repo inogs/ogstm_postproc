@@ -87,6 +87,7 @@ OUTPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/MONTHLY/AVE
 mkdir -p $OUTPUTDIR
 for var in N1p N3n ppn ; do
  my_prex_or_die "mpirun -np 24 python monthly_averager.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v $var "
+ my_prex_or_die "mpirun -np 24 python yearly_averager.py  -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v $var "
 done
 
 
