@@ -63,6 +63,7 @@ YEARLY_REQS=TL.getYearlist()
 for req in YEARLY_REQS[rank::nranks]:
     indexes,weights=TL.select(req)
 
+    if len(indexes)==0: continue
     inputvar=var
 
     outfile = OUTPUTDIR + "ave." + req.string + "0101-00:00:00." + var + ".nc"
