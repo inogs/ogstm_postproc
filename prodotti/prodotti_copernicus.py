@@ -196,8 +196,8 @@ for timestr in TIMELIST[rank::nranks]:
         
         
         if FGroup == 'NUTR':
-            if args.tr=='daily'  : setattr(ncOUT,'title','Nitrate and Phosphate (3D) - Daily Mean')
-            if args.tr=='monthly': setattr(ncOUT,'title','Nitrate and Phosphate (3D) - Monthly Mean')
+            if args.tr=='daily'  : setattr(ncOUT,'title','Nitrate, Phosphate, Ammonium and Silicate (3D) - Daily Mean')
+            if args.tr=='monthly': setattr(ncOUT,'title','Nitrate, Phosphate, Ammonium and Silicate (3D) - Monthly Mean')
             
             ncvar = ncOUT.createVariable('no3', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)            
             setattr(ncvar,'missing_value',ncvar._FillValue)
@@ -219,10 +219,30 @@ for timestr in TIMELIST[rank::nranks]:
             
             M = readdata(timestr, "N1p")
             ncvar[0,:] = M
-        
+
+            ncvar = ncOUT.createVariable('nh4', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mmol m-3')
+            setattr(ncvar,'long_name'    ,'Mole concentration of Ammonium in sea water')
+            setattr(ncvar,'standard_name','mole_concentration_of_ammonium_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+
+            M = readdata(timestr, "N4n")
+            ncvar[0,:] = M
+
+            ncvar = ncOUT.createVariable('si', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mmol m-3')
+            setattr(ncvar,'long_name'    ,'Mole concentration of Silicate in sea water')
+            setattr(ncvar,'standard_name','mole_concentration_of_silicate_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+
+            M = readdata(timestr, "N5s")
+            ncvar[0,:] = M
+
         if FGroup == 'PFTC':
-            if args.tr=='daily'   : setattr(ncOUT,'title','Phytoplankton Carbon Biomass and Chlorophyll (3D) - Daily Mean')
-            if args.tr=='monthly' : setattr(ncOUT,'title','Phytoplankton Carbon Biomass and Chlorophyll (3D) - Monthly Mean')
+            if args.tr=='daily'   : setattr(ncOUT,'title','Phytoplankton Carbon Biomass, Zooplankton Carbon Biomass and Chlorophyll (3D) - Daily Mean')
+            if args.tr=='monthly' : setattr(ncOUT,'title','Phytoplankton Carbon Biomass, Zooplankton Carbon Biomass and Chlorophyll (3D) - Monthly Mean')
 
             ncvar = ncOUT.createVariable('phyc', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
@@ -263,7 +283,27 @@ for timestr in TIMELIST[rank::nranks]:
                 chl = (P1l + P2l + P3l +P4l)
             chl[~tmask] = 1.e+20
             ncvar[0,:] = chl
-            
+
+            ncvar = ncOUT.createVariable('zooc', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mmol m-3')
+            setattr(ncvar,'long_name'    ,'Concentration of Zooplankton Biomass in sea water')
+            setattr(ncvar,'standard_name','mole_concentration_of_zooplankton_expressed_as_carbon_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+
+            try:
+                Z_c = readdata(timestr, "Z_c")* (1./12.)
+            except:
+                print "using native Z3c, Z4c, Z5c, Z6c"
+                Z3c = readdata(timestr, "Z3c")
+                Z4c = readdata(timestr, "Z4c")
+                Z5c = readdata(timestr, "Z5c")
+                Z6c = readdata(timestr, "Z6c")
+                Z_c = (Z3c + Z4c + Z5c +Z6c)* (1./12.)
+            Z_c[~tmask] = 1.e+20
+            ncvar[0,:] = Z_c
+
+
         if FGroup == 'BIOL':
             if args.tr=='daily'  : setattr(ncOUT, 'title', "Primary Production and Oxygen (3D) - Daily Mean")
             if args.tr=='monthly': setattr(ncOUT, 'title', "Primary Production and Oxygen (3D) - Monthly Mean")
@@ -287,8 +327,8 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar[0,:] = ppn
             
         if FGroup == 'CARB':
-            if args.tr=='daily'  : setattr(ncOUT, 'title',"Dissolved Inorganic Carbon and pH (3D) - Daily Mean")
-            if args.tr=='monthly': setattr(ncOUT, 'title',"Dissolved Inorganic Carbon and pH (3D) - Monthly Mean")
+            if args.tr=='daily'  : setattr(ncOUT, 'title',"Dissolved Inorganic Carbon, pH and Alkalinity (3D) - Daily Mean")
+            if args.tr=='monthly': setattr(ncOUT, 'title',"Dissolved Inorganic Carbon, pH and Alkalinity (3D) - Monthly Mean")
             
 
             ncvar = ncOUT.createVariable('ph', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
@@ -312,6 +352,17 @@ for timestr in TIMELIST[rank::nranks]:
             dic = readdata(timestr, "O3c")/(12*1000) # conversion mg/mol
             dic[~tmask] = 1.e+20
             ncvar[0,:] =dic
+
+            ncvar = ncOUT.createVariable('talk', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mol m-3')
+            setattr(ncvar,'long_name'    ,"")
+            setattr(ncvar,'standard_name','')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+            setattr(ncvar,'info'         , 'In order to calculate ALK in [micro mol / kg of seawater], talk has to be multiplied by (1.e+6 / seawater density [kg/m3])')
+            alk = readdata(timestr, "O3h")/1000 # conversion mg/mol
+            alk[~tmask] = 1.e+20
+            ncvar[0,:] = alk
 
 
         if FGroup == 'CO2F':
