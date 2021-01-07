@@ -16,7 +16,7 @@ def argument():
                                 required = True,
                                 help ='The directory wrkdir/MODEL/AVE_FREQ_1/ where chain has run.'
                                 )
-    
+
     parser.add_argument(   '--outputdir',"-o",
                                 type = str,
                                 required = True,
@@ -32,7 +32,7 @@ def argument():
                                 help = '''Analysis, simulation , or forecast''',
                                 choices = ["an","sm","fc"])
      
-    parser.add_argument(    '--bulltime',"-b", 
+    parser.add_argument(    '--bulltime',"-b",
                                 type = str,
                                 required = True,
                                 help = '''The bulletin time a string time in the format yyyymmdd ''')
@@ -43,7 +43,7 @@ def argument():
     parser.add_argument(    '--tr',
                                 type = str,
                                 required = True,
-                                choices = ["daily","monthly"])   
+                                choices = ["daily","monthly"])
 
     return parser.parse_args()
 
@@ -74,10 +74,10 @@ TIMELIST  = file2stringlist(args.time)
 DType     = args.DType
 bulletin_date = args.bulltime
 maskfile = args.maskfile
-if args.tr=='daily'  : 
+if args.tr=='daily'  :
     tr='d'
     field_type='daily_mean_centered_at_time_field'
-if args.tr=='monthly': 
+if args.tr=='monthly':
     tr='m'
     assert args.DType=='an'
     field_type='monthly_mean_beginning_at_time_field'
@@ -193,7 +193,7 @@ for timestr in TIMELIST[rank::nranks]:
             if args.tr=='daily'  : setattr(ncOUT,'title','Nitrate, Phosphate, Ammonium and Silicate (3D) - Daily Mean')
             if args.tr=='monthly': setattr(ncOUT,'title','Nitrate, Phosphate, Ammonium and Silicate (3D) - Monthly Mean')
             
-            ncvar = ncOUT.createVariable('no3', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)            
+            ncvar = ncOUT.createVariable('no3', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'mmol m-3')
             setattr(ncvar,'long_name'    ,'Mole concentration of Nitrate in sea water')
@@ -259,7 +259,7 @@ for timestr in TIMELIST[rank::nranks]:
             pcb[~tmask] = 1.e+20
             ncvar[0,:] = pcb
             
-            ncvar = ncOUT.createVariable('chl', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20) 
+            ncvar = ncOUT.createVariable('chl', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'mg m-3')
             setattr(ncvar,'long_name'    ,'Concentration of Chlorophyll in sea water')
@@ -331,7 +331,6 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'long_name'    ,'PH')
             setattr(ncvar,'standard_name','sea_water_ph_reported_on_total_scale')
             setattr(ncvar,'info'         , 'pH reported on total scale at in situ Temp and Press conditions')
-            #setattr(ncvar,'standard_name','ocean_acididity_expressed_as_seawater_ph_reported_on_seawater_scale')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             ph = readdata(timestr, "pH")
             ncvar[0,:] =ph
