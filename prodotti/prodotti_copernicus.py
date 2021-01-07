@@ -3,7 +3,7 @@ import argparse
 def argument():
     parser = argparse.ArgumentParser(description = '''
    Creates COPERNICUS products files from chain.
-   Product name = 
+   Product name = MEDSEA_ANALYSIS_FORECAST_BIO_006_014
    Standard names are choose from
    http://cfconventions.org/Data/cf-standard-names/30/build/cf-standard-name-table.html.
 
@@ -82,7 +82,6 @@ if args.tr=='monthly':
     assert args.DType=='an'
     field_type='monthly_mean_beginning_at_time_field'
 
-#cut = 52 #1/16
 cut = 80 #1/24
 TheMask = Mask(maskfile,ylevelsmatvar="gphit", xlevelsmatvar="glamt")
 jpk, jpj, jpi = TheMask.shape
@@ -90,7 +89,7 @@ nav_lev = TheMask.zlevels
 Lon = TheMask.xlevels[0,:].astype(np.float32)
 Lat = TheMask.ylevels[:,0].astype(np.float32)
 tmask = TheMask.mask
-#tmask.resize(1,jpk,jpj,jpi)
+
 Lon = Lon[cut:]
 tmask = tmask[:,:,cut:]
 
@@ -116,7 +115,7 @@ def create_Structure(filename, fgroup):
     ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_ANALYSIS_FORECAST_BIO_006_014 - http://marine.copernicus.eu/'
     inst  ='OGS (Istituto Nazionale di Oceanografia e di Geofisica Sperimentale) , Sgonico (Trieste) - Italy'
     ncOUT = netCDF4.Dataset(filename,"w",format="NETCDF4")
-    ncOUT.createDimension('longitude', jpi-cut)    # =722-52
+    ncOUT.createDimension('longitude', jpi-cut)
     ncOUT.createDimension('latitude' ,jpj)
     if (fgroup != 'CO2F') : ncOUT.createDimension('depth'    ,jpk)
     ncOUT.createDimension('time'     ,  0)
@@ -177,13 +176,8 @@ def create_Structure(filename, fgroup):
     
     
     return ncOUT
-def V2_filename(timeobj,FGroup):
-    return timeobj.strftime('%Y%m') + "01_" + tr + "-OGS--" + FGroup + "-ogstm_bfm4-MED-b" + bulletin_date +"_" + DType + "-fv06.00.nc"    
-def V3_1_filename(timeobj,FGroup):    
-    return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM2-MED-b" + bulletin_date +"_" + DType + "-sv03.00.nc"
-def V5_filename(timeobj,FGroup):
-    #Nomenclatura V5 {YYYYMMDD}_{tr}-OGS--{FGroup}-MedBFM3-MED-b{bulletin_date}_{DType}-sv05.00.nc
-    return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM3-MED-b" + bulletin_date +"_" + DType + "-sv05.00.nc"
+
+
 def V6_filename(timeobj,FGroup):
     return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM3-MED-b" + bulletin_date +"_" + DType + "-sv06.00.nc"
 
