@@ -171,13 +171,13 @@ def create_Structure(filename, fgroup):
     return ncOUT
 
 
-def V6_filename(timeobj,FGroup):
-    return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM3-MED-b" + bulletin_date +"_" + DType + "-sv06.00.nc"
+def V5_filename(timeobj,FGroup):
+    return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM3-MED-b" + bulletin_date +"_" + DType + "-sv05.00.nc"
 
 for timestr in TIMELIST[rank::nranks]:
     timeobj = datetime.datetime.strptime(timestr,"%Y%m%d")
     for FGroup in FGROUPS:
-        product_file = V6_filename(timeobj, FGroup)
+        product_file = V5_filename(timeobj, FGroup)
         print "rank =", rank, product_file
         ncOUT = create_Structure(OUTPUTDIR + product_file,FGroup)
         
