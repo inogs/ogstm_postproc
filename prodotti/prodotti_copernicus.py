@@ -3,7 +3,7 @@ import argparse
 def argument():
     parser = argparse.ArgumentParser(description = '''
    Creates COPERNICUS products files from chain.
-   Product name = MEDSEA_ANALYSIS_FORECAST_BIO_006_014
+   Product name = MEDSEA_ANALYSISFORECAST_BGC_006_014
    Standard names are choose from
    http://cfconventions.org/Data/cf-standard-names/30/build/cf-standard-name-table.html.
 
@@ -112,7 +112,7 @@ def readdata(time, var, ndims=3):
     return readfile(inputfile,var,ndims=ndims)
 
 def create_Structure(filename, fgroup):
-    ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_ANALYSIS_FORECAST_BIO_006_014 - http://marine.copernicus.eu/'
+    ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_ANALYSISFORECAST_BGC_006_014 - http://marine.copernicus.eu/'
     inst  ='OGS (Istituto Nazionale di Oceanografia e di Geofisica Sperimentale) , Sgonico (Trieste) - Italy'
     ncOUT = netCDF4.Dataset(filename,"w",format="NETCDF4")
     ncOUT.createDimension('longitude', jpi-cut)
