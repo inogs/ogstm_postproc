@@ -57,7 +57,7 @@ setattr(ncvar,"units","m")
 setattr(ncvar, "long_name","Cell dimension along Z axis")
 setattr(ncvar, "standard_name","cell_thickness")
 ncvar[:]=e3t[:,:, cut:]
-
+setattr(ncOUT,'Conventions'  ,'CF-1.0' )
 ncOUT.close()
 
 
@@ -116,5 +116,5 @@ setattr(ncvar, "standard_name","model_level_number_at_sea_floor")
 
 ncvar[:]=CB[:,cut:]
 
-
+setattr(ncOUT,'Conventions'  ,'CF-1.0' )
 ncOUT.close()

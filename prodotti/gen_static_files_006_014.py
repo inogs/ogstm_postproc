@@ -53,6 +53,7 @@ setattr(ncvar, "long_name","Cell dimension along Z axis")
 setattr(ncvar, "standard_name","cell_thickness")
 ncvar[:]=e3t[:,:, cut:]
 
+setattr(ncOUT,'Conventions'  ,'CF-1.0' )
 ncOUT.close()
 
 
@@ -60,6 +61,7 @@ ncOUT.close()
 
 
 ncOUT=netCDF4.Dataset("MED_MFC_006_014_mask_bathy.nc","w")
+
 ncOUT.createDimension('longitude',jpi-cut)
 ncOUT.createDimension('latitude',jpj)
 ncOUT.createDimension('depth',jpk)
@@ -111,5 +113,5 @@ setattr(ncvar, "standard_name","model_level_number_at_sea_floor")
 
 ncvar[:]=CB[:,cut:]
 
-
+setattr(ncOUT,'Conventions'  ,'CF-1.0' )
 ncOUT.close()
