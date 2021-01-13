@@ -1,7 +1,7 @@
 import netCDF4
 from commons.mask import Mask
 import numpy as np
-maskfile="/gss/gss_work/DRES_OGS_BiGe/gbolzon/masks/eas/Open_Dardanelles/meshmask.nc"
+maskfile="/gpfs/work/IscrC_REBIOMED/NRT_EAS6/PREPROC/MASK/ogstm/meshmask.nc"
 M=Mask(maskfile)
 
 
@@ -10,7 +10,7 @@ e3t[~M.mask]=1.e+20
 
 jpk, jpj, jpi=M.shape
 cut = 80 #1/24
-ncOUT=netCDF4.Dataset("MED_BIO_006_014_coordinates.nc","w")
+ncOUT=netCDF4.Dataset("MED_MFC_006_014_coordinates.nc","w")
 
 ncOUT.createDimension('longitude',jpi-cut);
 ncOUT.createDimension('latitude',jpj);
@@ -59,7 +59,7 @@ ncOUT.close()
 
 
 
-ncOUT=netCDF4.Dataset("MED_BIO_006_014_mask_bathy.nc","w")
+ncOUT=netCDF4.Dataset("MED_MFC_006_014_mask_bathy.nc","w")
 ncOUT.createDimension('longitude',jpi-cut)
 ncOUT.createDimension('latitude',jpj)
 ncOUT.createDimension('depth',jpk)
