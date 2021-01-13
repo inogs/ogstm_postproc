@@ -1,58 +1,49 @@
 #! /bin/bash
 
-CHECKFOR=daily
+FREQUENCY=monthly
 
 function dataset_substr {
+#  returns BIOL, CARB, ...
+
    filename=$1
    basenamefile=$( basename $filename )
    echo ${basenamefile:16:4}
 }
 
 function get_dataset {
+#  get_dataset BIOL monthly returns med-ogs-bio-an-fc-m
    parameter=$1
+   frequency=$2
+   case $frequency in
+    daily )  time_flag=d ;;
+   monthly)  time_flag=m ;;
+   *) echo "ERROR"; exit 1 ;;
+   esac
+
    case $parameter in
-   BIOL) DATASET=med00-ogs-bio-an-fc-d ;;
-   CARB) DATASET=med00-ogs-car-an-fc-d ;;
-   NUTR) DATASET=med00-ogs-nut-an-fc-d ;;
-   PFTC) DATASET=med00-ogs-pft-an-fc-d ;;
-   CO2F) DATASET=med00-ogs-co2-an-fc-d ;;
+   BIOL) DATASET=med-ogs-bio-an-fc-$time_flag ;;
+   CARB) DATASET=med-ogs-car-an-fc-$time_flag ;;
+   NUTR) DATASET=med-ogs-nut-an-fc-$time_flag ;;
+   PFTC) DATASET=med-ogs-pft-an-fc-$time_flag ;;
+   CO2F) DATASET=med-ogs-co2-an-fc-$time_flag ;;
    *)  echo "ERROR"; exit 1 ;;
    esac
    echo $DATASET
 }
 
-if [ $CHECKFOR == monthly ] ; then
-function print_file_attr {
-  basenamefile=$( basename ${1} )
-  [[ $basenamefile == *BIOL* ]] && DATASET=med-ogs-bio-an-fc-m
-  [[ $basenamefile == *CARB* ]] && DATASET=med-ogs-car-an-fc-m
-  [[ $basenamefile == *NUTR* ]] && DATASET=med-ogs-nut-an-fc-m
-  [[ $basenamefile == *PFTC* ]] && DATASET=med-ogs-pft-an-fc-m
-  [[ $basenamefile == *CO2F* ]] && DATASET=med-ogs-co2-an-fc-m
-  
-  echo ""
-  echo "PRODUCT MEDSEA_ANALYSIS_FORECAST_BIO_006_014"
-  echo "Dataset: $DATASET"
-  echo "File: $basenamefile"
-
-}
-
-else
 
 function print_file_attr {
   filename=$1
   dataset_substring=`dataset_substr $filename`
-  DATASET=`get_dataset $dataset_substring`
+  DATASET=`get_dataset $dataset_substring $FREQUENCY `
 
   echo ""
-  echo "PRODUCT MEDSEA_ANALYSIS_FORECAST_BIO_006_014"
+  echo "PRODUCT MEDSEA_ANALYSISFORECAST_BGC_006_014"
   echo "Dataset: $DATASET"
   echo "File: " $( basename $1 )
 
 }
 
-
-fi
 
 function try_send {
   ZIPPED_DIR=/pico/scratch/userexternal/gbolzon0/REANALYSIS_2016/wrkdir/POSTPROC/output/ZIPPED
@@ -97,9 +88,9 @@ ncks -M -m ${3} | grep ${2} | grep ${1} | awk '{print $3}' | cut -d "f" -f 1
 }
 
 
-PIT=CMEMS-PIT-MED-202003.xlsx
-DIR=/marconi_scratch/userexternal/gbolzon0/PROD/PRODOTTI/
-TIME_TO_CHECK=20180101
+PIT=$HOME/CMEMS-MED-PIT_v202105_Rita_v2.xlsx
+DIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/POSTPROC/PROD/NRT/MONTHLY
+TIME_TO_CHECK=20190501
 
 
 
@@ -118,10 +109,13 @@ done
 echo "#####  PU_IT_TF_DatasetTitle "
 for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
   dataset_substring=`dataset_substr $filename`
-  DATASET=`get_dataset $dataset_substring`
-  #python check_title.py -f $filename -p $PIT -d $DATASET
+  DATASET=`get_dataset $dataset_substring $FREQUENCY`
+  python check_title.py -f $filename -p $PIT -d $DATASET
 done
 
+fi
+
+if [ 1 == 1 ] ; then
 
 echo "#####  PU_IT_TF_VarDimension   "
 for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
@@ -133,14 +127,18 @@ for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
   if echo $filename | grep -q CARB ; then
      dim_check $filename ph
      dim_check $filename dissic
+     dim_check $filename talk
   fi 
   if echo $filename | grep -q NUTR ; then
      dim_check $filename no3
      dim_check $filename po4
+     dim_check $filename nh4
+     dim_check $filename si
   fi  
   if echo $filename | grep -q PFTC ; then
      dim_check $filename phyc
      dim_check $filename chl
+     dim_check $filename zooc
   fi
   if echo $filename | grep -q CO2F ; then
      dim_check $filename fpco2
