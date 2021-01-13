@@ -90,4 +90,16 @@ for var in N1p N3n ppn ; do
  my_prex_or_die "mpirun -np 24 python yearly_averager.py  -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v $var "
 done
 
+################ O3c Orh converter #########################
+
+maskfile_ingv=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/ogstm/meshmask_INGVfor_ogstm.nc
+maskfile=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc
+INDIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/AVE_FREQ_1/
+OUTDIR=/gpfs/scratch/userexternal/gcoidess/POSTPROC_REA_24/TEST22/trash2/
+FORCDIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/FORCINGS/
+starttime=20140101
+endtime=20150101
+
+my_prex_or_die "mpirun python dic_alc_converter.py -M $maskfile_ingv -m $maskfile -i $INDIR -o $OUTDIR -f $FORCDIR -s $starttime -e $endtime"
+
 
