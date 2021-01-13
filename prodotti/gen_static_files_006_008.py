@@ -6,7 +6,7 @@ maskfile="/gss/gss_work/DRES_OGS_BiGe/gbolzon/masks/V4/mesh_mask_V1INGV.nc"
 # git checkout -b free-surface-atm origin/free-surface-atm
 # EDIT main (lon_cut = 149, Biscay_land = True)
 # python main.py
-maskfile="/marconi_scratch/userexternal/gbolzon0/prodotti/mesh_gen/mesh_gen/meshmask.nc"
+maskfile="/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc"
 M=Mask(maskfile)
 
 
@@ -14,23 +14,22 @@ e3t=M.e3t
 e3t[~M.mask]=1.e+20
 
 jpk, jpj, jpi=M.shape
-cut = 201 #871 -722 + 52
-cut = 52
-ncOUT=netCDF4.Dataset("MED_BIO_006_008_coordinates.nc","w")
+cut = 80 #1/24
+ncOUT=netCDF4.Dataset("MED_MFC_006_008_coordinates.nc","w")
 
 ncOUT.createDimension('longitude',jpi-cut);
 ncOUT.createDimension('latitude',jpj);
 ncOUT.createDimension('depth',jpk);
 
 ncvar=ncOUT.createVariable("longitude",'f', ("longitude",))
-setattr(ncvar,"step","0.0625")
+setattr(ncvar,"step","0.041666666666666664")
 setattr(ncvar, "units", "degrees_east")
 setattr(ncvar, "standard_name","longitude")
 setattr(ncvar, "axis","X")
 ncvar[:] = M.xlevels[0,cut:]
 
 ncvar=ncOUT.createVariable("latitude",'f', ("latitude",))
-setattr(ncvar,"step","0.0625")
+setattr(ncvar,"step","0.041666666666666664")
 setattr(ncvar, "units", "degrees_north")
 setattr(ncvar, "standard_name","latitude")
 setattr(ncvar, "axis","Y")
@@ -65,20 +64,20 @@ ncOUT.close()
 
 
 
-ncOUT=netCDF4.Dataset("MED_BIO_006_008_mask_bathy.nc","w")
+ncOUT=netCDF4.Dataset("MED_MFC_006_008_mask_bathy.nc","w")
 ncOUT.createDimension('longitude',jpi-cut)
 ncOUT.createDimension('latitude',jpj)
 ncOUT.createDimension('depth',jpk)
 
 ncvar=ncOUT.createVariable("longitude",'f', ("longitude",))
-setattr(ncvar,"step","0.0625")
+setattr(ncvar,"step","0.041666666666666664")
 setattr(ncvar, "units", "degrees_east")
 setattr(ncvar, "standard_name","longitude")
 setattr(ncvar, "axis","X")
 ncvar[:] = M.xlevels[0,cut:]
 
 ncvar=ncOUT.createVariable("latitude",'f', ("latitude",))
-setattr(ncvar,"step","0.0625")
+setattr(ncvar,"step","0.041666666666666664")
 setattr(ncvar, "units", "degrees_north")
 setattr(ncvar, "standard_name","latitude")
 setattr(ncvar, "axis","Y")
