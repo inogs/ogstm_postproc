@@ -89,24 +89,24 @@ for t in TL.Timelist[rank::nranks]:
 	rho = rho[:jpk,:,JPI-jpi:]
 
 
-	inputfile = INDIR + 'ave.'+ d +'-12:00:00.'+ 'DIC' +'.nc'
-	outfile = OUTDIR + 'ave.' + d +'-12:00:00.' + 'O3c' + ".nc"
+	inputfile = INDIR + 'ave.' + d + '-12:00:00.' + 'DIC.nc'
+	outfile =  OUTDIR + 'ave.' + d + '-12:00:00.' + 'O3c.nc'
 	print outfile
 
 	DIC = DataExtractor(TheMask,inputfile,'DIC').values 
 	O3c = rho * DIC * 12 /1000 
 	O3c[~TheMask.mask] = 1.e+20
-	netcdf4.write_3d_file(O3c, 'O3c', outfile, TheMask)
+	netcdf4.write_3d_file(O3c, 'O3c', outfile, TheMask,compression=True)
 
 
-	inputfile = INDIR + 'ave.'+ d +'-12:00:00.'+ 'ALK' +'.nc'
-	outfile = OUTDIR + 'ave' + d +'-12:00:00.' + 'O3h' + ".nc"
+	inputfile = INDIR + 'ave.' + d + '-12:00:00.' + 'ALK.nc'
+	outfile  = OUTDIR + 'ave.' + d + '-12:00:00.' + 'O3h.nc'
 	print outfile
 
 	ALK = DataExtractor(TheMask,inputfile,'ALK').values
 	O3h = rho * ALK /1000 
 	O3h[~TheMask.mask] = 1.e+20
-	netcdf4.write_3d_file(O3h, 'O3h', outfile, TheMask)
+	netcdf4.write_3d_file(O3h, 'O3h', outfile, TheMask, compression=True)
 
 	
 
