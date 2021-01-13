@@ -351,8 +351,8 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar = ncOUT.createVariable('talk', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'mol m-3')
-            setattr(ncvar,'long_name'    ,"")
-            setattr(ncvar,'standard_name','')
+            setattr(ncvar,'long_name'    ,"Alkalinity")
+            setattr(ncvar,'standard_name','sea_water_alkalinity_expressed_as_mole_equivalent')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             setattr(ncvar,'info'         , 'In order to calculate ALK in [micro mol / kg of seawater], talk has to be multiplied by (1.e+6 / seawater density [kg/m3])')
             alk = readdata(timestr, "O3h")/1000 # conversion mg/mol
