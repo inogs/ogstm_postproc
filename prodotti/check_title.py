@@ -35,7 +35,7 @@ filename=args.filename
 wb = load_workbook(filename = PIT_file, read_only=True, data_only=True)
 work_sheet = wb['Dataset']
 
-for row in range(2,80):
+for row in range(2,200):
     if work_sheet.cell(row=row, column=2).value is not None:
         xls_dataset = work_sheet.cell(row=row, column=2).value
         if xls_dataset == dataset:
