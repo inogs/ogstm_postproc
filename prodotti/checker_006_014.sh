@@ -163,6 +163,26 @@ for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
    
 done 
 
+echo "####   STATIC FILES ####"
+echo ""
+
+filename=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/POSTPROC/bin_prod/prodotti/MED_MFC_006_014_coordinates.nc
+echo "PRODUCT MEDSEA_ANALYSISFORECAST_BGC_006_014"
+echo $filename
+file_format_check $filename
+dim_check $filename e1t
+dim_check $filename e2t
+dim_check $filename e3t
+
+echo "PRODUCT MEDSEA_ANALYSISFORECAST_BGC_006_014"
+filename=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/POSTPROC/bin_prod/prodotti/MED_MFC_006_014_mask_bathy.nc
+echo $filename
+file_format_check $filename
+dim_check $filename mask
+dim_check $filename deptho
+dim_check $filename deptho_lev
+
+
 exit 0
 
 
