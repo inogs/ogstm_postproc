@@ -15,14 +15,6 @@ bottom_indexes = themask.bathymetry_in_cells()
 bottom_1 = bottom_indexes - 1
 bottom_2 = bottom_indexes - 2
 
-ii1 = bottom_1 < 0
-ii2 = bottom_2 < 0
-
-bottom_1[ii1] = 0
-bottom_2[ii2] = 0
-
-#for i in themask.shape[2]:
-#	for j in themask.shape[1]:
 
 jpk, jpj, jpi = themask.shape
 
@@ -34,13 +26,14 @@ var_b2=np.zeros((jpj,jpi),np.float32)
 
 w_mean=np.zeros((jpj,jpi),np.float32)
 
+water = themask.mask[0,:,:]
+
 for j in range(jpj):
         for i in range(jpi):
 		b1=bottom_1[j,i]
 		b2=bottom_2[j,i]
-		if not ii1[j,i]:
+		if water[j,i]:
 			e3t_b1[j,i] = themask.e3t[b1,j,i]
-		if not ii2[j,i]:
 			e3t_b2[j,i] = themask.e3t[b2,j,i]		
 
 
@@ -48,12 +41,14 @@ for j in range(jpj):
         for i in range(jpi):
                 b1=bottom_1[j,i]
 		b2=bottom_2[j,i]
-		if not ii1[j,i]:
+		if water[j,i]:
                         var_b1[j,i] = VAR[b1,j,i]
-                if not ii2[j,i]:
                         var_b2[j,i] = VAR[b2,j,i]
                 
 
-w_mean[ii1] = (var_b1[ii1]*e3t_b1[ii1] + var_b2[ii1]*e3t_b2[ii1])/(e3t_b1[ii1]+e3t_b2[ii1])
+w_mean[water] = (var_b1[water]*e3t_b1[water] + var_b2[water]*e3t_b2[water])/(e3t_b1[water]+e3t_b2[water])
+
+w_mean[~water] = 1.0e+20
+
 
 	
