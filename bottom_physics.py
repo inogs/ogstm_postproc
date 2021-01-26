@@ -121,7 +121,6 @@ for time in TL.Timelist[rank::nranks]:
     inputfile_U = inputdir+'U'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
     inputfile_T = inputdir+'T'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
     inputfile_V = inputdir+'V'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
-    inputfile_S = inputdir+'T'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
      
     #outputfile_U = outputdir+'U'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
     outputfile_T = outputdir+'T'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
@@ -134,16 +133,14 @@ for time in TL.Timelist[rank::nranks]:
     VAR_U = DataExtractor(IngvMask,inputfile_U,'vozocrtx').values
     VAR_T = DataExtractor(IngvMask,inputfile_T,'votemper').values
     VAR_V = DataExtractor(IngvMask,inputfile_V,'vomecrty').values
-    VAR_S = DataExtractor(IngvMask,inputfile_S,'vosaline').values
+    VAR_S = DataExtractor(IngvMask,inputfile_T,'vosaline').values
+
+    VAR_UV = np.sqrt(VAR_U**2 + VAR_V**2)
 
     var_b1_T=np.zeros((JPJ,JPI),np.float32)
     var_b2_T=np.zeros((JPJ,JPI),np.float32)
     var_b1_S=np.zeros((JPJ,JPI),np.float32)
     var_b2_S=np.zeros((JPJ,JPI),np.float32)
-    var_b1_U=np.zeros((JPJ,JPI),np.float32)
-    var_b2_U=np.zeros((JPJ,JPI),np.float32)
-    var_b1_V=np.zeros((JPJ,JPI),np.float32)
-    var_b2_V=np.zeros((JPJ,JPI),np.float32)
     var_b1_UV=np.zeros((JPJ,JPI),np.float32)
     var_b2_UV=np.zeros((JPJ,JPI),np.float32)
 
@@ -160,13 +157,8 @@ for time in TL.Timelist[rank::nranks]:
                 var_b2_T[J,I] = VAR_T[B2,J,I]
                 var_b1_S[J,I] = VAR_S[B1,J,I]
                 var_b2_S[J,I] = VAR_S[B2,J,I]
-                var_b1_U[J,I] = VAR_U[B1,J,I]
-                var_b2_U[J,I] = VAR_U[B2,J,I]
-                var_b1_V[J,I] = VAR_V[B1,J,I]
-                var_b2_V[J,I] = VAR_V[B2,J,I]
-                
-    var_b1_UV=np.sqrt(var_b1_U**2 + var_b1_V**2)
-    var_b2_UV=np.sqrt(var_b2_U**2 + var_b2_V**2)
+                var_b1_UV[J,I] = VAR_UV[B1,J,I]
+                var_b2_UV[J,I] = VAR_UV[B2,J,I]
     
     UV_mean[water_ingv] = (var_b1_UV[water_ingv]*e3t_b1_ingv[water_ingv] + var_b2_UV[water_ingv]*e3t_b2_ingv[water_ingv])/(e3t_b1_ingv[water_ingv]+e3t_b2_ingv[water_ingv])
     T_mean[water_ingv]  = (var_b1_T[water_ingv]*e3t_b1_ingv[water_ingv]  + var_b2_T[water_ingv]*e3t_b2_ingv[water_ingv]) /(e3t_b1_ingv[water_ingv]+e3t_b2_ingv[water_ingv])
