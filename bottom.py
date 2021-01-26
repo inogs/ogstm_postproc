@@ -55,6 +55,9 @@ from commons import netcdf4
 from commons.dataextractor import DataExtractor
 from commons.Timelist import TimeList,TimeInterval
 from commons.utils import addsep
+from layer_integral.mapbuilder import MapBuilder
+from commons.layer import Layer
+
 
 try:
     from mpi4py import MPI
@@ -74,6 +77,8 @@ mask   = args.mask
 starttime = args.starttime
 endtime = args.endtime
 var = args.variable
+
+layer = Layer(0,200)
 
 #themask = Mask('/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc')
 themask= Mask(mask)
@@ -102,10 +107,15 @@ TI=TimeInterval(starttime,endtime,'%Y')
 TL=TimeList.fromfilenames(TI, inputdir, '*.nc', filtervar=var)
 for time in TL.Timelist[rank::nranks]:
     inputfile = inputdir+'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+var+'.nc'
-    outputfile = outputdir+'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d.'+var+'.nc'
+    outputdir_bottom = outputdir + 'bottom/'
+    outputdir_top = outputdir + 'top/'
+    outputfile_bottom = outputdir_bottom +'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d.'+var+'.nc'
     print outputfile
     VAR = DataExtractor(themask,inputfile,var).values
-
+    DE = DataExtractor(themask,inputfile,var)
+    outputfile_top = outputdir_top +'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d.'+var+'.nc'
+    
+    Map2d = MapBuilder.get_layer_average(DE, layer)
 
     var_b1=np.zeros((jpj,jpi),np.float32)
     var_b2=np.zeros((jpj,jpi),np.float32)
@@ -124,6 +134,8 @@ for time in TL.Timelist[rank::nranks]:
     w_mean[water] = (var_b1[water]*e3t_b1[water] + var_b2[water]*e3t_b2[water])/(e3t_b1[water]+e3t_b2[water])
 
     w_mean[~water] = 1.0e+20
+    Map2d[~water] = 1.0e+20
 
-    netcdf4.write_2d_file(w_mean,var,outputfile,themask,fillValue=1e+20,compression=True)
+    netcdf4.write_2d_file(w_mean,var,outputfile_bottom,themask,fillValue=1e+20,compression=True)
+    netcdf4.write_2d_file(Map2d,var,outputfile_top,themask,fillValue=1e+20,compression=True)
 
