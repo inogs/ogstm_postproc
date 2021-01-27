@@ -29,6 +29,10 @@ OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/TEST_VINKO_output_phys/
 MESHMASK_ORIG=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/ogstm/meshmask_INGVfor_ogstm.nc
 MESHMASK=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc
 
+mkdir -p $OUTPUTDIR/bottom
+mkdir -p $OUTPUTDIR/top
+
+
 my_prex_or_die "mpirun python bottom_physics.py -i $INPUTDIR -o $OUTPUTDIR -M $MESHMASK_ORIG -m $MESHMASK -s '2014' -e '2019'"
 
 

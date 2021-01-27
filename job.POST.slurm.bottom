@@ -31,7 +31,7 @@ MESHMASK=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/mesh
 mkdir -p $OUTPUTDIR/bottom
 mkdir -p $OUTPUTDIR/top
 
-my_prex_or_die "mpirun python bottom.py -i $INPUTDIR -o $OUTPUTDIR -m $MESHMASK -s '2015' -e '2019' -v 'N1p'"
+my_prex_or_die "mpirun python bottom.py -i $INPUTDIR -o $OUTPUTDIR -m $MESHMASK -s '2014' -e '2019' -v 'N1p'"
 
 
 exit 0

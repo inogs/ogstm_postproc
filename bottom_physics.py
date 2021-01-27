@@ -41,13 +41,6 @@ def argument():
                                 help = ''' Endtime YYYY'''
 
                                 )
-    
-    #parser.add_argument(   '--variable', '-v',
-    #                            type = str,
-    #                            required = True,
-    #                            help = ''' Variable to extract in the input file'''
-
-    #                            )
 
     return parser.parse_args()
 
@@ -60,6 +53,8 @@ from commons import netcdf4
 from commons.dataextractor import DataExtractor
 from commons.Timelist import TimeList,TimeInterval
 from commons.utils import addsep
+from layer_integral.mapbuilder import MapBuilder
+from commons.layer import Layer
 
 try:
     from mpi4py import MPI
@@ -79,13 +74,12 @@ mask_f          = args.mask
 starttime       = args.starttime
 endtime         = args.endtime
 
-#maskfile_ingv='/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/ogstm/meshmask_INGVfor_ogstm.nc'
+layer = Layer(0,200)
+
 IngvMask= Mask(maskfile_ingv)
-
 themask = Mask(mask_f)
-#bottom_indexes = themask.bathymetry_in_cells()
-bottom_indexes_ingv=IngvMask.bathymetry_in_cells()
 
+bottom_indexes_ingv=IngvMask.bathymetry_in_cells()
 
 bottom_1_ingv = bottom_indexes_ingv - 1
 bottom_2_ingv = bottom_indexes_ingv - 2
@@ -104,38 +98,46 @@ for I in range(JPI):
         if water_ingv[J,I]:
             e3t_b1_ingv[J,I] = IngvMask.e3t[B1,J,I]
             e3t_b2_ingv[J,I] = IngvMask.e3t[B2,J,I]
-            
-            
-#var='N1p'
-#inputdir='/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/FORCINGS/'
-#outputdir='/gpfs/scratch/userexternal/gcoidess/TEST_VINKO_output_phys/'
-#starttime='2014'
-#endtime='2015'
 
 TI=TimeInterval(starttime,endtime,'%Y')
 TL=TimeList.fromfilenames(TI, inputdir, '*.nc', filtervar='U',prefix='U')
 
 for time in TL.Timelist[rank::nranks]:
-    #U20190623-12:00:00.nc
     
     inputfile_U = inputdir+'U'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
     inputfile_T = inputdir+'T'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
     inputfile_V = inputdir+'V'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
-     
-    #outputfile_U = outputdir+'U'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
-    outputfile_T = outputdir+'T'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
-    #outputfile_V = outputdir+''+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
-    outputfile_S = outputdir+'S'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
-    outputfile_UV = outputdir+'UV'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
     
-    print outputfile_T
+    outputdir_bottom = outputdir + 'bottom/'
+    outputdir_top    = outputdir + 'top/'
     
-    VAR_U = DataExtractor(IngvMask,inputfile_U,'vozocrtx').values
-    VAR_T = DataExtractor(IngvMask,inputfile_T,'votemper').values
-    VAR_V = DataExtractor(IngvMask,inputfile_V,'vomecrty').values
-    VAR_S = DataExtractor(IngvMask,inputfile_T,'vosaline').values
+    outputfile_T_bottom  = outputdir_bottom+ 'T'  + time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
+    outputfile_S_bottom  = outputdir_bottom+ 'S'  + time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
+    outputfile_UV_bottom = outputdir_bottom+ 'UV' + time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
+    
+    outputfile_T_top = outputdir_top  +'T' + time.strftime('%Y%m%d-%H:%M:%S.')+'top2d'+'.nc'
+    outputfile_S_top = outputdir_top  +'S' + time.strftime('%Y%m%d-%H:%M:%S.')+'top2d'+'.nc'
+    outputfile_UV_top = outputdir_top +'UV'+ time.strftime('%Y%m%d-%H:%M:%S.')+'top2d'+'.nc'
+    
+    print outputfile_T_bottom
+    
+    DE_U = DataExtractor(IngvMask,inputfile_U,'vozocrtx')
+    DE_T = DataExtractor(IngvMask,inputfile_T,'votemper')
+    DE_V = DataExtractor(IngvMask,inputfile_V,'vomecrty')
+    DE_S = DataExtractor(IngvMask,inputfile_T,'vosaline')
+    
+    VAR_U = DE_U.values
+    VAR_T = DE_T.values
+    VAR_V = DE_V.values
+    VAR_S = DE_S.values
 
     VAR_UV = np.sqrt(VAR_U**2 + VAR_V**2)
+    
+    DE_UV=DataExtractor(IngvMask,rawdata=VAR_UV)
+
+    Map2d_T = MapBuilder.get_layer_average(DE_T, layer)
+    Map2d_S = MapBuilder.get_layer_average(DE_S, layer)
+    Map2d_UV = MapBuilder.get_layer_average(DE_UV, layer)
 
     var_b1_T=np.zeros((JPJ,JPI),np.float32)
     var_b2_T=np.zeros((JPJ,JPI),np.float32)
@@ -164,17 +166,30 @@ for time in TL.Timelist[rank::nranks]:
     T_mean[water_ingv]  = (var_b1_T[water_ingv]*e3t_b1_ingv[water_ingv]  + var_b2_T[water_ingv]*e3t_b2_ingv[water_ingv]) /(e3t_b1_ingv[water_ingv]+e3t_b2_ingv[water_ingv])
     S_mean[water_ingv]  = (var_b1_S[water_ingv]*e3t_b1_ingv[water_ingv]  + var_b2_S[water_ingv]*e3t_b2_ingv[water_ingv]) /(e3t_b1_ingv[water_ingv]+e3t_b2_ingv[water_ingv])
     
-    
     UV_mean = UV_mean[:,JPI-jpi:]
-    T_mean = T_mean[:,JPI-jpi:]
-    S_mean = S_mean[:,JPI-jpi:]
+    T_mean =  T_mean[:,JPI-jpi:]
+    S_mean =  S_mean[:,JPI-jpi:]
+    
+    Map2d_T  =  Map2d_T[:,JPI-jpi:]
+    Map2d_S  =  Map2d_S[:,JPI-jpi:]
+    Map2d_UV =  Map2d_UV[:,JPI-jpi:]
     
     UV_mean[~water] = 1.0e+20
     T_mean[~water]  = 1.0e+20
     S_mean[~water]  = 1.0e+20
-        
-    #rho = rho[:jpk,:,JPI-jpi:]
-    netcdf4.write_2d_file(UV_mean,'UV',outputfile_UV,themask,fillValue=1e+20,compression=True)
-    netcdf4.write_2d_file(T_mean,'T',outputfile_T,themask,fillValue=1e+20,compression=True)
-    netcdf4.write_2d_file(S_mean,'S',outputfile_S,themask,fillValue=1e+20,compression=True)
+    
+    Map2d_T[~water]  = 1.0e+20
+    Map2d_S[~water]  = 1.0e+20
+    Map2d_UV[~water] = 1.0e+20
 
+    netcdf4.write_2d_file(UV_mean,'UV',outputfile_UV_bottom,themask,fillValue=1e+20,compression=True)
+    netcdf4.write_2d_file(T_mean,'T',outputfile_T_bottom,themask,fillValue=1e+20,compression=True)
+    netcdf4.write_2d_file(S_mean,'S',outputfile_S_bottom,themask,fillValue=1e+20,compression=True)
+    
+    netcdf4.write_2d_file(Map2d_UV,'UV',outputfile_UV_top,themask,fillValue=1e+20,compression=True)
+    netcdf4.write_2d_file(Map2d_T,'T',outputfile_T_top,themask,fillValue=1e+20,compression=True)
+    netcdf4.write_2d_file(Map2d_S,'S',outputfile_S_top,themask,fillValue=1e+20,compression=True)
+    
+    
+    
+    

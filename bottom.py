@@ -110,11 +110,13 @@ for time in TL.Timelist[rank::nranks]:
     outputdir_bottom = outputdir + 'bottom/'
     outputdir_top = outputdir + 'top/'
     outputfile_bottom = outputdir_bottom +'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d.'+var+'.nc'
-    print outputfile
-    VAR = DataExtractor(themask,inputfile,var).values
-    DE = DataExtractor(themask,inputfile,var)
-    outputfile_top = outputdir_top +'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d.'+var+'.nc'
     
+    print outputfile_bottom
+    
+    DE = DataExtractor(themask,inputfile,var)
+    VAR = DE.values
+    
+    outputfile_top = outputdir_top +'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d.'+var+'.nc'
     Map2d = MapBuilder.get_layer_average(DE, layer)
 
     var_b1=np.zeros((jpj,jpi),np.float32)
@@ -137,5 +139,5 @@ for time in TL.Timelist[rank::nranks]:
     Map2d[~water] = 1.0e+20
 
     netcdf4.write_2d_file(w_mean,var,outputfile_bottom,themask,fillValue=1e+20,compression=True)
-    netcdf4.write_2d_file(Map2d,var,outputfile_top,themask,fillValue=1e+20,compression=True)
+    netcdf4.write_2d_file(Map2d, var,   outputfile_top,themask,fillValue=1e+20,compression=True)
 
