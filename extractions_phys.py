@@ -108,8 +108,8 @@ for time in TL.Timelist[rank::nranks]:
     inputfile_T = inputdir+'T'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
     inputfile_V = inputdir+'V'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
     
-    outputdir_bottom = outputdir + 'bottom/'
-    outputdir_top    = outputdir + 'top/'
+    outputdir_bottom = outputdir +'2014_2019/'+'bottom/'
+    outputdir_top    = outputdir +'2014_2019/'+'top/'
     
     outputfile_T_bottom  = outputdir_bottom+ 'T'  + time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
     outputfile_S_bottom  = outputdir_bottom+ 'S'  + time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'

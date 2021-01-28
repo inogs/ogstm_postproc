@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH --job-name=chl_check
+#SBATCH --job-name=pP
 #SBATCH -N1
 #SBATCH --ntasks-per-node=1
-#SBATCH --time=00:30:00
+#SBATCH --time=00:50:00
 #SBATCH --mem=115gb
 #SBATCH --account=OGS20_PRACE_P
 #SBATCH --partition=gll_usr_prod
@@ -29,7 +29,7 @@ OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/TEST_VINKO_output_phys/
 MESHMASK=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc
 
 
-my_prex_or_die "mpirun python median_physics.py -i $INPUTDIR -o $OUTPUTDIR -m $MESHMASK -s '2014' -e '2019'"
+my_prex_or_die "mpirun python percentiles_phys.py -i $INPUTDIR -o $OUTPUTDIR -m $MESHMASK -s '2014' -e '2019'"
 
 
 exit 0

@@ -55,7 +55,21 @@ from commons import netcdf4
 from commons.dataextractor import DataExtractor
 from commons.Timelist import TimeList,TimeInterval
 from commons.utils import addsep
-from datetime import datetime
+from layer_integral.mapbuilder import MapBuilder
+from commons.layer import Layer
+
+
+try:
+    from mpi4py import MPI
+    comm  = MPI.COMM_WORLD
+    rank  = comm.Get_rank()
+    nranks =comm.size
+    isParallel = True
+except:
+    rank   = 0
+    nranks = 1
+    isParallel = False
+
 
 inputdir   = addsep(args.inputdir)
 outputdir   = addsep(args.outputdir)
@@ -64,63 +78,66 @@ starttime = args.starttime
 endtime = args.endtime
 var = args.variable
 
-#starttime='2014'
-#endtime='2015'
-#inputdir='/gpfs/scratch/userexternal/gcoidess/TEST_VINKO_output/'
-#var='N1p'
+layer = Layer(0,200)
 
-inputdir_bottom=inputdir+'bottom/'
-inputdir_top=inputdir+'top/'
-#outputdir='/gpfs/scratch/userexternal/gcoidess/TEST_VINKO_output/'
-outputdir_bottom = outputdir + 'bottom/'
-outputdir_top    = outputdir + 'top/'
 #themask = Mask('/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc')
-themask = Mask(mask)
+themask= Mask(mask)
+bottom_indexes = themask.bathymetry_in_cells()
+
+bottom_1 = bottom_indexes - 1
+bottom_2 = bottom_indexes - 2
+
+
 jpk, jpj, jpi = themask.shape
 
+e3t_b1=np.zeros((jpj,jpi),np.float32)
+e3t_b2=np.zeros((jpj,jpi),np.float32)
+water = themask.mask[0,:,:]
+for i in range(jpi):
+    for j in range(jpj):
+        b1=bottom_1[j,i]
+        b2=bottom_2[j,i]
+        if water[j,i]:
+            e3t_b1[j,i] = themask.e3t[b1,j,i]
+            e3t_b2[j,i] = themask.e3t[b2,j,i]
+#var='N1p'
+#inputdir='/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/AVE_FREQ_1/'
+#outputdir='/gpfs/scratch/userexternal/gcoidess/TEST_VINKO_output/'
 TI=TimeInterval(starttime,endtime,'%Y')
-
-TL=TimeList.fromfilenames(TI, inputdir_bottom,"ave*nc",filtervar="N1p")
-
-nFrames=TL.nTimes
-
-matrix_bottom=np.zeros((nFrames,jpj,jpi),np.float32)
-matrix_median=np.zeros((jpj,jpi),np.float32)
-
-for iFrame,time in enumerate(TL.Timelist):
+TL=TimeList.fromfilenames(TI, inputdir, '*.nc', filtervar=var)
+for time in TL.Timelist[rank::nranks]:
+    inputfile = inputdir+'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+var+'.nc'
+    outputdir_bottom = outputdir +'2014_2019/'+'bottom/'
+    outputdir_top = outputdir +'2014_2019/'+'top/'
+    outputfile_bottom = outputdir_bottom +'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d.'+var+'.nc'
     
-    inputfile=inputdir_bottom+'ave.'+time.strftime('%Y%m%d-')+ '12:00:00.'+'bottom2d.'+var+'.nc'
-    matrix_bottom[iFrame,:,:] = netcdf4.readfile(inputfile, var)
-        
-matrix_median=np.median(matrix_bottom,axis=0)  #primo indice
-
-outputfile_bottom=outputdir_bottom+'ave.'+'bottom2d_median.'+var+'.nc'       
-netcdf4.write_2d_file(matrix_median,var,outputfile_bottom,themask,fillValue=1e+20,compression=True)
-print 'median done'
-
-matrix_top=np.zeros((nFrames,jpj,jpi),np.float32)
-matrix_top=np.zeros((jpj,jpi),np.float32)
-
-for iFrame,time in enumerate(TL.Timelist):
+    print outputfile_bottom
     
-    inputfile=inputdir_top+'ave.'+time.strftime('%Y%m%d-')+ '12:00:00.'+'top2d.'+var+'.nc'
-    matrix_bottom[iFrame,:,:] = netcdf4.readfile(inputfile, var)
-        
-matrix_median=np.median(matrix_top,axis=0)  #primo indice
-        
-outputfile_top=outputdir_top+'ave.'+'top2d_median.'+var+'.nc'       
-netcdf4.write_2d_file(matrix_median,var,outputfile_top,themask,fillValue=1e+20,compression=True)
-print 'median done'
+    DE = DataExtractor(themask,inputfile,var)
+    VAR = DE.values
+    
+    outputfile_top = outputdir_top +'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+'top2d.'+var+'.nc'
+    Map2d = MapBuilder.get_layer_average(DE, layer)
+
+    var_b1=np.zeros((jpj,jpi),np.float32)
+    var_b2=np.zeros((jpj,jpi),np.float32)
+
+    w_mean=np.zeros((jpj,jpi),np.float32)
+
+    for i in range(jpi):
+        for j in range(jpj):
+            b1=bottom_1[j,i]
+            b2=bottom_2[j,i]
+            if water[j,i]:
+                var_b1[j,i] = VAR[b1,j,i]
+                var_b2[j,i] = VAR[b2,j,i]
 
 
+    w_mean[water] = (var_b1[water]*e3t_b1[water] + var_b2[water]*e3t_b2[water])/(e3t_b1[water]+e3t_b2[water])
 
+    w_mean[~water] = 1.0e+20
+    Map2d[~water] = 1.0e+20
 
-
-
-
-
-
-
-
-
+    netcdf4.write_2d_file(w_mean,var,outputfile_bottom,themask,fillValue=1e+20,compression=True)
+    netcdf4.write_2d_file(Map2d, var,   outputfile_top,themask,fillValue=1e+20,compression=True)
 
