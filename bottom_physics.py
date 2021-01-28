@@ -90,7 +90,7 @@ jpk, jpj, jpi = themask.shape
 e3t_b1_ingv=np.zeros((JPJ,JPI),np.float32)
 e3t_b2_ingv=np.zeros((JPJ,JPI),np.float32)
 water_ingv = IngvMask.mask[0,:,:]
-water = themask[0,:,:]
+water = themask.mask[0,:,:]
 for I in range(JPI):
     for J in range(JPJ):
         B1=bottom_1_ingv[J,I]
