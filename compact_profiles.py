@@ -100,6 +100,12 @@ for var in VARLIST[rank::nranks]:
     ncvar=ncOUT.createVariable(var,'f',('nFrames','nSub','nCoast','depth', 'nStat'))
     ncvar[:] =TIMESERIES
 
+    ncvar = ncOUT.createVariable('depth','f',('depth',))
+    setattr(ncvar, 'units', 'meters')
+    setattr(ncvar, 'positive', 'down')
+    setattr(ncvar, 'actual_range', '4.9991f, 4450.068f')
+    ncvar[:] = nav_lev
+
     setattr(ncOUT,"frame_list"  ,  FrameDesc)
     setattr(ncOUT,"sub___list"  ,  SubDescr[:-2])
     setattr(ncOUT,"coast_list"  ,CoastDescr[:-2])
