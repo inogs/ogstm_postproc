@@ -28,12 +28,14 @@ INPUTDIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/FORCING
 OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/TEST_VINKO_output_phys/
 MESHMASK_ORIG=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/ogstm/meshmask_INGVfor_ogstm.nc
 MESHMASK=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc
+Start_time=2018
+End_time=2019
 
-mkdir -p $OUTPUTDIR/2014_2019/bottom
-mkdir -p $OUTPUTDIR/2014_2019/top
+mkdir -p $OUTPUTDIR/2018_2019/bottom
+mkdir -p $OUTPUTDIR/2018_2019/top
 
 
-my_prex_or_die "mpirun python extractions_phys.py -i $INPUTDIR -o $OUTPUTDIR -M $MESHMASK_ORIG -m $MESHMASK -s '2014' -e '2019'"
+my_prex_or_die "mpirun python extractions_phys.py -i $INPUTDIR -o $OUTPUTDIR -M $MESHMASK_ORIG -m $MESHMASK -s $Start_time -e $End_time"
 
 
 exit 0

@@ -82,7 +82,7 @@ layer = Layer(0,200)
 
 #themask = Mask('/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc')
 themask= Mask(mask)
-bottom_indexes = themask.bathymetry_in_cells()
+bottom_indexes = themask.bathymetry_in_cells() - 1
 
 bottom_1 = bottom_indexes - 1
 bottom_2 = bottom_indexes - 2
@@ -107,8 +107,8 @@ TI=TimeInterval(starttime,endtime,'%Y')
 TL=TimeList.fromfilenames(TI, inputdir, '*.nc', filtervar=var)
 for time in TL.Timelist[rank::nranks]:
     inputfile = inputdir+'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+var+'.nc'
-    outputdir_bottom = outputdir +'2014_2019/'+'bottom/'
-    outputdir_top = outputdir +'2014_2019/'+'top/'
+    outputdir_bottom = outputdir +starttime+'_'+endtime+'/'+'bottom/'
+    outputdir_top = outputdir +starttime+'_'+endtime+'/'+'top/'
     outputfile_bottom = outputdir_bottom +'ave.'+ time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d.'+var+'.nc'
     
     print outputfile_bottom

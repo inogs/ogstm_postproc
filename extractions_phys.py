@@ -79,7 +79,7 @@ layer = Layer(0,200)
 IngvMask= Mask(maskfile_ingv)
 themask = Mask(mask_f)
 
-bottom_indexes_ingv=IngvMask.bathymetry_in_cells()
+bottom_indexes_ingv=IngvMask.bathymetry_in_cells() - 1
 
 bottom_1_ingv = bottom_indexes_ingv - 1
 bottom_2_ingv = bottom_indexes_ingv - 2
@@ -108,8 +108,8 @@ for time in TL.Timelist[rank::nranks]:
     inputfile_T = inputdir+'T'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
     inputfile_V = inputdir+'V'+ time.strftime('%Y%m%d-%H:%M:%S')+'.nc'
     
-    outputdir_bottom = outputdir +'2014_2019/'+'bottom/'
-    outputdir_top    = outputdir +'2014_2019/'+'top/'
+    outputdir_bottom = outputdir +starttime+'_'+endtime+'/'+'bottom/'
+    outputdir_top    = outputdir +starttime+'_'+endtime+'/'+'top/'
     
     outputfile_T_bottom  = outputdir_bottom+ 'T'  + time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'
     outputfile_S_bottom  = outputdir_bottom+ 'S'  + time.strftime('%Y%m%d-%H:%M:%S.')+'bottom2d'+'.nc'

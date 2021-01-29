@@ -56,11 +56,11 @@ mask   = args.mask
 starttime = args.starttime
 endtime = args.endtime
 
-inputdir_bottom=inputdir+'2014_2019/'+'bottom/'
-inputdir_top=inputdir+'2014_2019/'+'top/'
+inputdir_bottom=inputdir+starttime+'_'+endtime+'/'+'bottom/'
+inputdir_top=inputdir+starttime+'_'+endtime+'/'+'top/'
 
-outputdir_bottom = outputdir +'2014_2019/'+ 'bottom/'
-outputdir_top    = outputdir +'2014_2019/'+ 'top/'
+outputdir_bottom = outputdir +starttime+'_'+endtime+'/'+ 'bottom/'
+outputdir_top    = outputdir +starttime+'_'+endtime+'/'+ 'top/'
 
 themask = Mask(mask)
 jpk, jpj, jpi = themask.shape

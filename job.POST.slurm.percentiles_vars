@@ -3,7 +3,7 @@
 #SBATCH --job-name=pV
 #SBATCH -N1
 #SBATCH --ntasks-per-node=1
-#SBATCH --time=01:10:00
+#SBATCH --time=02:50:00
 #SBATCH --mem=115gb
 #SBATCH --account=OGS20_PRACE_P
 #SBATCH --partition=gll_usr_prod
@@ -27,10 +27,11 @@ date
 INPUTDIR=/gpfs/scratch/userexternal/gcoidess/TEST_VINKO_output/
 OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/TEST_VINKO_output/
 MESHMASK=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc
-
+Start_time=2018
+End_time=2019
 
 for var in N3n N1p N4n P_c P_l O2o pH DIC ALK ;do
-	my_prex_or_die "mpirun python percentiles_vars.py -i $INPUTDIR -o $OUTPUTDIR -m $MESHMASK -s 2014 -e 2019 -v $var"
+	my_prex_or_die "mpirun python percentiles_vars.py -i $INPUTDIR -o $OUTPUTDIR -m $MESHMASK -s $Start_time -e $End_time -v $var"
 done
 
 exit 0

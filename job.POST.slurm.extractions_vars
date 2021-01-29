@@ -27,12 +27,14 @@ date
 INPUTDIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/AVE_FREQ_1/
 OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/TEST_VINKO_output/
 MESHMASK=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc
+Start_time=2018
+End_time=2019
 
-mkdir -p $OUTPUTDIR/2014_2019/bottom
-mkdir -p $OUTPUTDIR/2014_2019/top
+mkdir -p $OUTPUTDIR/2018_2019/bottom
+mkdir -p $OUTPUTDIR/2018_2019/top
 
-for var in N3n N1p N4n P_c P_l O2o pH DIC ALK ;do
-	my_prex_or_die "mpirun python extractions_vars.py -i $INPUTDIR -o $OUTPUTDIR -m $MESHMASK -s '2014' -e '2019' -v $var"
+for var in N3n N1p N4n P_c P_l O2o pH DIC ALK ppn ;do
+	my_prex_or_die "mpirun python extractions_vars.py -i $INPUTDIR -o $OUTPUTDIR -m $MESHMASK -s $Start_time -e $End_time -v $var"
 done
 
 exit 0
