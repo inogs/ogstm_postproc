@@ -1,17 +1,18 @@
 #!/bin/bash
 
-####     DNT_generator_dataset.sh  #           #####
+### Phase2_DU_uploader_dataset_006_008_daily.sh  ###
 #   Sends products to COPERNICUS phase II DU       #
 #      generates delivery note xml file            #
 #                                                  #
-#   Author: GB. 2018.02.09                         #
+#   Author: GB. 2018.02.09                         # 
+#   MOD : GC. 2021.03.25                           #
 ####################################################
 
 
 usage() {
 echo "Uploads Reanalysis product files"
 echo "SYNOPSYS"
-echo "DNT_generator_dataset.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y $YEAR ]"
+echo "Phase2_DU_uploader_dataset_006_008_daily.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y $YEAR ]"
 echo ""
 }
 
@@ -31,30 +32,33 @@ for I in 1 2 3 ; do
 done
 
 
-BINDIR=/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bin/
+BINDIR=/gpfs/work/OGS20_PRACE_P/COPERNICUS/bin
 
 
 
 FILES_TO_SEND="${YEAR}*${type}*.nc"
 
 if [[ "$type" == "BIOL" ]]; then
-   dataset=sv03-med-ogs-bio-rean-m_201904
+   dataset=med-ogs-bio-rean-d_202105
 fi
 if [[ "$type" == "CARB" ]]; then
-   dataset=sv03-med-ogs-car-rean-m_201904
+   dataset=med-ogs-car-rean-d_202105
+fi
+if [[ "$type" == "CO2F" ]]; then
+   dataset=med-ogs-co2-rean-d_202105
 fi
 if [[ "$type" == "NUTR" ]]; then
-   dataset=sv03-med-ogs-nut-rean-m_201904
+   dataset=med-ogs-nut-rean-d_202105
 fi
 if [[ "$type" == "PFTC" ]]; then
-   dataset=sv03-med-ogs-pft-rean-m_201904
+   dataset=med-ogs-pft-rean-d_202105
 fi
 
 
 PushingEntity="MED-OGS-TRIESTE-IT"
 
 ###CONFIGURE THE LINES BELOW
-product=MEDSEA_REANALYSIS_BIO_006_008
+product=MEDSEA_MULTIYEAR_BGC_006_008
 username=cmems_med_ogs
 password=9J2e+uLU
 host=my.cmems-du.eu
@@ -72,11 +76,13 @@ echo "<delivery product=\"${product}\" PushingEntity=\"${PushingEntity}\" date=\
 echo "    <dataset DatasetName=\"${dataset}\">" >> $DNT_FILE
 
 
+
 for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
     basefile=`basename $file `
     yyyy=${basefile:0:4}
-    remotedir=/${product}/${dataset}/$yyyy
-    remotefile="${yyyy}/${basefile}"
+    mm=${basefile:4:2}
+    remotedir=/${product}/${dataset}/$yyyy/$mm
+    remotefile="${yyyy}/${mm}/${basefile}"
     md5s=`md5sum $file|awk '{print $1}'`
 	StarTime=`date --utc +%Y%m%dT%H%M%SZ`
 	EndTime=${StarTime}
