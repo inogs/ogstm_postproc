@@ -1,11 +1,13 @@
 #! /bin/bash
 
-PATH=$PATH:/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bin/
-PROD_DIR=/gpfs/scratch/userexternal/gbolzon0/OPEN_BOUNDARY/TEST_07/wrkdir/POSTPROC/bin_prod/prodotti/REAN_PRODS
+PROD_DIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI/daily/
 
-YEAR=2015
-for type in BIOL CARB NUTR PFTC; do
-    ./Phase2_DU_uploader_dataset_006_008.sh -i $PROD_DIR -t $type -y $YEAR
+YEAR=1999
+logDir=./XML
+mkdir -p $logDir
+
+for type in BIOL CARB NUTR PFTC CO2F; do
+    ./Phase2_DU_uploader_dataset_006_008_daily.sh -i $PROD_DIR -t $type -y $YEAR -l $logDir
 done
 
 

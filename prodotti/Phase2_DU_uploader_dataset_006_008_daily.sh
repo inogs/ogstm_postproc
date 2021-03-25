@@ -12,20 +12,21 @@
 usage() {
 echo "Uploads Reanalysis product files"
 echo "SYNOPSYS"
-echo "Phase2_DU_uploader_dataset_006_008_daily.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y $YEAR ]"
+echo "Phase2_DU_uploader_dataset_006_008_daily.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y YEAR ] [ -l LOGDIR ]"
 echo ""
 }
 
-if [ $# -lt 6 ] ; then
+if [ $# -lt 8 ] ; then
   usage
   exit 1
 fi
 
-for I in 1 2 3 ; do
+for I in 1 2 3 4; do
    case $1 in
       "-i" ) PROD_DIR=$2;;
       "-t" ) type=$2;;
       "-y" ) YEAR=$2;;
+      "-l" ) logDir=$2;;
         *  ) echo "Unrecognized option $1." ; usage;  exit 1;;
    esac
    shift 2
@@ -62,7 +63,6 @@ product=MEDSEA_MULTIYEAR_BGC_006_008
 username=cmems_med_ogs
 password=9J2e+uLU
 host=my.cmems-du.eu
-logDir=. #log
 port=21
 ###
 
