@@ -1,0 +1,51 @@
+#!/bin/bash
+
+#SBATCH --job-name=prod_daily
+#SBATCH -N 5
+#SBATCH --ntasks-per-node=25
+#SBATCH --time=05:00:00
+#SBATCH --mem=115gb
+#SBATCH --account=OGS_prod_0
+#SBATCH -p gll_meteo_prod
+#SBATCH --dependency=afterany:8127755
+#SBATCH --qos=gll_qos_meteoogs
+
+cd $SLURM_SUBMIT_DIR
+
+module purge
+module load profile/base
+module load intel/pe-xe-2018--binary intelmpi/2018--binary
+module load autoload
+module load hdf5/1.8.18--intel--pe-xe-2018--binary netcdf/4.6.1--intel--pe-xe-2018--binary
+module load mpi4py/3.0.0--intelmpi--2018--binary
+source /gpfs/work/OGS20_PRACE_P/COPERNICUS/py_env_2.7.12/bin/activate
+export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS20_PRACE_P/COPERNICUS/bit.sea
+
+
+. ../profile.inc
+
+
+BASEDIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/
+INPUTDIR=$BASEDIR/AVE_FREQ_1/
+OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI/daily/
+MASKFILE=$BASEDIR/meshmask.nc
+#daily
+
+mkdir -p $OUTPUTDIR
+HERE=$PWD
+cd $INPUTDIR
+ls ave.199901*N1p.nc | cut -c 5-12 > $HERE/timelist
+
+cd $SLURM_SUBMIT_DIR
+my_prex_or_die "mpirun python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist -m $MASKFILE -b 20210323 --tr daily"
+
+exit 0
+
+#monthly 
+
+ls ave.1999*N1p.nc | cut -c 5-12 > $HERE/timelist
+
+cd $SLURM_SUBMIT_DIR
+my_prex_or_die "mpirun python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist -m $MASKFILE -b 20210323 --tr monthly"
+
+

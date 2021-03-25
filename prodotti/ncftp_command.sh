@@ -1,12 +1,12 @@
 #! /bin/bash
 
-HOST=nrt.cmems-du.eu
-PRODUCT=MEDSEA_ANALYSIS_FORECAST_BIO_006_014
+HOST=my.cmems-du.eu
+PRODUCT=MEDSEA_MULTIYEAR_BGC_006_008
 
-for YEAR in $(seq 2017 2023 ) ; do
+for YEAR in $(seq 1999 2022) ; do
 	for group in bio car nut pft co2 ; do
-	    dataset=med00-ogs-${group}-an-fc-d_202003
-		/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bin/ncftp -P 21 -u cmems_med_ogs -p 9J2e+uLU $HOST <<EOF
+            dataset=med-ogs-${group}-rean-d_202105
+	    /gpfs/work/OGS20_PRACE_P/COPERNICUS/bin/ncftp -P 21 -u cmems_med_ogs -p 9J2e+uLU $HOST <<EOF
 cd /${PRODUCT}/${dataset}
 mkdir ${YEAR}
 cd ${YEAR}
