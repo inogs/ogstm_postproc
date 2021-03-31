@@ -11,20 +11,21 @@
 usage() {
 echo "Uploads chain product files"
 echo "SYNOPSYS"
-echo "DNT_generator_dataset.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y $YEAR ]"
+echo "DNT_generator_dataset.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y $YEAR ] [ -l LOGDIR ]"
 echo ""
 }
 
-if [ $# -lt 6 ] ; then
+if [ $# -lt 8 ] ; then
   usage
   exit 1
 fi
 
-for I in 1 2 3 ; do
+for I in 1 2 3 4; do
    case $1 in
       "-i" ) PROD_DIR=$2;;
       "-t" ) TYPE=$2;;
       "-y" ) YEAR=$2;;
+      "-l" ) logDir=$2;;
         *  ) echo "Unrecognized option $1." ; usage;  exit 1;;
    esac
    shift 2
@@ -62,16 +63,15 @@ function decide_action {
 }
 
 
-BINDIR=/gpfs/work/OGS18_PRACE_P_0/COPERNICUS/bin/
+BINDIR=/gpfs/work/OGS20_PRACE_P/COPERNICUS/bin
 FILES_TO_SEND="${YEAR}*${TYPE}*.nc"
 
-
 case $TYPE in
-   "BIOL" ) dataset=med00-ogs-bio-an-fc-d_202003 ;;
-   "CARB" ) dataset=med00-ogs-car-an-fc-d_202003 ;;
-   "NUTR" ) dataset=med00-ogs-nut-an-fc-d_202003 ;;
-   "PFTC" ) dataset=med00-ogs-pft-an-fc-d_202003 ;;
-   "CO2F" ) dataset=med00-ogs-co2-an-fc-d_202003 ;;
+   "BIOL" ) dataset=med-ogs-bio-an-fc-d_202105 ;;
+   "CARB" ) dataset=med-ogs-car-an-fc-d_202105 ;;
+   "NUTR" ) dataset=med-ogs-nut-an-fc-d_202105 ;;
+   "PFTC" ) dataset=med-ogs-pft-an-fc-d_202105 ;;
+   "CO2F" ) dataset=med-ogs-co2-an-fc-d_202105 ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac
 
@@ -79,7 +79,7 @@ esac
 PushingEntity="MED-OGS-TRIESTE-IT"
 
 ###CONFIGURE THE LINES BELOW
-product=MEDSEA_ANALYSIS_FORECAST_BIO_006_014
+product=MEDSEA_ANALYSISFORECAST_BGC_006_014
 username=cmems_med_ogs
 password=9J2e+uLU
 host=nrt.cmems-du.eu
