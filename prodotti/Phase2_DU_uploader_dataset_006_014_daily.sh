@@ -83,7 +83,7 @@ product=MEDSEA_ANALYSISFORECAST_BGC_006_014
 username=cmems_med_ogs
 password=9J2e+uLU
 host=nrt.cmems-du.eu
-logDir=. #log
+#logDir=. #log
 port=21
 ###
 
@@ -107,9 +107,10 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
      day=${basefile:0:8}
 
     # -------------------------------------
-    remote_name=`./get_daily_product_in_DU.sh -d $day -t $TYPE `
-    decide_action $basefile $remote_name
-    ACTION=$?
+    #remote_name=`./get_daily_product_in_DU.sh -d $day -t $TYPE `
+    #decide_action $basefile $remote_name
+    #ACTION=$?
+    ACTION=3
     # -------------------------------------
 
  case $ACTION in
