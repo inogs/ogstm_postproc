@@ -265,7 +265,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'mg m-3')
             setattr(ncvar,'long_name'    ,'Concentration of Chlorophyll in sea water')
-            setattr(ncvar,'standard_name','mass_concentration_of_chlorophyll_in_sea_water')
+            setattr(ncvar,'standard_name','mass_concentration_of_chlorophyll_a_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             
             try:
