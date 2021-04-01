@@ -3,7 +3,7 @@
 #SBATCH --job-name=prod_daily
 #SBATCH -N 5
 #SBATCH --ntasks-per-node=25
-#SBATCH --time=05:00:00
+#SBATCH --time=20:00:00
 #SBATCH --mem=115gb
 #SBATCH --account=OGS_prod_0
 #SBATCH -p gll_meteo_prod
@@ -24,28 +24,46 @@ export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS20_PRACE_P/COPERNICUS/bit.sea
 
 . ../profile.inc
 
+#monthly
+BASEDIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/
+INPUTDIR=/gpfs/scratch/userexternal/gcoidess/POSTPROC_REA_24/TEST22/MONTHLY_ALL/
+OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI_MY/monthly/
+MASKFILE=$BASEDIR/meshmask.nc
+
+mkdir -p $OUTPUTDIR
+HERE=$PWD
+cd $INPUTDIR
+for Y in 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019
+do
+    ls ave.$Y*N1p.nc | cut -c 5-12 >> $HERE/timelist_monthly
+done
+
+cd $SLURM_SUBMIT_DIR
+my_prex_or_die "mpirun python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist_monthly -m $MASKFILE -b 20210323 --tr monthly"
+
+
+
 
 BASEDIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/
 INPUTDIR=$BASEDIR/AVE_FREQ_1/
-OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI/daily/
+OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI_MY/daily/
 MASKFILE=$BASEDIR/meshmask.nc
 #daily
 
 mkdir -p $OUTPUTDIR
 HERE=$PWD
 cd $INPUTDIR
-ls ave.199901*N1p.nc | cut -c 5-12 > $HERE/timelist
+for Y in 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 
+do
+    for M in 01 02 03 04 05 06 07 08 09 10 11 12
+    do
+        ls ave.$Y$M*N1p.nc | cut -c 5-12 >> $HERE/timelist
+    done
+done
+
 
 cd $SLURM_SUBMIT_DIR
 my_prex_or_die "mpirun python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist -m $MASKFILE -b 20210323 --tr daily"
 
 exit 0
-
-#monthly 
-
-ls ave.1999*N1p.nc | cut -c 5-12 > $HERE/timelist
-
-cd $SLURM_SUBMIT_DIR
-my_prex_or_die "mpirun python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist -m $MASKFILE -b 20210323 --tr monthly"
-
 
