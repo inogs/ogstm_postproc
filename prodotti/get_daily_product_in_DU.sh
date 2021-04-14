@@ -38,21 +38,21 @@ done
 function ncftp_check {
 filename=$1
 
-HOST=nrt.cmems-du.eu
+HOST=nrt-dev.cmems-du.eu
 ncftp -P 21 -u MED_OGS_TRIESTE_IT -p NEdifupa $HOST <<EOF
 dir $filename
 EOF
 
 }
 
-PRODUCT=MEDSEA_ANALYSIS_FORECAST_BIO_006_014
+PRODUCT=MEDSEA_ANALYSISFORECAST_BGC_006_014
 
 case $TYPE in 
-   "BIOL" ) dataset=med00-ogs-bio-an-fc-d ;;
-   "CARB" ) dataset=med00-ogs-car-an-fc-d ;;
-   "NUTR" ) dataset=med00-ogs-nut-an-fc-d ;;
-   "PFTC" ) dataset=med00-ogs-pft-an-fc-d ;;
-   "CO2F" ) dataset=med00-ogs-co2-an-fc-d ;;
+   "BIOL" ) dataset=med-ogs-bio-an-fc-d ;;
+   "CARB" ) dataset=med-ogs-car-an-fc-d ;;
+   "NUTR" ) dataset=med-ogs-nut-an-fc-d ;;
+   "PFTC" ) dataset=med-ogs-pft-an-fc-d ;;
+   "CO2F" ) dataset=med-ogs-co2-an-fc-d ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac   
 
