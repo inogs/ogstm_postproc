@@ -107,10 +107,9 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
      day=${basefile:0:8}
 
     # -------------------------------------
-    #remote_name=`./get_daily_product_in_DU.sh -d $day -t $TYPE `
-    #decide_action $basefile $remote_name
-    #ACTION=$?
-    ACTION=3
+    remote_name=`./get_daily_product_in_DU.sh -d $day -t $TYPE `
+    decide_action $basefile $remote_name
+    ACTION=$?
     # -------------------------------------
 
  case $ACTION in

@@ -17,7 +17,7 @@ echo ""
 echo "SYNOPSYS"
 echo "get_daily_product_in_DU.sh [ -d date ] [ -t type ]   "
 echo "EXAMPLE"
-echo "check_daily_products_in_DU.sh -d 20190201 -t BIOL "
+echo "check_monthly_products_in_DU.sh -d 20190201 -t BIOL "
 echo ""
 }
 
@@ -45,14 +45,14 @@ EOF
 
 }
 
-PRODUCT=MEDSEA_ANALYSIS_FORECAST_BIO_006_014
+PRODUCT=MEDSEA_ANALYSISFORECAST_BGC_006_014
 
 case $TYPE in 
-   "BIOL" ) dataset=med00-ogs-bio-an-fc-m ;;
-   "CARB" ) dataset=med00-ogs-car-an-fc-m ;;
-   "NUTR" ) dataset=med00-ogs-nut-an-fc-m ;;
-   "PFTC" ) dataset=med00-ogs-pft-an-fc-m ;;
-   "CO2F" ) dataset=med00-ogs-co2-an-fc-m ;;
+   "BIOL" ) dataset=med-ogs-bio-an-fc-m ;;
+   "CARB" ) dataset=med-ogs-car-an-fc-m ;;
+   "NUTR" ) dataset=med-ogs-nut-an-fc-m ;;
+   "PFTC" ) dataset=med-ogs-pft-an-fc-m ;;
+   "CO2F" ) dataset=med-ogs-co2-an-fc-m ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac   
 
