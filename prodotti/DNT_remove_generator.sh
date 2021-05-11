@@ -47,19 +47,18 @@ function decide_action {
        remotetype=${remotefile:43:2}
 
    if [[ $remotefile == "" ]]            ; then return 1 ; fi
-   if ( [[ $remotetype == fc ]] || [[ $remotetype == sm ]]  )  ; then return 3 ; fi
+   if ( [[ $remotetype == fc ]] || [[ $remotetype == sm ]]  )  ; then return 2 ; fi
    return 2
 }
 
-product=MEDSEA_ANALYSIS_FORECAST_BIO_006_014
+product=MEDSEA_ANALYSISFORECAST_BGC_006_014
 logDir=.
-
 case $TYPE in
-   "BIOL" ) dataset=med00-ogs-bio-an-fc-d_202003 ;;
-   "CARB" ) dataset=med00-ogs-car-an-fc-d_202003 ;;
-   "NUTR" ) dataset=med00-ogs-nut-an-fc-d_202003 ;;
-   "PFTC" ) dataset=med00-ogs-pft-an-fc-d_202003 ;;
-   "CO2F" ) dataset=med00-ogs-co2-an-fc-d_202003 ;;
+   "BIOL" ) dataset=med-ogs-bio-an-fc-d_202105 ;;
+   "CARB" ) dataset=med-ogs-car-an-fc-d_202105 ;;
+   "NUTR" ) dataset=med-ogs-nut-an-fc-d_202105 ;;
+   "PFTC" ) dataset=med-ogs-pft-an-fc-d_202105 ;;
+   "CO2F" ) dataset=med-ogs-co2-an-fc-d_202105 ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac
 
@@ -102,11 +101,11 @@ echo "    </dataset>"  >> $DNT_FILE
 ########   Monthly Section     ###########
 
 case $TYPE in
-   "BIOL" ) dataset=med00-ogs-bio-an-fc-m_202003 ;;
-   "CARB" ) dataset=med00-ogs-car-an-fc-m_202003 ;;
-   "NUTR" ) dataset=med00-ogs-nut-an-fc-m_202003 ;;
-   "PFTC" ) dataset=med00-ogs-pft-an-fc-m_202003 ;;
-   "CO2F" ) dataset=med00-ogs-co2-an-fc-m_202003 ;;
+   "BIOL" ) dataset=med-ogs-bio-an-fc-m_202105 ;;
+   "CARB" ) dataset=med-ogs-car-an-fc-m_202105 ;;
+   "NUTR" ) dataset=med-ogs-nut-an-fc-m_202105 ;;
+   "PFTC" ) dataset=med-ogs-pft-an-fc-m_202105 ;;
+   "CO2F" ) dataset=med-ogs-co2-an-fc-m_202105 ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac
 echo "    <dataset DatasetName=\"${dataset}\">" >> $DNT_FILE
