@@ -55,9 +55,9 @@ OUTPUTDIR=addsep(args.outdir)
 
 TheMask=Mask(args.maskfile)
 
-TL=TimeList.fromfilenames(None, INPUTDIR, "ave*N1p.nc", filtervar="N1p")
-
 var = args.var
+TL=TimeList.fromfilenames(None, INPUTDIR, "ave*.nc" , filtervar=var)
+
 
 
 
@@ -78,7 +78,7 @@ for req in MONTHLY_REQS[rank::nranks]:
         filelist.append(filename)
     if netcdf4.dimfile(filename, var)==3:
         M3d = TimeAverager3D(filelist, weights, inputvar, TheMask)
-        netcdf4.write_3d_file(M3d, var, outfile, TheMask)
+        netcdf4.write_3d_file(M3d, var, outfile, TheMask,compression=True)
     else:
         M2d = TimeAverager2D(filelist, weights, inputvar, TheMask)
-        netcdf4.write_2d_file(M2d, var, outfile, TheMask)
+        netcdf4.write_2d_file(M2d, var, outfile, TheMask,compression=True)
