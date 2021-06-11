@@ -1,0 +1,52 @@
+#!/bin/bash
+
+#SBATCH --job-name=uploader
+#SBATCH -N1 
+#SBATCH --ntasks-per-node=1
+#SBATCH --time=24:00:00
+#SBATCH --mem=50
+#SBATCH --account=OGS_prod_0
+#SBATCH -p gll_meteo_prod
+#SBATCH --dependency=afterany:8079393
+#SBATCH --qos=gll_qos_meteoogs
+
+cd $SLURM_SUBMIT_DIR
+
+module purge
+module load profile/base
+module load intel/pe-xe-2018--binary intelmpi/2018--binary
+module load autoload
+module load hdf5/1.8.18--intel--pe-xe-2018--binary netcdf/4.6.1--intel--pe-xe-2018--binary
+module load mpi4py/3.0.0--intelmpi--2018--binary
+source /gpfs/work/OGS20_PRACE_P/COPERNICUS/py_env_2.7.12/bin/activate
+export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS20_PRACE_P/COPERNICUS/bit.sea
+
+. ../profile.inc
+#if [ 1 == 0 ] ; then
+for year in 2021; do
+ #PROD_DIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI_NRT/prodotti_nrt/daily/TMP/
+ PROD_DIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI_NRT/postproc/prodotti/CATENA/
+ YEAR=$year
+ logDir=./XML_daily_cat
+ mkdir -p $logDir
+
+ for type in BIOL CARB NUTR PFTC CO2F; do
+    my_prex_or_die "./Phase2_DU_uploader_dataset_006_014_daily.sh -i $PROD_DIR -t $type -y $YEAR -l $logDir"
+ done
+
+done
+
+#fi 
+exit 0
+for year in 2021;do
+ PROD_DIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI_NRT/prodotti_nrt/monthly/TMP/
+   
+ YEAR=$year
+ logDir=./XML_monthly_tmp
+ mkdir -p $logDir
+ 
+ for type in BIOL CARB NUTR PFTC CO2F; do
+    my_prex_or_die "./Phase2_DU_uploader_dataset_006_014_monthly.sh -i $PROD_DIR -t $type -y $YEAR -l $logDir"
+ done
+
+done
