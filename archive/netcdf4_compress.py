@@ -74,17 +74,17 @@ def WRITE_AVE(inputfile, outfile,var):
         ncvar = ncOUT.createVariable('depth'   ,'f', ('depth',))
         setattr(ncvar,'units','meter')
         setattr(ncvar,'positive','down')
-        ncvar[:]=np.array(ncIN['depth'])
+        ncvar[:]=np.array(ncIN[depth_dimension_name(ncIN)])
     
     ncvar = ncOUT.createVariable('lon'   ,'f',   ('lon',))
     setattr(ncvar,'units','degrees_east')
     setattr(ncvar,'long_name','Longitude')
-    ncvar[:]=np.array(ncIN['lon'])
+    ncvar[:]=np.array(ncIN[lon_dimension_name(ncIN)])
 
     ncvar = ncOUT.createVariable('lat'   ,'f',   ('lat',))
     setattr(ncvar,'units','degrees_north')
     setattr(ncvar,'long_name','Latitude')
-    ncvar[:]=np.array(ncIN['lat'])
+    ncvar[:]=np.array(ncIN[lat_dimension_name(ncIN)])
 
     OUT = np.array(ncIN[var])
     if len(OUT.shape)==4:
