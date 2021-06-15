@@ -69,34 +69,52 @@ def WRITE_AVE(inputfile, outfile,var):
     DIMS=ncIN.dimensions
     for dimName,dimObj in DIMS.items():
         ncOUT.createDimension(dimName,dimObj.size)
+    lon_orig_name=lon_dimension_name(ncIN)
+    lat_orig_name=lat_dimension_name(ncIN)
+    depth_orig_name=depth_dimension_name(ncIN)
 
-    if 'depth' in ncIN.variables: #run_co2_catena.py does not produce depth 
+
+    if 'depth' in ncIN.variables:
         ncvar = ncOUT.createVariable('depth'   ,'f', ('depth',))
         setattr(ncvar,'units','meter')
         setattr(ncvar,'positive','down')
-        ncvar[:]=np.array(ncIN[depth_dimension_name(ncIN)])
+        ncvar[:]=np.array(ncIN[depth_orig_name])
     
-    ncvar = ncOUT.createVariable('lon'   ,'f',   ('lon',))
+    ncvar = ncOUT.createVariable(lon_orig_name   ,'f',   (lon_orig_name,))
     setattr(ncvar,'units','degrees_east')
     setattr(ncvar,'long_name','Longitude')
-    ncvar[:]=np.array(ncIN[lon_dimension_name(ncIN)])
+    ncvar[:]=np.array(ncIN[lon_orig_name])
 
-    ncvar = ncOUT.createVariable('lat'   ,'f',   ('lat',))
+    ncvar = ncOUT.createVariable(lat_orig_name   ,'f',   (lat_orig_name,))
     setattr(ncvar,'units','degrees_north')
     setattr(ncvar,'long_name','Latitude')
-    ncvar[:]=np.array(ncIN[lat_dimension_name(ncIN)])
+    ncvar[:]=np.array(ncIN[lat_orig_name])
+
 
     OUT = np.array(ncIN[var])
-    if len(OUT.shape)==4:
-        ncvar = ncOUT.createVariable(var, 'f', ('time','depth','lat','lon'),zlib=True, fill_value=1.0e+20)            
-        setattr(ncvar,'missing_value',ncvar._FillValue)
-        setattr(ncvar,'long_name',var)
-        ncvar[:] = OUT
-    if len(OUT.shape)==3:
-        ncvar = ncOUT.createVariable(var, 'f', ('time','lat','lon'),zlib=True, fill_value=1.0e+20)            
-        setattr(ncvar,'missing_value',ncvar._FillValue)
-        setattr(ncvar,'long_name',var)
-        ncvar[:] =  OUT       
+    if 'time' in ncIN.dimensions:
+        if len(OUT.shape)==4:
+            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'long_name',var)
+            ncvar[:] = OUT
+        if len(OUT.shape)==3:
+            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'long_name',var)
+            ncvar[:] =  OUT
+    else:
+        ncOUT.createDimension('time',0)
+        if len(OUT.shape)==3:
+            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'long_name',var)
+            ncvar[0,:] = OUT
+        if len(OUT.shape)==2:
+            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'long_name',var)
+            ncvar[0,:] =  OUT
     ncIN.close()
     ncOUT.close()
 
