@@ -1,37 +1,38 @@
-#!/bin/bash
+#! /bin/bash
 
 #SBATCH --job-name=POST
-#SBATCH -N1
-#SBATCH --ntasks-per-node=36
-#SBATCH --time=0:30:00
-#SBATCH --mem=100gb
-#SBATCH --account=OGS20_PRACE_P
-#SBATCH --partition=gll_usr_prod
+#SBATCH -N2
+#SBATCH --ntasks-per-node=16
+#SBATCH --time=01:30:00
+#SBATCH --mem=300gb
+#SBATCH --account=OGS20_PRACE_P_2
+#SBATCH --partition=g100_usr_prod
 
 cd $SLURM_SUBMIT_DIR
 
-module purge
-module load profile/base
-module load intel/pe-xe-2018--binary intelmpi/2018--binary
-module load autoload
-module load hdf5/1.8.18--intel--pe-xe-2018--binary netcdf/4.6.1--intel--pe-xe-2018--binary
-module load mpi4py/3.0.0--intelmpi--2018--binary
-source /gpfs/work/OGS20_PRACE_P/COPERNICUS/py_env_2.7.12/bin/activate
-export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS20_PRACE_P/COPERNICUS/bit.sea
+. ./profile.inc
+
+module load intel/oneapi-2021--binary
+module load intelmpi/oneapi-2021--binary
+export OPA_HOME=/g100_work/OGS_prod100/OPA/V7C-prod
+export OPA_HOSTNAME=g100
+export HDF5_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
+export NETCDF4_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
+export GEOS_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/g100_work/OGS_prod100/OPA/V7C-prod/HOST/g100/lib:/g100_work/OGS20_PRACE_P_2/COPERNICUS/V7C/HOST/g100/lib
+source /g100_work/OGS20_PRACE_P_2/COPERNICUS/py_env_2.7.12/bin/activate 
+export PYTHONPATH=$PYTHONPATH:/g100_work/OGS20_PRACE_P_2/COPERNICUS/bit.sea
 
 
+#export OPA_HOME=TRANSITION_24
 
-
-
-export OPA_HOME=TRANSITION_24
-
-export    MASKFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/meshmask.nc
-export  KCOASTFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/mapser.npy
+export    MASKFILE=/g100_work/OGS_prod100/OPA/V7C-prod/wrkdir/forecast/0/MODEL/meshmask.nc
+export  KCOASTFILE=/g100_scratch/userexternal/grosati0/REA_16_Hg1/TEST_vs4/wrkdir/MODEL/mapser.npy
 
 date
 
-MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
-      OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/
+MODEL_AVEDIR=/g100_work/OGS_prod100/OPA/V7C-prod/wrkdir/forecast/0/MODEL/AVE_FREQ_1/
+      OUTDIR=/g100_scratch/userexternal/gcoidess/test/
 
      TMP_DIR=$OUTDIR/TMP
         TMPS=$OUTDIR/TMPS
@@ -40,18 +41,17 @@ MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
 . ./profile.inc
 
 # TODO: python timelist_generator.py -l ave*N1p.nc -i $MODEL_AVEDIR -o $OUTDIR/STAT_PROFILES/
-my_prex_or_die "mpirun python var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE"
-my_prex_or_die "mpirun python aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $TMP_DIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s " # -p punti.dat
+my_prex_or_die "mpirun -np 30  python var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE"
+my_prex_or_die "mpirun -np 32 python aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $TMP_DIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s " # -p punti.dat
 
 ANS=$?
-# ---------- cleaning
+#---------- cleaning
 if [ $ANS == 0 ] ; then  
    cd $TMPS
    rm -f tmp.*
    cd $SLURM_SUBMIT_DIR
 fi
-my_prex_or_die "mpirun python compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
-
+my_prex_or_die "mpirun -np 30 python compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
 
 ########  LOW FREQUENCY ######################################################
 

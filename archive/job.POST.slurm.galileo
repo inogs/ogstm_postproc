@@ -1,24 +1,27 @@
 #!/bin/bash
 
 #SBATCH --job-name=POST
-#SBATCH -N3
-#SBATCH --ntasks-per-node=25
-#SBATCH --time=0:30:00
-#SBATCH --mem=100gb
-#SBATCH --account=OGS20_PRACE_P
-#SBATCH --partition=gll_usr_prod
-#SBATCH --qos=gll_qos_dbg
+#SBATCH -N2
+#SBATCH --ntasks-per-node=16
+#SBATCH --time=01:30:00
+#SBATCH --mem=300gb
+#SBATCH --account=OGS20_PRACE_P_2
+#SBATCH --partition=g100_usr_prod
 
 cd $SLURM_SUBMIT_DIR
 
-module purge
-module load profile/base
-module load intel/pe-xe-2018--binary intelmpi/2018--binary
-module load autoload
-module load hdf5/1.8.18--intel--pe-xe-2018--binary netcdf/4.6.1--intel--pe-xe-2018--binary
-module load mpi4py/3.0.0--intelmpi--2018--binary
-source /gpfs/work/OGS20_PRACE_P/COPERNICUS/py_env_2.7.12/bin/activate
-export PYTHONPATH=$PYTHONPATH:/gpfs/work/OGS20_PRACE_P/COPERNICUS/bit.sea
+. ./profile.inc
+
+module load intel/oneapi-2021--binary
+module load intelmpi/oneapi-2021--binary
+export OPA_HOME=/g100_work/OGS_prod100/OPA/V7C-prod
+export OPA_HOSTNAME=g100
+export HDF5_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
+export NETCDF4_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
+export GEOS_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/g100_work/OGS_prod100/OPA/V7C-prod/HOST/g100/lib:/g100_work/OGS20_PRACE_P_2/COPERNICUS/V7C/HOST/g100/lib
+source /g100_work/OGS20_PRACE_P_2/COPERNICUS/py_env_2.7.12/bin/activate
+export PYTHONPATH=$PYTHONPATH:/g100_work/OGS20_PRACE_P_2/COPERNICUS/bit.sea
 
 export OPA_HOME=TRANSITION_24
 
