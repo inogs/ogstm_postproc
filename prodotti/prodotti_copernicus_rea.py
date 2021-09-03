@@ -31,6 +31,10 @@ def argument():
                                 type = str,
                                 required = True,
                                 help = '''The bulletin time a string time in the format yyyymmdd ''')
+    parser.add_argument(    '--bulltype',
+                                type = str,
+                                required = True,
+                                choices = ["analysis","interim"])# it should be reanalysis
     parser.add_argument(    '--maskfile', "-m",
                                 type = str,
                                 required = True,
@@ -66,7 +70,12 @@ except:
 INPUTDIR  = addsep(args.inputdir)
 OUTPUTDIR = addsep(args.outputdir)
 TIMELIST  = file2stringlist(args.time)
-DType     = "re"
+if args.bulltype == 'analysis' :
+    DType     = "re"
+    source    = '3DVAR-OGSTM-BFM'
+else:
+    DType     = "in"
+    source    = '3DVAR-OGSTM-BFMI'
 bulletin_date = args.bulltime
 maskfile = args.maskfile
 if args.tr=='daily'  :
@@ -106,6 +115,7 @@ def readdata(time, var, ndims=3):
 
 def create_Structure(filename, fgroup):
     ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_MULTIYEAR_BGC_006_008 - http://marine.copernicus.eu/'
+    ref2 = "Teruzzi, A., Feudale, L., Bolzon, G., Lazzari, P., Salon, S., Di Biagio, V., Coidessa, G., & Cossarini, G. (2021). Mediterranean Sea Biogeochemical Reanalysis INTERIM (CMEMS MED-Biogeochemistry, MedBFM3i system) (Version 1) [Data set]. Copernicus Monitoring Environment Marine Service (CMEMS). https://doi.org/10.25423/CMCC/MEDSEA_MULTIYEAR_BGC_006_008_MEDBFM3I"
     inst  ='OGS (Istituto Nazionale di Oceanografia e di Geofisica Sperimentale) , Sgonico (Trieste) - Italy'
     ncOUT = netCDF4.Dataset(filename,"w",format="NETCDF4")
     ncOUT.createDimension('longitude', jpi-cut)
@@ -114,13 +124,16 @@ def create_Structure(filename, fgroup):
     ncOUT.createDimension('time'     ,  0)
     
     setattr(ncOUT,'Conventions'  ,'CF-1.0' )
-    setattr(ncOUT,'references'   , ref     )
+    if args.bulltype == 'analysis':
+        setattr(ncOUT,'references'   , ref    )
+    else:
+        setattr(ncOUT,'references'   , ref2    )
     setattr(ncOUT,'institution'  , inst    )
-    setattr(ncOUT,'source'       , '3DVAR-OGSTM-BFM')
+    setattr(ncOUT,'source'       , source)
     setattr(ncOUT,'comment'      , ref)
     setattr(ncOUT,'contact'      ,'servicedesk.cmems@mercator-ocean.eu')
     setattr(ncOUT,'bulletin_date', bulletin_time.strftime("%Y-%m-%d") )
-    setattr(ncOUT,'bulletin_type', bulletin_type)
+    setattr(ncOUT,'bulletin_type', args.bulltype)
     setattr(ncOUT,'field_type'   , field_type)
     
     basename = os.path.basename(filename)
@@ -172,7 +185,10 @@ def create_Structure(filename, fgroup):
 
 
 def V5_filename(timeobj,FGroup):
-    return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM3-MED-b" + bulletin_date +"_" + DType + "-sv05.00.nc"
+    if args.bulltype == 'analysis':
+        return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM3-MED-b" + bulletin_date +"_" + DType + "-sv05.00.nc"
+    else:
+        return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM3i-MED-b" + bulletin_date +"_" + DType + "-sv05.00.nc"
 
 for timestr in TIMELIST[rank::nranks]:
     timeobj = datetime.datetime.strptime(timestr,"%Y%m%d")
