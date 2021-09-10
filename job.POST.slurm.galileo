@@ -24,15 +24,15 @@ source /g100_work/OGS20_PRACE_P_2/COPERNICUS/py_env_2.7.12/bin/activate
 export PYTHONPATH=$PYTHONPATH:/g100_work/OGS20_PRACE_P_2/COPERNICUS/bit.sea
 
 
-#export OPA_HOME=TRANSITION_24
+export OPA_HOME=TRANSITION_24
 
-export    MASKFILE=/g100_work/OGS_prod100/OPA/V7C-prod/wrkdir/forecast/0/MODEL/meshmask.nc
-export  KCOASTFILE=/g100_scratch/userexternal/grosati0/REA_16_Hg1/TEST_vs4/wrkdir/MODEL/mapser.npy
+export    MASKFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/meshmask.nc
+export  KCOASTFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/mapser.npy
 
 date
 
-MODEL_AVEDIR=/g100_work/OGS_prod100/OPA/V7C-prod/wrkdir/forecast/0/MODEL/AVE_FREQ_1/
-      OUTDIR=/g100_scratch/userexternal/gcoidess/test/
+MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
+      OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/
 
      TMP_DIR=$OUTDIR/TMP
         TMPS=$OUTDIR/TMPS
