@@ -60,5 +60,5 @@ for var in VARLIST[rank::nranks]:
     tarfile  =  TARdir + var + ".tar"
 
     command= "tar -cf " + tarfile + "   *" + var + "*"
-    print command
+    print(command)
     os.system(command)
