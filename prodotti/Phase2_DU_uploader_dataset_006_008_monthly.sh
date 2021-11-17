@@ -12,7 +12,7 @@
 usage() {
 echo "Uploads Reanalysis product files"
 echo "SYNOPSYS"
-echo "Phase2_DU_uploader_dataset_006_008_monthly.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y YEAR ] [ -l LOGDIR ]"
+echo "Phase2_DU_uploader_dataset_006_008_monthly.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y YEAR ] [ -l LOGDIR ]  [ -d DATA ]"
 echo ""
 }
 
@@ -21,40 +21,62 @@ if [ $# -lt 8 ] ; then
   exit 1
 fi
 
-for I in 1 2 3 4; do
+for I in 1 2 3 4 5; do
    case $1 in
       "-i" ) PROD_DIR=$2;;
       "-t" ) type=$2;;
       "-y" ) YEAR=$2;;
       "-l" ) logDir=$2;;
+      "-d" ) DATA=$2;;
         *  ) echo "Unrecognized option $1." ; usage;  exit 1;;
    esac
    shift 2
 done
 
 
-BINDIR=/gpfs/work/OGS20_PRACE_P/COPERNICUS/bin
+BINDIR=/g100_work/OGS20_PRACE_P_2/COPERNICUS/bin/
 
 
 
 FILES_TO_SEND="${YEAR}*${type}*.nc"
 
-if [[ "$type" == "BIOL" ]]; then
-   dataset=med-ogs-bio-rean-m_202105
-fi
-if [[ "$type" == "CARB" ]]; then
-   dataset=med-ogs-car-rean-m_202105
-fi
-if [[ "$type" == "CO2F" ]]; then
-   dataset=med-ogs-co2-rean-m_202105
-fi
-if [[ "$type" == "NUTR" ]]; then
-   dataset=med-ogs-nut-rean-m_202105
-fi
-if [[ "$type" == "PFTC" ]]; then
-   dataset=med-ogs-pft-rean-m_202105
+if [[ "$DATA" == "interim" ]]; then
+
+	if [[ "$type" == "BIOL" ]]; then
+   	dataset=cmems_mod_med_bgc-bio_myint_4.2km_P1M-m_202112
+	fi
+	if [[ "$type" == "CARB" ]]; then
+   	dataset=cmems_mod_med_bgc-car_myint_4.2km_P1M-m_202112
+	fi
+	if [[ "$type" == "CO2F" ]]; then
+   	dataset=cmems_mod_med_bgc-co2_myint_4.2km_P1M-m_202112
+	fi
+	if [[ "$type" == "NUTR" ]]; then
+   	dataset=cmems_mod_med_bgc-nut_myint_4.2km_P1M-m_202112
+	fi
+	if [[ "$type" == "PFTC" ]]; then
+   	dataset=cmems_mod_med_bgc-pft_myint_4.2km_P1M-m_202112
+	fi
 fi
 
+if [[ "$DATA" == "extension" ]]; then
+
+	if [[ "$type" == "BIOL" ]]; then
+        dataset=med-ogs-bio-rean-m_Ext
+        fi
+        if [[ "$type" == "CARB" ]]; then
+        dataset=med-ogs-car-rean-m_Ext
+        fi
+        if [[ "$type" == "CO2F" ]]; then
+        dataset=med-ogs-co2-rean-m_Ext
+        fi
+        if [[ "$type" == "NUTR" ]]; then
+        dataset=med-ogs-nut-rean-m_Ext
+        fi
+        if [[ "$type" == "PFTC" ]]; then
+        dataset=med-ogs-pft-rean-m_Ext
+        fi
+fi
 
 PushingEntity="MED-OGS-TRIESTE-IT"
 
