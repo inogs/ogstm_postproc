@@ -12,7 +12,10 @@
 usage() {
 echo "Uploads Reanalysis product files"
 echo "SYNOPSYS"
-echo "Phase2_DU_uploader_dataset_006_008_monthly.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y YEAR ] [ -l LOGDIR ]  [ -d DATA ]"
+echo "Phase2_DU_uploader_dataset_006_008_monthly.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y YEAR ] [ -l LOGDIR ]  [ -p PRODUCT_TYPE ]"
+echo "PRODUCT_TYPE can be 'interim' or 'extension' "
+echo "TYPE can be 'BIOL','CARB','CO2F','NUTR','PFTC'"
+
 echo ""
 }
 
@@ -27,7 +30,7 @@ for I in 1 2 3 4 5; do
       "-t" ) type=$2;;
       "-y" ) YEAR=$2;;
       "-l" ) logDir=$2;;
-      "-d" ) DATA=$2;;
+      "-p" ) PRODUCT_TYPE=$2;;
         *  ) echo "Unrecognized option $1." ; usage;  exit 1;;
    esac
    shift 2
@@ -40,7 +43,7 @@ BINDIR=/g100_work/OGS20_PRACE_P_2/COPERNICUS/bin/
 
 FILES_TO_SEND="${YEAR}*${type}*.nc"
 
-if [[ "$DATA" == "interim" ]]; then
+if [[ "$PRODUCT_TYPE" == "interim" ]]; then
 
 	if [[ "$type" == "BIOL" ]]; then
    	dataset=cmems_mod_med_bgc-bio_myint_4.2km_P1M-m_202112
@@ -59,7 +62,7 @@ if [[ "$DATA" == "interim" ]]; then
 	fi
 fi
 
-if [[ "$DATA" == "extension" ]]; then
+if [[ "$PRODUCT_TYPE" == "extension" ]]; then
 
 	if [[ "$type" == "BIOL" ]]; then
         dataset=med-ogs-bio-rean-m_Ext
