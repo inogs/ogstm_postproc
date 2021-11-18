@@ -17,7 +17,7 @@ def recognize_terms(formula):
         if p in operator_list:
             if keep_on_recognizing:
                 keep_on_recognizing=False
-                outlist.append(np.array(term).tostring())
+                outlist.append(np.array(term,dtype="|S1").tobytes().decode())
                 term=[]
         else:
             term.append(p)
