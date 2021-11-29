@@ -130,7 +130,7 @@ def WRITE_RST_DA(inputfile, outfile,var,jkcut=None):
         else:
             ncOUT.createDimension(dimName,dimObj.size)
 
-    if not DIMS.has_key('time'):
+    if 'time' not in DIMS.keys():
         ncOUT.createDimension('time',1)
     dims=('time',depth_dimension_name(ncIN),lat_dimension_name(ncIN) ,lon_dimension_name(ncIN))
     ncvar = ncOUT.createVariable("TRN" + var, 'f', dims ,zlib=True, fill_value=1.0e+20)

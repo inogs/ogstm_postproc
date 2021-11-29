@@ -187,7 +187,7 @@ for timestr in TIMELIST[rank::nranks]:
     timeobj = datetime.datetime.strptime(timestr,"%Y%m%d")
     for FGroup in FGROUPS:
         product_file = V7_filename(timeobj, FGroup)
-        print "rank =", rank, product_file
+        print("rank =", rank, product_file)
         ncOUT = create_Structure(OUTPUTDIR + product_file,FGroup)
         
         
@@ -250,7 +250,7 @@ for timestr in TIMELIST[rank::nranks]:
             try:
                 pcb = readdata(timestr, 'P_c') * (1./12.)
             except:
-                print "using native P1c, P2c, P3c, P4c"
+                print("using native P1c, P2c, P3c, P4c")
                 P1c = readdata(timestr, "P1c")
                 P2c = readdata(timestr, "P2c")
                 P3c = readdata(timestr, "P3c")
@@ -271,7 +271,7 @@ for timestr in TIMELIST[rank::nranks]:
             try:
                 chl = readdata(timestr, "P_l")
             except:
-                print "using native P1l, P2l, P3l, P4l"
+                print("using native P1l, P2l, P3l, P4l")
                 P1l = readdata(timestr, "P1l")
                 P2l = readdata(timestr, "P2l")
                 P3l = readdata(timestr, "P3l")
@@ -290,7 +290,7 @@ for timestr in TIMELIST[rank::nranks]:
             try:
                 Z_c = readdata(timestr, "Z_c")* (1./12.)
             except:
-                print "using native Z3c, Z4c, Z5c, Z6c"
+                print("using native Z3c, Z4c, Z5c, Z6c")
                 Z3c = readdata(timestr, "Z3c")
                 Z4c = readdata(timestr, "Z4c")
                 Z5c = readdata(timestr, "Z5c")
