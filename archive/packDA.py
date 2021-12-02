@@ -24,7 +24,7 @@ def argument():
 
 def file2stringlist(filename):
     LIST=[]
-    filein=file(filename)
+    filein=open(filename)
     for line in filein:
         LIST.append(line[:-1])
     filein.close()
