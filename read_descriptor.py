@@ -7,11 +7,12 @@ class read_descriptor():
         xmldoc = minidom.parse(VarDescriptorFile)
         
             
-        self.NATIVE_VARS=set()
+        self.NATIVE_VARS=list()
         NODE=xmldoc.getElementsByTagName("vars_for_All_Statistics")[0].getElementsByTagName("native")
         MONTHLY_NATIVE_NODES=NODE[0].getElementsByTagName("var")
         for n in MONTHLY_NATIVE_NODES:
-            self.NATIVE_VARS.add( str(n.attributes['name'].value) )
+            var=str(n.attributes['name'].value)
+            if var not in self.NATIVE_VARS: self.NATIVE_VARS.append(var)
             
                 
         self.AGGR_VARS=[]
@@ -29,7 +30,7 @@ class read_descriptor():
             self.SOME_VARS.add( str(n.attributes['name'].value) )
         
         
-        self.LIST_To_Online_PostPROC = self.NATIVE_VARS.union(self.SOME_VARS).union(set(self.AGGR_VARS))  # ottengo la longlist, senza ripetizione
+        self.LIST_To_Online_PostPROC = set(self.NATIVE_VARS).union(self.SOME_VARS).union(set(self.AGGR_VARS))  # ottengo la longlist, senza ripetizione
         self.ARCHIVE_VARS=[]
         NODE=xmldoc.getElementsByTagName("toArchive")
         MONTHLY_NATIVE_NODES=NODE[0].getElementsByTagName("var")
