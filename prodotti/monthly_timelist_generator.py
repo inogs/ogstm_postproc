@@ -27,8 +27,8 @@ dateFormat="%Y%m%d-%H:%M:%S"
 
 
 
-TL   = DL.getTimeList(datestart.strftime(dateFormat), date__end.strftime(dateFormat), 'days = 1' )
+TL   = DL.getTimeList(datestart.strftime(dateFormat), date__end.strftime(dateFormat), days = 1 )
 dateFormat="%Y%m%d"
 
 for t in TL[:-1]:
-    print t.strftime(dateFormat)
+    print(t.strftime(dateFormat))
