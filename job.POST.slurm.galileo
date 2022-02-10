@@ -5,23 +5,22 @@
 #SBATCH --ntasks-per-node=16
 #SBATCH --time=01:30:00
 #SBATCH --mem=300gb
-#SBATCH --account=OGS20_PRACE_P_2
+#SBATCH --account=OGS21_PRACE_P
 #SBATCH --partition=g100_usr_prod
 
 cd $SLURM_SUBMIT_DIR
 
 . ./profile.inc
 
+module load autoload
 module load intel/oneapi-2021--binary
 module load intelmpi/oneapi-2021--binary
-export OPA_HOME=/g100_work/OGS_prod100/OPA/V7C-prod
-export OPA_HOSTNAME=g100
-export HDF5_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
-export NETCDF4_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
-export GEOS_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/g100_work/OGS_prod100/OPA/V7C-prod/HOST/g100/lib:/g100_work/OGS20_PRACE_P_2/COPERNICUS/V7C/HOST/g100/lib
-source /g100_work/OGS20_PRACE_P_2/COPERNICUS/py_env_2.7.12/bin/activate 
-export PYTHONPATH=$PYTHONPATH:/g100_work/OGS20_PRACE_P_2/COPERNICUS/bit.sea
+module load mkl/oneapi-2021--binary
+module load cmake/3.18.4--gcc--10.2.0
+module load netcdf/4.7.4--oneapi--2021.2.0-ifort
+module load netcdff/4.5.3--oneapi--2021.2.0-ifort
+source /g100_work/OGS20_PRACE_P_2/COPERNICUS/py_env_3.6.8/bin/activate
+export PYTHONPATH=$PYTHONPATH:/g100_work/OGS20_PRACE_P_2/COPERNICUS/bit.sea3
 
 
 export OPA_HOME=TRANSITION_24
