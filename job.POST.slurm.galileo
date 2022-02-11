@@ -22,6 +22,9 @@ module load netcdff/4.5.3--oneapi--2021.2.0-ifort
 source /g100_work/OGS20_PRACE_P_2/COPERNICUS/py_env_3.6.8/bin/activate
 export PYTHONPATH=$PYTHONPATH:/g100_work/OGS20_PRACE_P_2/COPERNICUS/bit.sea3
 
+unset I_MPI_PMI_LIBRARY
+export UCX_TLS=ib
+export SLURM_PMIX_DIRECT_CONN_UCX=false
 
 export OPA_HOME=TRANSITION_24
 

@@ -23,6 +23,11 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/g100_work/OGS_prod100/OPA/V7C-prod/HOST
 source /g100_work/OGS20_PRACE_P_2/COPERNICUS/py_env_2.7.12/bin/activate
 export PYTHONPATH=$PYTHONPATH:/g100_work/OGS20_PRACE_P_2/COPERNICUS/bit.sea
 
+unset I_MPI_PMI_LIBRARY
+export UCX_TLS=ib
+export SLURM_PMIX_DIRECT_CONN_UCX=false
+
+
 export OPA_HOME=TRANSITION_24
 
 . ../profile.inc
