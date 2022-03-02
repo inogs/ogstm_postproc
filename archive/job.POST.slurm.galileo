@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=POST
 #SBATCH -N2
-#SBATCH --ntasks-per-node=48
+#SBATCH --ntasks-per-node=32
 #SBATCH --time=01:30:00
 #SBATCH --mem=300gb
 #SBATCH --account=OGS21_PRACE_P
@@ -33,7 +33,7 @@ export OPA_HOME=TRANSITION_24
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
   TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2_tar
-my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 75 -v N1p"
+my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 64 -v N1p"
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
   TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS_tar
