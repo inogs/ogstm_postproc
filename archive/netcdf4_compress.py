@@ -169,7 +169,7 @@ def WRITE_RST(inputfile, outfile,var):
 for filename in FILELIST[rank::nranks]:
     basename=os.path.basename(filename)
     outfile=OUTPUTDIR + basename
-    print(outfile)
+    print(outfile,flush=True)
     prefix, datestr, var, _ = basename.rsplit(".")
     if prefix == 'ave':
         WRITE_AVE(filename, outfile, var)
