@@ -17,8 +17,8 @@ module load mkl/oneapi-2021--binary
 module load cmake/3.18.4--gcc--10.2.0
 module load netcdf/4.7.4--oneapi--2021.2.0-ifort
 module load netcdff/4.5.3--oneapi--2021.2.0-ifort
-source /g100_work/OGS20_PRACE_P_2/COPERNICUS/py_env_3.6.8/bin/activate
-export PYTHONPATH=$PYTHONPATH:/g100_work/OGS20_PRACE_P_2/COPERNICUS/bit.sea3
+source /g100_work/OGS21_PRACE_P/COPERNICUS/py_env_3.6.8/bin/activate
+export PYTHONPATH=$PYTHONPATH:/g100_work/OGS21_PRACE_P/COPERNICUS/bit.sea3
 
 
 
