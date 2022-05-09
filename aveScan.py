@@ -591,7 +591,7 @@ for ip in PROCESSES[rank::nranks]:
         ncOUT__profiles,ncOUT_integrals = create_tmp_headers(datestr,var)
 
     filename = F.get_filename(avefile, var,INPUT_AVEDIR,AGGREGATE_AVEDIR)
-    print("rank %03d scans %s on %s" %(rank,var,os.path.basename(filename)))
+    print("rank %03d scans %s on %s" %(rank,var,os.path.basename(filename)),flush=True)
     vartoread = var
 
     if ('RST' in os.path.basename(filename)) and (not('before' in os.path.basename(filename))):
@@ -674,7 +674,7 @@ var = 'ppn'
 if var not in VARLIST or not doStatistics : sys.exit()
 
 for avefile in aveLIST[rank::nranks]:
-    print(avefile)
+    print(avefile,flush=True)
     F=GB_lib.filename_manager(avefile)
     filename = F.get_filename(avefile, var,INPUT_AVEDIR,AGGREGATE_AVEDIR)
     VAR  = DataExtractor(TheMask,filename,var,dimvar=3).values 

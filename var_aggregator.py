@@ -105,7 +105,7 @@ TheMask=Mask(args.maskfile)
 
 for N1pfile in SingleVar_filelist[rank::nranks]:
     dailyAve  = os.path.basename(N1pfile)
-    print("writing ", dailyAve)
+    print("writing ", dailyAve,flush=True)
 
     if args.tmpdir:
         G.WriteAggregateAvefiles(TheMask, N1pfile, AVEDIR, TMPOUTdir, TMPOUTdir, RD)
