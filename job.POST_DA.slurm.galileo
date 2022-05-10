@@ -59,7 +59,7 @@ my_prex_or_die "mpirun python compact_profiles.py -i $BFOUTDIR/STAT_PROFILES/ -o
 
 . ./profile.inc
 
-my_prex_or_die "mpirun python var_aggregator.py -l RST_after*12:00:00*P1l.nc -i $DA_DIR -d VarDescriptor_TRNP_lagg.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE"
+my_prex_or_die "mpirun python var_aggregator.py -l RST_after*12:00:00*P1l.nc -i $DA_DIR -d VarDescriptor_P_lagg.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE"
 my_prex_or_die "mpirun python aveScan.py  -l RST_after*12:00:00*nc     -i $DA_DIR -f P1l -a $TMP_DIR -d VarDescriptor_P_lagg.xml -o $AFOUTDIR -t $TMPS  -s " # -p punti.dat
 
 ANS=$?
