@@ -104,4 +104,8 @@ endtime=20150101
 
 my_prex_or_die "mpirun python dic_alc_converter.py -M $maskfile_ingv -m $maskfile -i $INDIR -o $OUTDIR -f $FORCDIR -s $starttime -e $endtime"
 
+################ Kd  #########################
 
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/
+OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/KD
+my_prex_or_die "mpirun -np 16 python kd.py -i $INPUTDIR -m $MASKFILE -o $OUTDIR"

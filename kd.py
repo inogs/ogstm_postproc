@@ -37,8 +37,18 @@ from commons import netcdf4
 from commons.Timelist import TimeList
 from commons.utils import addsep
 
-INPUTDIR=addsep(args.inputdir)#"/g100_scratch/userexternal/gbolzon0/V9C/2019/TEST_03/wrkdir/MODEL/AVE_FREQ_3/"
-OUTDIR  =addsep(args.outdir)#"/g100_scratch/userexternal/gbolzon0/V9C/KD/"
+try:
+    from mpi4py import MPI
+    comm  = MPI.COMM_WORLD
+    rank  = comm.Get_rank()
+    nranks =comm.size
+except:
+    rank   = 0
+    nranks = 1
+
+
+INPUTDIR=addsep(args.inputdir)
+OUTDIR  =addsep(args.outdir)
 TheMask = Mask(args.maskfile)
 
 jpk,jpj,jpi = TheMask.shape
@@ -87,7 +97,7 @@ def freq_absorption(interp_data):
 
 TL = TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar="Ed_0500")
 
-for d in TL.Timelist:
+for d in TL.Timelist[[rank::nranks]:
     for wavelengh in [380, 412, 490]:
         interp_data = data_for_linear_interp(freq_nanom,wavelengh)
         E = get_E(d, interp_data)
