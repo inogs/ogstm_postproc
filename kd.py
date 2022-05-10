@@ -39,7 +39,7 @@ from commons.utils import addsep
 
 INPUTDIR=addsep(args.inputdir)#"/g100_scratch/userexternal/gbolzon0/V9C/2019/TEST_03/wrkdir/MODEL/AVE_FREQ_3/"
 OUTDIR  =addsep(args.outdir)#"/g100_scratch/userexternal/gbolzon0/V9C/KD/"
-TheMask = Mask(args.maskfile,dzvarname="e3w")
+TheMask = Mask(args.maskfile)
 
 jpk,jpj,jpi = TheMask.shape
 mask0 = TheMask.mask_at_level(0)
