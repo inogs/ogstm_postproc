@@ -97,7 +97,7 @@ def freq_absorption(interp_data):
 
 TL = TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar="Ed_0500")
 
-for d in TL.Timelist[[rank::nranks]:
+for d in TL.Timelist[rank::nranks]:
     for wavelengh in [380, 412, 490]:
         interp_data = data_for_linear_interp(freq_nanom,wavelengh)
         E = get_E(d, interp_data)
@@ -111,7 +111,7 @@ for d in TL.Timelist[[rank::nranks]:
 
         varname="kd%s" %wavelengh
         outfile ="%save.%s.%s.nc" %(OUTDIR,d.strftime("%Y%m%d-%H:%M:%S"),varname)
-        print(outfile)
+        print("rank %d dumps %s" %(rank,outfile))
         netcdf4.write_3d_file(KD, varname, outfile, TheMask, compression=True)
 
                 
