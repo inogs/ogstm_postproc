@@ -60,15 +60,33 @@ def load_data(var, dateobj):
 
 
 TL = TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar="PAR")
+jk_lim = TheMask.getDepthIndex(500.) -2
 
 for d in TL.Timelist[rank::nranks]:
     
     E = load_data('PAR', d)
+    prev_value=100.0
+    for jk in range(jk_lim+1):
+        v=E[jk,:,:]
+        ii=v==0
+        J,I=np.nonzero(ii)
+        nzeros=len(I)
+        for k in range(nzeros):
+            ji=I[k]
+            jj=J[k]
+            m = v[jj-1:jj+2, ji-1:ji+2] # 3x3
+            mask=TheMask.mask[jk,jj-1:jj+2, ji-1:ji+2]
+            mask[1,1]=False
+            new_value =  m[mask].mean()
+            if new_value >0:
+                E[jk,jj,ji] = new_value
+            else:
+                E[jk,jj,ji] = prev_value
+            prev_value=new_value
+
+
     KD = np.ones((jpk,jpj,jpi),np.float32)* 1.e-8
-    jk_lim = TheMask.getDepthIndex(500.) -2
-
-
-    KD[:jk_lim,:,:] = -np.log(E[1:jk_lim+1,:,:]/E[0:jk_lim,:,:])#/TheMask.e3t[:jk_lim,:,:]
+    KD[:jk_lim,:,:] = -np.log(E[1:jk_lim+1,:,:]/E[0:jk_lim,:,:])/TheMask.e3t[:jk_lim,:,:]
     KD[~TheMask.mask] = 1.e+20
 
 
