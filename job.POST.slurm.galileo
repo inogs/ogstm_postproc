@@ -40,7 +40,6 @@ MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
         TMPS=$OUTDIR/TMPS
   CHLSUP_DIR=$OUTDIR/CHL_SUP
 
-. ./profile.inc
 
 # TODO: python timelist_generator.py -l ave*N1p.nc -i $MODEL_AVEDIR -o $OUTDIR/STAT_PROFILES/
 my_prex_or_die "mpirun -np 30  python var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE"
