@@ -10,7 +10,6 @@ def argument():
                                 required = True,
                                 help = ''' '''
                                 )
-
     parser.add_argument(   '--maskfile', '-m',
                                 type = str,
                                 required = True,
@@ -21,6 +20,16 @@ def argument():
                                 type = str,
                                 required = True,
                                 help = ''' output directory'''
+                                )
+    parser.add_argument(   '--timeaverage', '-t',
+                                type = str,
+                                required = True,
+                                choices = ['monday','tuesday','thursday','friday'],
+                                )
+    parser.add_argument(   '--var', '-v',
+                                type = str,
+                                required = True,
+                                help = ''' var name'''
                                 )
 
     return parser.parse_args()
@@ -50,29 +59,29 @@ except:
 INPUTDIR=addsep(args.inputdir)
 OUTPUTDIR=addsep(args.outdir)
 TheMask = Mask(args.maskfile)
+var=args.var
 
 VARLIST=['kd490']
 
 
-TL=TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar="kd490")
+TL=TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar=var)
+if args.timeaverage == 'monday'  : WEEKLY_REQS=TL.getWeeklyList(1)
+if args.timeaverage == 'tuesday' : WEEKLY_REQS=TL.getWeeklyList(2)
+if args.timeaverage == 'thursday': WEEKLY_REQS=TL.getWeeklyList(4)
+if args.timeaverage == 'friday'  : WEEKLY_REQS=TL.getWeeklyList(5)
 
-WEEKLY_REQS = TL.getWeeklyList(1)
 
 
 for req in WEEKLY_REQS[rank::nranks]:
     indexes,weights=TL.select(req)
-    for var in VARLIST:
-        if var=='pH': 
-            inputvar='PH'
-        else:
-            inputvar=var
-        outfile = OUTPUTDIR + "ave." + req.string + "-12:00:00." + var + ".nc"
-        print(outfile)
-        filelist=[]
-        for k in indexes:
-            t = TL.Timelist[k]
-            filename = INPUTDIR + "ave." + t.strftime("%Y%m%d-%H:%M:%S") + "." + inputvar + ".nc"
-            filelist.append(filename)
-        M3d = TimeAverager3D(filelist, weights, inputvar, TheMask)
-        netcdf4.write_3d_file(M3d, var, outfile, TheMask)
+
+    outfile = OUTPUTDIR + "ave." + req.string + "-12:00:00." + var + ".nc"
+    print(outfile)
+    filelist=[]
+    for k in indexes:
+        t = TL.Timelist[k]
+        filename = INPUTDIR + "ave." + t.strftime("%Y%m%d-%H:%M:%S") + "." + var + ".nc"
+        filelist.append(filename)
+    M3d = TimeAverager3D(filelist, weights, var, TheMask)
+    netcdf4.write_3d_file(M3d, var, outfile, TheMask)
 
