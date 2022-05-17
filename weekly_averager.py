@@ -1,8 +1,41 @@
+import argparse
+def argument():
+    parser = argparse.ArgumentParser(description = '''
+    Generates weekly averaged files
+    ''',
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument(   '--inputdir', '-i',
+                                type = str,
+                                required = True,
+                                help = ''' '''
+                                )
+
+    parser.add_argument(   '--maskfile', '-m',
+                                type = str,
+                                required = True,
+                                help = ''' mask filename .'''
+                                )
+
+    parser.add_argument(   '--outdir', '-o',
+                                type = str,
+                                required = True,
+                                help = ''' output directory'''
+                                )
+
+    return parser.parse_args()
+
+
+args = argument()
+
+
+
+
 from commons.Timelist import TimeList
 from commons.mask import Mask
 from commons.time_averagers import TimeAverager3D, TimeAverager2D
-import netCDF4 as NC
 from commons import netcdf4
+from commons.utils import addsep
 
 try:
     from mpi4py import MPI
@@ -13,29 +46,20 @@ except:
     rank   = 0
     nranks = 1
 
-VARLIST=['Ac','CaCO3flux_dic','B1c','N5s','R2c','ppn','O2o','pCO2','pH','DIC','CaCO3flux_alk']
-INPUTDIR="/pico/scratch/userexternal/lfeudale/validation/V2C/ANALYSIS/AGGREGATE/"
 
-INPUTDIR="/marconi_scratch/userexternal/gbolzon0/TRANSITION_24/CFR/EAS2/AVE_FREQ_1/"
-VARLIST=['P_l']
-OUTPUTDIR="/marconi_scratch/userexternal/gbolzon0/TRANSITION_24/CFR/EAS2/AVE_FREQ_2/"
+INPUTDIR=addsep(args.inputdir)
+OUTPUTDIR=addsep(args.outdir)
+TheMask = Mask(args.maskfile)
 
-TheMask=Mask('/marconi_scratch/userexternal/gbolzon0/TRANSITION_24/wrkdir/MODEL/meshmask.nc')
-
-TL=TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar="N3n")
+VARLIST=['kd490']
 
 
+TL=TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar="kd490")
 
-#VARLIST=['pH','pCO2']
-
-
-
+WEEKLY_REQS = TL.getWeeklyList(1)
 
 
-MONTHLY_REQS = TL.getWeeklyList(5)
-
-
-for req in MONTHLY_REQS[rank::nranks]:
+for req in WEEKLY_REQS[rank::nranks]:
     indexes,weights=TL.select(req)
     for var in VARLIST:
         if var=='pH': 
@@ -43,7 +67,7 @@ for req in MONTHLY_REQS[rank::nranks]:
         else:
             inputvar=var
         outfile = OUTPUTDIR + "ave." + req.string + "-12:00:00." + var + ".nc"
-        print outfile
+        print(outfile)
         filelist=[]
         for k in indexes:
             t = TL.Timelist[k]
