@@ -21,13 +21,14 @@ model_depth = model_depth[-1::-1]
 
 
 reftime=datetime(2016,1,1,0,0,0)
+SHIFT_OBS = 0.494 - 1.0e-5 # to have something meaningful
 
 timelist = [reftime + timedelta(seconds=deltat) for deltat in time_seconds]
 TL =TimeList(timelist)
 coupled_list = TL.couple_with(obs_timelist)
 d, indexes = coupled_list[1]
 ii = inverse_index==indexes[0]
-chl_obs =  OBS[ii]['chl'][-1::-1]
+chl_obs =  OBS[ii]['chl'][-1::-1] - SHIFT_OBS
 z_obs   = -OBS[ii]['z'][-1::-1]
 
 itime=4
@@ -39,7 +40,7 @@ model_chl = netcdf4.readfile(modelfile, 'total_chlorophyll_calculator_result')[i
 model_chl = model_chl[-1::-1]
 posterior = np.interp(z_obs,model_depth,model_chl)
 
-if False:
+if True:
     import pylab as pl
     fig,ax=pl.subplots()
     
@@ -47,6 +48,7 @@ if False:
     ax.plot(model_chl, model_depth, label='model')
     ax.plot(posterior, z_obs,'.', label='model interp')
     ax.legend()
+    ax.set_ylim([0,300])
     ax.invert_yaxis()
     fig.savefig('pippo.png')
 
