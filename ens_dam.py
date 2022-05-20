@@ -36,20 +36,20 @@ nodata     = cloudsLand | modelLand
 selection = ~nodata & coastmask
 
 nPoints= selection.sum()
-prior_ensemble=np.zeros((nPoints,m),np.float32)
+prior_ensemble=np.zeros((m,nPoints),np.float32)
 for ie in range(m):
     modfile="%save%03d.%s.%s.nc" %(DIR,ie,timestr,modvarname)
     print(modfile)
     Model = DataExtractor(TheMask,filename=modfile, varname=modvarname).values[0,:]
-    prior_ensemble[:,ie]=Model[selection]
+    prior_ensemble[ie,:]=Model[selection]
 
 timestr="20190123-12:00:00"
-posterior_ensemble=np.zeros((nPoints,m),np.float32)
+posterior_ensemble=np.zeros((m,nPoints),np.float32)
 for ie in range(m):
     modfile="%save%03d.%s.%s.nc" %(DIR,ie,timestr,modvarname)
     print(modfile)
     Model = DataExtractor(TheMask,filename=modfile, varname=modvarname).values[0,:]
-    posterior_ensemble[:,ie]=Model[selection]
+    posterior_ensemble[ie,:]=Model[selection]
 
 
 
@@ -60,9 +60,9 @@ for ie in range(m):
 ncOUT = netCDF4.Dataset('out.nc','w')
 ncOUT.createDimension("m",m)
 ncOUT.createDimension("n",nPoints)
-ncvar = ncOUT.createVariable("prior_ensemble",'f',('n','m'))
+ncvar = ncOUT.createVariable("prior_ensemble",'f',('m','n'))
 ncvar[:] = prior_ensemble
-ncvar = ncOUT.createVariable("posterior_ensemble",'f',('n','m'))
+ncvar = ncOUT.createVariable("posterior_ensemble",'f',('m','n'))
 ncvar[:] = posterior_ensemble
 ncvar = ncOUT.createVariable("observations",'f',('n',))
 ncvar[:] = Sat[selection]
