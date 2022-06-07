@@ -42,7 +42,7 @@ def argument():
     parser.add_argument(    '--tr',
                                 type = str,
                                 required = True,
-                                choices = ["daily","monthly"])
+                                choices = ["daily","monthly","yearly"])
 
     return parser.parse_args()
 
@@ -84,6 +84,10 @@ if args.tr=='daily'  :
 if args.tr=='monthly':
     tr='m'
     field_type='monthly_mean_beginning_at_time_field'
+if args.tr=='yearly':
+    tr='y'
+    field_type='yearly_mean_beginning_at_time_field'
+
 
 cut = 80 #1/24
 TheMask = Mask(maskfile,ylevelsmatvar="gphit", xlevelsmatvar="glamt")
@@ -139,6 +143,7 @@ def create_Structure(filename, fgroup):
     basename = os.path.basename(filename)
     if args.tr=='daily'   : timestr = basename[:8] + "-12:00:00"
     if args.tr=='monthly' : timestr = basename[:6] + "01-00:00:00" # 01 of every month
+    if args.tr=='yearly'  : timestr = basename[:4] + "0101-00:00:00" # 0101 of every year
     D = datetime.datetime.strptime(timestr,'%Y%m%d-%H:%M:%S')
     Dref = datetime.datetime(1970,1,1,0,0,0)
     Diff = D-Dref
@@ -194,13 +199,14 @@ for timestr in TIMELIST[rank::nranks]:
     timeobj = datetime.datetime.strptime(timestr,"%Y%m%d")
     for FGroup in FGROUPS:
         product_file = V5_filename(timeobj, FGroup)
-        print "rank =", rank, product_file
+        print("rank =", rank, product_file, flush=True)
         ncOUT = create_Structure(OUTPUTDIR + product_file,FGroup)
         
         
         if FGroup == 'NUTR':
             if args.tr=='daily'  : setattr(ncOUT,'title','Nitrate, Phosphate and Ammonium (3D) - Daily Mean')
             if args.tr=='monthly': setattr(ncOUT,'title','Nitrate, Phosphate and Ammonium (3D) - Monthly Mean')
+            if args.tr=='yearly' : setattr(ncOUT,'title','Nitrate, Phosphate and Ammonium (3D) - Yearly Mean')
             
             ncvar = ncOUT.createVariable('no3', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
@@ -237,6 +243,7 @@ for timestr in TIMELIST[rank::nranks]:
         if FGroup == 'PFTC':
             if args.tr=='daily'   : setattr(ncOUT,'title','Phytoplankton Carbon Biomass and Chlorophyll (3D) - Daily Mean')
             if args.tr=='monthly' : setattr(ncOUT,'title','Phytoplankton Carbon Biomass and Chlorophyll (3D) - Monthly Mean')
+            if args.tr=='yearly'  : setattr(ncOUT,'title','Phytoplankton Carbon Biomass and Chlorophyll (3D) - Yearly Mean')
 
             ncvar = ncOUT.createVariable('phyc', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
@@ -248,7 +255,7 @@ for timestr in TIMELIST[rank::nranks]:
             try:
                 pcb = readdata(timestr, 'P_c') * (1./12.)
             except:
-                print "using native P1c, P2c, P3c, P4c"
+                print("using native P1c, P2c, P3c, P4c")
                 P1c = readdata(timestr, "P1c")
                 P2c = readdata(timestr, "P2c")
                 P3c = readdata(timestr, "P3c")
@@ -269,7 +276,7 @@ for timestr in TIMELIST[rank::nranks]:
             try:
                 chl = readdata(timestr, "P_l")
             except:
-                print "using native P1l, P2l, P3l, P4l"
+                print("using native P1l, P2l, P3l, P4l")
                 P1l = readdata(timestr, "P1l")
                 P2l = readdata(timestr, "P2l")
                 P3l = readdata(timestr, "P3l")
@@ -283,6 +290,7 @@ for timestr in TIMELIST[rank::nranks]:
         if FGroup == 'BIOL':
             if args.tr=='daily'  : setattr(ncOUT, 'title', "Primary Production and Oxygen (3D) - Daily Mean")
             if args.tr=='monthly': setattr(ncOUT, 'title', "Primary Production and Oxygen (3D) - Monthly Mean")
+            if args.tr=='yearly' : setattr(ncOUT, 'title', "Primary Production and Oxygen (3D) - Yearly Mean")
             
             ncvar = ncOUT.createVariable('o2', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
@@ -305,7 +313,7 @@ for timestr in TIMELIST[rank::nranks]:
         if FGroup == 'CARB':
             if args.tr=='daily'  : setattr(ncOUT, 'title',"Dissolved Inorganic Carbon, pH and Alkalinity (3D) - Daily Mean")
             if args.tr=='monthly': setattr(ncOUT, 'title',"Dissolved Inorganic Carbon, pH and Alkalinity (3D) - Monthly Mean")
-            
+            if args.tr=='yearly' : setattr(ncOUT, 'title',"Dissolved Inorganic Carbon, pH and Alkalinity (3D) - Yearly Mean")
 
             ncvar = ncOUT.createVariable('ph', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
@@ -343,6 +351,8 @@ for timestr in TIMELIST[rank::nranks]:
         if FGroup == 'CO2F':
             if args.tr=='daily'  : setattr(ncOUT, 'title',"Surface partial pressure of CO2 and Surface CO2 flux (2D) - Daily Mean")
             if args.tr=='monthly': setattr(ncOUT, 'title',"Surface partial pressure of CO2 and Surface CO2 flux (2D) - Monthly Mean")
+            if args.tr=='yearly' : setattr(ncOUT, 'title',"Surface partial pressure of CO2 and Surface CO2 flux (2D) - Yearly Mean")
+
             ncvar = ncOUT.createVariable('fpco2', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'kg m-2 s-1')
