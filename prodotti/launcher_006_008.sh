@@ -1,17 +1,25 @@
 #! /bin/bash
 
-INPUTDIR=/g100_scratch/userexternal/gbolzon0/products/AVE
-OUTPUTDIR=/g100_scratch/userexternal/gbolzon0/products/PRODUCTS
-MASKFILE=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc
+INPUTDIR=/g100_scratch/userexternal/gbolzon0/V9C/PRODOTTI/AVE_CLIM
+OUTPUTDIR=/g100_scratch/userexternal/gbolzon0/V9C/PRODOTTI/
+MASKFILE=/gss/gss_work/DRES_OGS_BiGe/ateruzzi/RA_24/input/setup/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc
+
+
+python prodotti_copernicus_rea_clim.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -b 20220607 --bulltype analysis
+
+
+
+INPUTDIR=/g100_scratch/userexternal/gbolzon0/V9C/PRODOTTI/AVE_YEARLY
+OUTPUTDIR=/g100_scratch/userexternal/gbolzon0/V9C/PRODOTTI/YEARLY
 
 mkdir -p $OUTPUTDIR
 HERE=$PWD
 cd $INPUTDIR
-ls ave.20190101*N1p.nc | cut -c 5-12 > $HERE/timelist
+ls ave.*N1p.nc | cut -c 5-12 > $HERE/timelist
 
 cd $HERE
 
-mpirun -np 1 python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist -m $MASKFILE -d an -b 20190115 --tr monthly --bulltype interim
+mpirun -np 1 python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist -m $MASKFILE -b 20110607 --tr yearly --bulltype analysis
 
 
 BASEDIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/
