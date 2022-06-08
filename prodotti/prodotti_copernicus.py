@@ -93,7 +93,7 @@ tmask = TheMask.mask
 Lon = Lon[cut:]
 tmask = tmask[:,:,cut:]
 
-FGROUPS = ['NUTR', 'PFTC', 'BIOL', 'CARB','CO2F']
+FGROUPS = ['NUTR', 'PFTC', 'BIOL', 'CARB','CO2F','EXCO']
 
 if DType == "an": bulletin_type='analysis'
 if DType == "sm": bulletin_type='simulation'
@@ -117,7 +117,7 @@ def create_Structure(filename, fgroup):
     ncOUT = netCDF4.Dataset(filename,"w",format="NETCDF4")
     ncOUT.createDimension('longitude', jpi-cut)
     ncOUT.createDimension('latitude' ,jpj)
-    if (fgroup != 'CO2F') : ncOUT.createDimension('depth'    ,jpk)
+    if (fgroup not in [ 'CO2F','EXCO']) : ncOUT.createDimension('depth'    ,jpk)
     ncOUT.createDimension('time'     ,  0)
     
     setattr(ncOUT,'Conventions'  ,'CF-1.0' )
@@ -145,7 +145,7 @@ def create_Structure(filename, fgroup):
     setattr(ncvar,'calendar'     ,'standard')
     ncvar[:] = Diff.days*3600*24 + Diff.seconds
     
-    if (fgroup != 'CO2F') :
+    if (fgroup not in [ 'CO2F', 'EXCO'] ) :
         ncvar = ncOUT.createVariable('depth'   ,'f', ('depth',))
         setattr(ncvar,'units'        ,'m')
         setattr(ncvar,'long_name'    ,'depth')
@@ -382,5 +382,17 @@ for timestr in TIMELIST[rank::nranks]:
             pco2 = readdata(timestr, "pCO2") *0.101325 #conversion microatm --> Pascal  1 ppm = 1 microatm = 1.e-6 * 101325 Pa
             pco2[~tmask] = 1.e+20
             ncvar[0,:] = pco2[0,:,:]
+
+        if FGroup == 'EXCO':
+            if args.tr=='daily'  : setattr(ncOUT, 'title',"Attenuation coefficient of downwelling radiative flux 490 (2D) - Daily Mean")
+            if args.tr=='monthly': setattr(ncOUT, 'title',"Attenuation coefficient of downwelling radiative flux 490 (2D) - Monthly Mean")
+            ncvar = ncOUT.createVariable('kd490', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'m-1')
+            setattr(ncvar,'long_name'    ,"Diffuse attenuation coefficient of the downwelling irradiance at 490 nm")
+            setattr(ncvar,'standard_name','volume_attenuation_coefficient_of_downwelling_radiative_flux_in_sea_water_490')
+            setattr(ncvar,'coordinates'  ,'time latitude longitude')
+            kd_490 = readdata(timestr, "kd490")
+            ncvar[0,:] =kd_490[0,:]
         ncOUT.close()
         
