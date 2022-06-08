@@ -187,7 +187,7 @@ for timestr in TIMELIST[rank::nranks]:
     timeobj = datetime.datetime.strptime(timestr,"%Y%m%d")
     for FGroup in FGROUPS:
         product_file = V8_filename(timeobj, FGroup)
-        print("rank =", rank, product_file)
+        print("rank =", rank, product_file, flush=True)
         ncOUT = create_Structure(OUTPUTDIR + product_file,FGroup)
         
         
@@ -384,8 +384,8 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar[0,:] = pco2[0,:,:]
 
         if FGroup == 'EXCO':
-            if args.tr=='daily'  : setattr(ncOUT, 'title',"Attenuation coefficient of downwelling radiative flux 490 (2D) - Daily Mean")
-            if args.tr=='monthly': setattr(ncOUT, 'title',"Attenuation coefficient of downwelling radiative flux 490 (2D) - Monthly Mean")
+            if args.tr=='daily'  : setattr(ncOUT, 'title',"Attenuation coefficient of downwelling radiative flux (2D) - Daily Mean")
+            if args.tr=='monthly': setattr(ncOUT, 'title',"Attenuation coefficient of downwelling radiative flux (2D) - Monthly Mean")
             ncvar = ncOUT.createVariable('kd490', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'m-1')
