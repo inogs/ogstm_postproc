@@ -164,7 +164,7 @@ setattr(ncOUT,'title','Monthly climatology reference period 1999-2019')
 for FGroup in FGROUPS:
 
     if FGroup == 'NUTR':
-        ncvar = ncOUT.createVariable('no3', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        ncvar = ncOUT.createVariable('no3_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'mmol m-3')
         setattr(ncvar,'long_name'    ,'Nitrate')
@@ -174,9 +174,20 @@ for FGroup in FGROUPS:
             timestr = "2000%02d01" %(iFrame+1)
             M = readdata(timestr, "N3n")
             ncvar[iFrame,:] = M
+
+        ncvar = ncOUT.createVariable('no3_std', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'mmol m-3')
+        setattr(ncvar,'long_name'    ,'Nitrate standard deviation')
+        setattr(ncvar,'standard_name','mole_concentration_of_nitrate_in_sea_water')
+        setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            M = readdata(timestr, "N3n")
+            ncvar[iFrame,:] = M
         
-        
-        ncvar = ncOUT.createVariable('po4', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+
+        ncvar = ncOUT.createVariable('po4_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'mmol m-3')
         setattr(ncvar,'long_name'    ,'Phosphate')
@@ -187,8 +198,19 @@ for FGroup in FGROUPS:
             M = readdata(timestr, "N1p")
             ncvar[iFrame,:] = M
 
+        ncvar = ncOUT.createVariable('po4_std', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'mmol m-3')
+        setattr(ncvar,'long_name'    ,'Phosphate standard deviation')
+        setattr(ncvar,'standard_name','mole_concentration_of_phosphate_in_sea_water')
+        setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            M = readdata(timestr, "N1p")
+            ncvar[iFrame,:] = M
 
-        ncvar = ncOUT.createVariable('nh4', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+
+        ncvar = ncOUT.createVariable('nh4_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'mmol m-3')
         setattr(ncvar,'long_name'    ,'Ammonium')
@@ -199,11 +221,23 @@ for FGroup in FGROUPS:
             M = readdata(timestr, "N4n")
             ncvar[iFrame,:] = M
 
+        ncvar = ncOUT.createVariable('nh4_std', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'mmol m-3')
+        setattr(ncvar,'long_name'    ,'Ammonium standard deviation')
+        setattr(ncvar,'standard_name','mole_concentration_of_ammonium_in_sea_water')
+        setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            M = readdata(timestr, "N4n")
+            ncvar[iFrame,:] = M
+
+
 
 
     if FGroup == 'PFTC':
 
-        ncvar = ncOUT.createVariable('phyc', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        ncvar = ncOUT.createVariable('phyc_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'mmol m-3')
         setattr(ncvar,'long_name'    ,'Phytoplankton Carbon Biomass')
@@ -225,8 +259,24 @@ for FGroup in FGROUPS:
                 # conversion factor: 1/12
             pcb[~tmask] = 1.e+20
             ncvar[iFrame,:] = pcb
+
+        ncvar = ncOUT.createVariable('phyc_std', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'mmol m-3')
+        setattr(ncvar,'long_name'    ,'Phytoplankton Carbon Biomass standard deviation')
+        setattr(ncvar,'standard_name','mole_concentration_of_phytoplankton_expressed_as_carbon_in_sea_water')
+        setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
         
-        ncvar = ncOUT.createVariable('chl', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            pcb = readdata(timestr, 'P_c') * (1./12.)
+                #CONVERSION from "mgC m-3" to "mmolC m-3"
+                # conversion factor: 1/12
+            pcb[~tmask] = 1.e+20
+            ncvar[iFrame,:] = pcb
+
+
+        ncvar = ncOUT.createVariable('chl_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'mg m-3')
         setattr(ncvar,'long_name'    ,'Chlorophyll')
@@ -247,11 +297,23 @@ for FGroup in FGROUPS:
             chl[~tmask] = 1.e+20
             ncvar[iFrame,:] = chl
 
+        ncvar = ncOUT.createVariable('chl_std', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'mg m-3')
+        setattr(ncvar,'long_name'    ,'Chlorophyll standard deviation')
+        setattr(ncvar,'standard_name','mass_concentration_of_chlorophyll_a_in_sea_water')
+        setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            chl = readdata(timestr, "P_l")
+            chl[~tmask] = 1.e+20
+            ncvar[iFrame,:] = chl
 
 
     if FGroup == 'BIOL':
         
-        ncvar = ncOUT.createVariable('o2', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        ncvar = ncOUT.createVariable('o2_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'mmol m-3')
         setattr(ncvar,'long_name'    ,'Dissolved oxygen')
@@ -260,10 +322,21 @@ for FGroup in FGROUPS:
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
             M = readdata(timestr, "O2o")
-            ncvar[iFrame,:] = M        
+            ncvar[iFrame,:] = M
+
+        ncvar = ncOUT.createVariable('o2_std', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'mmol m-3')
+        setattr(ncvar,'long_name'    ,'Dissolved oxygen standard deviation')
+        setattr(ncvar,'standard_name','mole_concentration_of_dissolved_molecular_oxygen_in_sea_water')
+        setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            M = readdata(timestr, "O2o")
+            ncvar[iFrame,:] = M
 
         
-        ncvar = ncOUT.createVariable('nppv', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        ncvar = ncOUT.createVariable('nppv_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'mg m-3 day-1')
         setattr(ncvar,'long_name'    ,'Net Primary Production')
@@ -272,12 +345,23 @@ for FGroup in FGROUPS:
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
             M = readdata(timestr, "ppn")
-            ncvar[iFrame,:] = M  
+            ncvar[iFrame,:] = M
+
+        ncvar = ncOUT.createVariable('nppv_std', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'mg m-3 day-1')
+        setattr(ncvar,'long_name'    ,'Net Primary Production standard deviation')
+        setattr(ncvar,'standard_name','net_primary_production_of_biomass_expressed_as_carbon_per_unit_volume_in_sea_water')
+        setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            M = readdata(timestr, "ppn")
+            ncvar[iFrame,:] = M
 
         
     if FGroup == 'CARB':
 
-        ncvar = ncOUT.createVariable('ph', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        ncvar = ncOUT.createVariable('ph_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'1')
         setattr(ncvar,'long_name'    ,'Ocean pH')
@@ -287,10 +371,22 @@ for FGroup in FGROUPS:
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
             M = readdata(timestr, "pH")
+            ncvar[iFrame,:] = M
+
+        ncvar = ncOUT.createVariable('ph_std', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'1')
+        setattr(ncvar,'long_name'    ,'Ocean pH standard deviation')
+        setattr(ncvar,'standard_name','sea_water_ph_reported_on_total_scale')
+        setattr(ncvar,'info'         , 'pH reported on total scale at in situ Temp and Press conditions')
+        setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            M = readdata(timestr, "pH")
             ncvar[iFrame,:] = M          
 
 
-        ncvar = ncOUT.createVariable('dissic', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        ncvar = ncOUT.createVariable('dissic_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'mol m-3')
         setattr(ncvar,'long_name'    ,"Dissolved Inorganic Carbon")
@@ -301,10 +397,23 @@ for FGroup in FGROUPS:
             timestr = "2000%02d01" %(iFrame+1)
             dic = readdata(timestr, "O3c")/(12*1000) # conversion mg/mol
             dic[~tmask] = 1.e+20
-            ncvar[iFrame,:] = dic  
+            ncvar[iFrame,:] = dic
+
+        ncvar = ncOUT.createVariable('dissic_std', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'mol m-3')
+        setattr(ncvar,'long_name'    ,"Dissolved Inorganic Carbon standard deviation")
+        setattr(ncvar,'standard_name','mole_concentration_of_dissolved_inorganic_carbon_in_sea_water')
+        setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+        setattr(ncvar,'info'         , 'In order to calculate DIC in [micro mol / kg of seawater], dissic has to be multiplied by (1.e+6 / seawater density [kg/m3])')
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            dic = readdata(timestr, "O3c")/(12*1000) # conversion mg/mol
+            dic[~tmask] = 1.e+20
+            ncvar[iFrame,:] = dic
 
 
-        ncvar = ncOUT.createVariable('talk', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        ncvar = ncOUT.createVariable('talk_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'mol m-3')
         setattr(ncvar,'long_name'    ,"Alkalinity")
@@ -317,10 +426,24 @@ for FGroup in FGROUPS:
             alk[~tmask] = 1.e+20
             ncvar[iFrame,:] = alk
 
+        ncvar = ncOUT.createVariable('talk_std', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'mol m-3')
+        setattr(ncvar,'long_name'    ,"Alkalinity standard deviation")
+        setattr(ncvar,'standard_name','sea_water_alkalinity_expressed_as_mole_equivalent')
+        setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+        setattr(ncvar,'info'         , 'In order to calculate ALK in [micro mol / kg of seawater], talk has to be multiplied by (1.e+6 / seawater density [kg/m3])')
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            alk = readdata(timestr, "O3h")/1000 # conversion mg/mol
+            alk[~tmask] = 1.e+20
+            ncvar[iFrame,:] = alk
+
+
 
     if FGroup == 'CO2F':      
         
-        ncvar = ncOUT.createVariable('fgco2', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        ncvar = ncOUT.createVariable('fgco2_avg', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'kg m-2 s-1')
         setattr(ncvar,'long_name'    ,"Surface CO2 flux")
@@ -333,7 +456,22 @@ for FGroup in FGROUPS:
             co2_airflux[~tmask[0,:,:]] = 1.e+20
             ncvar[iFrame,:] =co2_airflux
 
-        ncvar = ncOUT.createVariable('spco2', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        ncvar = ncOUT.createVariable('fgco2_std', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'kg m-2 s-1')
+        setattr(ncvar,'long_name'    ,"Surface CO2 flux standard deviation")
+        setattr(ncvar,'standard_name','surface_downward_mass_flux_of_carbon_dioxide_expressed_as_carbon')
+        setattr(ncvar,'coordinates'  ,'time latitude longitude')
+        setattr(ncvar,'info'         ,'surface downward flux at air-sea interface of carbon dioxide expressed as kg of carbon per square meter per second' )
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            co2_airflux = readdata(timestr, "CO2airflux", ndims=2) *12 * 1.e-6 /86400 # conversion from mmol m-2 day-1 to kg/m2/s
+            co2_airflux[~tmask[0,:,:]] = 1.e+20
+            ncvar[iFrame,:] =co2_airflux
+
+
+
+        ncvar = ncOUT.createVariable('spco2_avg', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
         setattr(ncvar,'units'        ,'Pa')
         setattr(ncvar,'long_name'    ,'Surface partial pressure of CO2')
@@ -344,5 +482,18 @@ for FGroup in FGROUPS:
             pco2 = readdata(timestr, "pCO2") *0.101325 #conversion microatm --> Pascal  1 ppm = 1 microatm = 1.e-6 * 101325 Pa
             pco2[~tmask] = 1.e+20
             ncvar[iFrame,:] = pco2[0,:,:]
+
+        ncvar = ncOUT.createVariable('spco2_std', 'f', ('time','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        setattr(ncvar,'units'        ,'Pa')
+        setattr(ncvar,'long_name'    ,'Surface partial pressure of CO2 standard deviation')
+        setattr(ncvar,'standard_name','surface_partial_pressure_of_carbon_dioxide_in_sea_water')
+        setattr(ncvar,'coordinates'  ,'time latitude longitude')
+        for iFrame in range(12):
+            timestr = "2000%02d01" %(iFrame+1)
+            pco2 = readdata(timestr, "pCO2") *0.101325 #conversion microatm --> Pascal  1 ppm = 1 microatm = 1.e-6 * 101325 Pa
+            pco2[~tmask] = 1.e+20
+            ncvar[iFrame,:] = pco2[0,:,:]
+
 ncOUT.close()
         
