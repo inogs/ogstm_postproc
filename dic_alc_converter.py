@@ -91,7 +91,7 @@ for t in TL.Timelist[rank::nranks]:
 
 	inputfile = INDIR + 'ave.' + d + '-12:00:00.' + 'DIC.nc'
 	outfile =  OUTDIR + 'ave.' + d + '-12:00:00.' + 'O3c.nc'
-	print outfile
+	print (outfile)
 
 	DIC = DataExtractor(TheMask,inputfile,'DIC').values 
 	O3c = rho * DIC * 12 /1000 
@@ -101,7 +101,7 @@ for t in TL.Timelist[rank::nranks]:
 
 	inputfile = INDIR + 'ave.' + d + '-12:00:00.' + 'ALK.nc'
 	outfile  = OUTDIR + 'ave.' + d + '-12:00:00.' + 'O3h.nc'
-	print outfile
+	print (outfile)
 
 	ALK = DataExtractor(TheMask,inputfile,'ALK').values
 	O3h = rho * ALK /1000 
