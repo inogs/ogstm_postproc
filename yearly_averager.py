@@ -67,7 +67,7 @@ for req in YEARLY_REQS[rank::nranks]:
     inputvar=var
 
     outfile = OUTPUTDIR + "ave." + req.string + "0101-00:00:00." + var + ".nc"
-    print outfile
+    print(outfile,flush=True)
     filelist=[]
     for k in indexes:
         t = TL.Timelist[k]
