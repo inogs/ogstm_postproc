@@ -64,7 +64,6 @@ TARDIR=$ARCHIVE_DIR/tar
 mkdir -p $TARDIR
 #ls ave.201001* | cut -d "." -f 3 > allvarlist.txt
 my_prex_or_die " mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v allvarlist.txt"
-date
 
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
@@ -73,7 +72,6 @@ my_prex_or_die "mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *n
 TARDIR=$ARCHIVE_DIR/tar
 mkdir -p $TARDIR
 my_prex_or_die "mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v HF_varlist.txt"
-date
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
 mkdir $INPUTDIR/zipped
