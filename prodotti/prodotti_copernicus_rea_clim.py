@@ -88,11 +88,14 @@ def readfile(filename,var,ndims):
     if ndims==3:return M[:,:,cut:]
     if ndims==2:return M[:,cut:]
 
-def readdata(time, var, ndims=3):
+def readdata(time, var, ndims=3, std=False ):
     
-    inputfile = INPUTDIR + "ave."  + time + "-12:00:00." + var + ".nc"
+    inputfile = INPUTDIR + "ave."  + time + "-00:00:00." + var + ".nc"
     print(inputfile)
-    return readfile(inputfile,var,ndims=ndims)
+    if std:
+        return readfile(inputfile,var + "_std", ndims=ndims)
+    else:
+        return readfile(inputfile,var,ndims=ndims)
 
 def create_Structure(filename):
     ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_MULTIYEAR_BGC_006_008 - http://marine.copernicus.eu/'
@@ -183,7 +186,7 @@ for FGroup in FGROUPS:
         setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            M = readdata(timestr, "N3n")
+            M = readdata(timestr, "N3n", std=True)
             ncvar[iFrame,:] = M
         
 
@@ -206,7 +209,7 @@ for FGroup in FGROUPS:
         setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            M = readdata(timestr, "N1p")
+            M = readdata(timestr, "N1p", std=True)
             ncvar[iFrame,:] = M
 
 
@@ -229,7 +232,7 @@ for FGroup in FGROUPS:
         setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            M = readdata(timestr, "N4n")
+            M = readdata(timestr, "N4n", std=True)
             ncvar[iFrame,:] = M
 
 
@@ -269,7 +272,7 @@ for FGroup in FGROUPS:
         
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            pcb = readdata(timestr, 'P_c') * (1./12.)
+            pcb = readdata(timestr, 'P_c', std=True) * (1./12.)
                 #CONVERSION from "mgC m-3" to "mmolC m-3"
                 # conversion factor: 1/12
             pcb[~tmask] = 1.e+20
@@ -306,7 +309,7 @@ for FGroup in FGROUPS:
 
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            chl = readdata(timestr, "P_l")
+            chl = readdata(timestr, "P_l", std=True)
             chl[~tmask] = 1.e+20
             ncvar[iFrame,:] = chl
 
@@ -332,7 +335,7 @@ for FGroup in FGROUPS:
         setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            M = readdata(timestr, "O2o")
+            M = readdata(timestr, "O2o", std=True)
             ncvar[iFrame,:] = M
 
         
@@ -355,7 +358,7 @@ for FGroup in FGROUPS:
         setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            M = readdata(timestr, "ppn")
+            M = readdata(timestr, "ppn", std=True)
             ncvar[iFrame,:] = M
 
         
@@ -382,7 +385,7 @@ for FGroup in FGROUPS:
         setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            M = readdata(timestr, "pH")
+            M = readdata(timestr, "pH", std=True)
             ncvar[iFrame,:] = M          
 
 
@@ -408,7 +411,7 @@ for FGroup in FGROUPS:
         setattr(ncvar,'info'         , 'In order to calculate DIC in [micro mol / kg of seawater], dissic has to be multiplied by (1.e+6 / seawater density [kg/m3])')
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            dic = readdata(timestr, "O3c")/(12*1000) # conversion mg/mol
+            dic = readdata(timestr, "O3c", std=True)/(12*1000) # conversion mg/mol
             dic[~tmask] = 1.e+20
             ncvar[iFrame,:] = dic
 
@@ -435,7 +438,7 @@ for FGroup in FGROUPS:
         setattr(ncvar,'info'         , 'In order to calculate ALK in [micro mol / kg of seawater], talk has to be multiplied by (1.e+6 / seawater density [kg/m3])')
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            alk = readdata(timestr, "O3h")/1000 # conversion mg/mol
+            alk = readdata(timestr, "O3h", std=True)/1000 # conversion mg/mol
             alk[~tmask] = 1.e+20
             ncvar[iFrame,:] = alk
 
@@ -465,7 +468,7 @@ for FGroup in FGROUPS:
         setattr(ncvar,'info'         ,'surface downward flux at air-sea interface of carbon dioxide expressed as kg of carbon per square meter per second' )
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            co2_airflux = readdata(timestr, "CO2airflux", ndims=2) *12 * 1.e-6 /86400 # conversion from mmol m-2 day-1 to kg/m2/s
+            co2_airflux = readdata(timestr, "CO2airflux", ndims=2, std=True) *12 * 1.e-6 /86400 # conversion from mmol m-2 day-1 to kg/m2/s
             co2_airflux[~tmask[0,:,:]] = 1.e+20
             ncvar[iFrame,:] =co2_airflux
 
@@ -491,7 +494,7 @@ for FGroup in FGROUPS:
         setattr(ncvar,'coordinates'  ,'time latitude longitude')
         for iFrame in range(12):
             timestr = "2000%02d01" %(iFrame+1)
-            pco2 = readdata(timestr, "pCO2") *0.101325 #conversion microatm --> Pascal  1 ppm = 1 microatm = 1.e-6 * 101325 Pa
+            pco2 = readdata(timestr, "pCO2", std=True) *0.101325 #conversion microatm --> Pascal  1 ppm = 1 microatm = 1.e-6 * 101325 Pa
             pco2[~tmask] = 1.e+20
             ncvar[iFrame,:] = pco2[0,:,:]
 
