@@ -1,5 +1,20 @@
 #! /bin/bash
 
+
+PROD_DIR=/g100_scratch/userexternal/gbolzon0/RA_24/PRODUCTS/YEARLY/
+logDir=./XML
+mkdir -p $logDir
+
+for type in BIOL CARB NUTR PFTC CO2F; do
+#    ./Phase2_DU_uploader_dataset_006_008_yearly.sh -i $PROD_DIR -t $type -l $logDir
+done
+
+
+PROD_DIR=/g100_scratch/userexternal/gbolzon0/RA_24/PRODUCTS/CLIM
+./Phase2_DU_uploader_dataset_006_008_clim.sh -i $PROD_DIR -l $logDir
+
+exit 0
+
 PROD_DIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI/daily/
 
 YEAR=1999
