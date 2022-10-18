@@ -14,7 +14,6 @@ cd $SLURM_SUBMIT_DIR
 
 module load intel/oneapi-2021--binary
 module load intelmpi/oneapi-2021--binary
-export OPA_HOME=/g100_work/OGS_prod100/OPA/V7C-prod
 module load mkl/oneapi-2021--binary
 module load netcdf/4.7.4--oneapi--2021.2.0-ifort
 module load netcdff/4.5.3--oneapi--2021.2.0-ifort
@@ -80,44 +79,4 @@ TARDIR=$ARCHIVE_DIR/tar
 mkdir -p $TARDIR
 #ls *N1p.nc | cut -d "-" -f 1 > rsttimes
 my_prex_or_die "mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v rsttimes"
-
-
-
-exit 0
-
-
-
-
-# PROCEDURA PER L'ARCHIVIAZIONE DEI DA files
-cd MODEL/RESTARTS
-
-DA__FREQ_1=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/DA__FREQ_1
-DA__FREQ_1_GZ=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/DA__FREQ_1_GZ
-TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/archive/tar/DA_DIRS
-mkdir -p $DA__FREQ_1_GZ $TARDIR
-
-cd $DA__FREQ_1
-mkdir -p links
-for I in `ls `; do if [ -L $I ] ; then mv $I links ; fi done
-
-my_prex_or_die "mpirun python netcdf4_strong_compress.py -i $DA__FREQ_1 -o $DA__FREQ_1_GZ -l RSTbefore* -c 60 "# because RSTbefore are on jpk
-my_prex_or_die "mpirun python netcdf4_strong_compress.py -i $DA__FREQ_1 -o $DA__FREQ_1_GZ -l 'RST_after*' "
-my_prex_or_die "mpirun python compress.py         -i $DA__FREQ_1 -o $DA__FREQ_1_GZ -l '[2cl]*nc' "# *corr.nc, limcorr.nc, chl*nc
-
-mv $DA__FREQ_1/*dat $DA__FREQ_1_GZ
-mv $DA__FREQ_1/OceanVar* $DA__FREQ_1_GZ
-
-
-cat $CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/daTimes | cut -c 1-8 | uniq > daTimes # in case of multivariate
-my_prex_or_die "mpirun python packDA.py -i $DA__FREQ_1_GZ -o $TARDIR -v daTimes"
-
-exit 0
-
-RESTARTS=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/true_restarts/tosave
-mpirun python compress.py -i $RESTARTS -o $RESTARTS -l *nc
-TARDIR=$RESTARTS/tar
-mkdir $TARDIR
-my_prex_or_die "mpirun python packDA.py -i $RESTARTS -o $TARDIR -v rst_times.txt"
-
-
 
