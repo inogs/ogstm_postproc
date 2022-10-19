@@ -121,7 +121,7 @@ def create_Structure(filename):
     setattr(ncOUT,'field_type'   , field_type)
     
     ncvar = ncOUT.createVariable('time','d',('time',))
-    setattr(ncvar,'units',       'months')
+    setattr(ncvar,'units',       'months since 1998-12-01 00:00:00')
     setattr(ncvar,'long_name'    ,'time')
     setattr(ncvar,'standard_name','time')
     setattr(ncvar,'axis'         ,'T')
