@@ -91,7 +91,7 @@ def readfile(filename,var,ndims):
 def readdata(time, var, ndims=3, std=False ):
     
     inputfile = INPUTDIR + "ave."  + time + "-00:00:00." + var + ".nc"
-    print(inputfile)
+    print(inputfile,flush=True)
     if std:
         return readfile(inputfile,var + "_std", ndims=ndims)
     else:
