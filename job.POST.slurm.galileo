@@ -81,8 +81,8 @@ my_prex_or_die "mpirun python compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $
 ################ Kd  #########################
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/
-KD__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/out/AVE_FREQ_3/KD_DAILY
-KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/out/AVE_FREQ_3/KD_WEEKLY
+KD__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_DAILY
+KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_WEEKLY
 
 mkdir -p $KD__DAILY
 mkdir -p $KD_WEEKLY
