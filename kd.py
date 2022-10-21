@@ -16,7 +16,10 @@ def argument():
                                 required = True,
                                 help = ''' mask filename'''
                                 )
-
+    parser.add_argument(   '--avelist',"-l",
+                                type = str,
+                                required = True,
+                                help = 'ave.2019*.nc, they configure the date list')
     parser.add_argument(   '--outdir', '-o',
                                 type = str,
                                 required = True,
@@ -95,7 +98,7 @@ def freq_absorption(interp_data):
     freq_before, freq_after, w = interp_data
     return absorption[freq_before]*(1-w) + absorption[freq_after]*w
 
-TL = TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar="Ed_0500")
+TL = TimeList.fromfilenames(None, INPUTDIR, args.avelist, filtervar="Ed_0500")
 
 for d in TL.Timelist[rank::nranks]:
     for wavelengh in [380, 412, 490]:
