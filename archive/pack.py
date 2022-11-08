@@ -59,6 +59,6 @@ os.chdir(INPUT_DIR)
 for var in VARLIST[rank::nranks]: 
     tarfile  =  TARdir + var + ".tar"
 
-    command= "tar -cf " + tarfile + "   ave.*" + var + "*.nc*"    
+    command= "tar -cf " + tarfile + "   ave.*" + var + ".nc"
     print(command)
     os.system(command)
