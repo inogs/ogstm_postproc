@@ -12,7 +12,7 @@
 usage() {
 echo "Returns the name of a product in DU phase 2 production position"
 echo "Needs in PATH the path of ncftp "
-echo "type can be: BIOL, CARB, NUTR, PFTC, CO2F"
+echo "type can be: BIOL, CARB, NUTR, PFTC, CO2F EXCO"
 echo ""
 echo "SYNOPSYS"
 echo "get_daily_product_in_DU.sh [ -d date ] [ -t type ]   "
@@ -48,11 +48,12 @@ EOF
 PRODUCT=MEDSEA_ANALYSISFORECAST_BGC_006_014
 
 case $TYPE in 
-   "BIOL" ) dataset=med-ogs-bio-an-fc-d ;;
-   "CARB" ) dataset=med-ogs-car-an-fc-d ;;
-   "NUTR" ) dataset=med-ogs-nut-an-fc-d ;;
-   "PFTC" ) dataset=med-ogs-pft-an-fc-d ;;
-   "CO2F" ) dataset=med-ogs-co2-an-fc-d ;;
+   "BIOL" ) dataset=cmems_mod_med_bgc-bio_anfc_4.2km_P1D-m ;;
+   "CARB" ) dataset=cmems_mod_med_bgc-car_anfc_4.2km_P1D-m ;;
+   "NUTR" ) dataset=cmems_mod_med_bgc-nut_anfc_4.2km_P1D-m ;;
+   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1D-m ;;
+   "CO2F" ) dataset=cmems_mod_med_bgc-co2_anfc_4.2km_P1D-m ;;
+   "EXCO" ) dataset=cmems_mod_med_bgc-optics_anfc_4.2km_P1D-m ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac   
 
