@@ -69,8 +69,8 @@ for req in MONTHLY_REQS[rank::nranks]:
     inputvar=var
     #if var=='pH': inputvar='PH'
 
-    outfile = OUTPUTDIR + "ave." + req.string + "15-00:00:00." + var + ".nc"
-    print outfile
+    outfile = OUTPUTDIR + "ave." + req.string + "01-00:00:00." + var + ".nc"
+    print(outfile,flush=True)
     filelist=[]
     for k in indexes:
         t = TL.Timelist[k]

@@ -54,5 +54,5 @@ os.chdir(OUTPUTDIR)
 for tarfile in fileLIST[rank::nranks]: 
 
     command= "tar -xf " + tarfile 
-    print command
+    print(command)
     os.system(command)

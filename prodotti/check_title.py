@@ -39,16 +39,17 @@ for row in range(2,200):
     if work_sheet.cell(row=row, column=2).value is not None:
         xls_dataset = work_sheet.cell(row=row, column=2).value
         if xls_dataset == dataset:
-            xls_title = work_sheet.cell(row=row, column=18).value
+            xls_title = work_sheet.cell(row=row, column=20).value
+            print(xls_title)
             break
 
-print xls_title
+print(xls_title)
 
 D=netCDF4.Dataset(filename,"r")
 nc_title=str(getattr(D,'title'))
 D.close()
 
 if xls_title == nc_title : 
-    print "OK"
+    print("OK")
 else:
-    print "ERROR: inconsistency between NetCDF and PIT"
+    print("ERROR: inconsistency between NetCDF and PIT")

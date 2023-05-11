@@ -7,11 +7,12 @@ class read_descriptor():
         xmldoc = minidom.parse(VarDescriptorFile)
         
             
-        self.NATIVE_VARS=set()
+        self.NATIVE_VARS=list()
         NODE=xmldoc.getElementsByTagName("vars_for_All_Statistics")[0].getElementsByTagName("native")
         MONTHLY_NATIVE_NODES=NODE[0].getElementsByTagName("var")
         for n in MONTHLY_NATIVE_NODES:
-            self.NATIVE_VARS.add( str(n.attributes['name'].value) )
+            var=str(n.attributes['name'].value)
+            if var not in self.NATIVE_VARS: self.NATIVE_VARS.append(var)
             
                 
         self.AGGR_VARS=[]
@@ -29,7 +30,7 @@ class read_descriptor():
             self.SOME_VARS.add( str(n.attributes['name'].value) )
         
         
-        self.LIST_To_Online_PostPROC = self.NATIVE_VARS.union(self.SOME_VARS).union(set(self.AGGR_VARS))  # ottengo la longlist, senza ripetizione
+        self.LIST_To_Online_PostPROC = set(self.NATIVE_VARS).union(self.SOME_VARS).union(set(self.AGGR_VARS))  # ottengo la longlist, senza ripetizione
         self.ARCHIVE_VARS=[]
         NODE=xmldoc.getElementsByTagName("toArchive")
         MONTHLY_NATIVE_NODES=NODE[0].getElementsByTagName("var")
@@ -56,17 +57,17 @@ class read_descriptor():
             self.AGGREGATE_VARS.append(aggvar)
 
     def printStatus(self):
-        print len(self.NATIVE_VARS), "native vars"
-        print len(self.AGGR_VARS), " vars which we aggregate"
-        print len(self.SOME_VARS), " vars for Some Statistics"
-        print len(self.LIST_To_Online_PostPROC), "variables for online postproc"
+        print(len(self.NATIVE_VARS), "native vars")
+        print(len(self.AGGR_VARS), " vars which we aggregate")
+        print(len(self.SOME_VARS), " vars for Some Statistics")
+        print(len(self.LIST_To_Online_PostPROC), "variables for online postproc")
         
                 
     def printError(self,group, var):
-        print "*** ERROR in ", group ," variables: ", var , "not defined in model. "
+        print( "*** ERROR in ", group ," variables: ", var , "not defined in model. ")
         sys.exit(1) 
     def printFreqError(self,group, var):
-        print "*** ERROR in ", group ," variables: ", var , "not dumped at high frequency. "
+        print( "*** ERROR in ", group ," variables: ", var , "not dumped at high frequency. ")
         sys.exit(1)         
                     
     
@@ -76,15 +77,15 @@ class read_descriptor():
     def check_highfreq(self):
         repeatition=self.SOME_VARS.intersection(self.NATIVE_VARS)
         for i in repeatition :
-            print "**** removing", i , "from var_for_Some_Statistics" 
+            print("**** removing", i , "from var_for_Some_Statistics")
             self.SOME_VARS.remove(i)
                     
         SET_ARCHIVE_VARS=set(self.ARCHIVE_VARS)
         if len(SET_ARCHIVE_VARS) != len(self.ARCHIVE_VARS):
-            print "duplication in toArchive vars"
+            print("duplication in toArchive vars")
             for var in SET_ARCHIVE_VARS:
                 if self.ARCHIVE_VARS.count(var) > 1 :
-                    print var, "is duplicated. REMOVE it from xml descriptor ***************"
+                    print(var, "is duplicated. REMOVE it from xml descriptor ***************")
         # link with MODEL directory
         MODELDIR = os.getenv("CINECA_SCRATCH") + "/" + os.getenv("OPA_HOME") + "/wrkdir/MODEL/"
         if os.path.exists(MODELDIR):

@@ -9,13 +9,13 @@ annaCoast = False
 
 maskfile    = os.getenv("MASKFILE");
 if maskfile is None :
-    print "Error: Environment variable MASKFILE must be defined "
+    print("Error: Environment variable MASKFILE must be defined ")
     sys.exit(1)
 
 if annaCoast:
     kcoastfile  = os.getenv( "KCOASTFILE");
     if kcoastfile is None:
-        print "Error: Environment variable KCOASTFILE must be defined "
+        print("Error: Environment variable KCOASTFILE must be defined ")
         sys.exit(1)
 
 TheMask=Mask(maskfile,ylevelsmatvar="gphit", xlevelsmatvar="glamt")
@@ -141,7 +141,7 @@ def read_Positions_for_Pointprofiles(filename):
     MeasPoints_OUT['Name']= MeasPoints['Name']
     MeasPoints_OUT['Lon' ]= MeasPoints['Lon' ]
     MeasPoints_OUT['Lat' ]= MeasPoints['Lat' ]
-    for k in xrange(nMeas):
+    for k in range(nMeas):
         DIST = (Lon - MeasPoints['Lon'][k])**2 + (Lat - MeasPoints['Lat'][k])**2 
         ind=np.nonzero(DIST==DIST.min())# tuple  
         j = ind[0]

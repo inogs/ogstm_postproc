@@ -40,18 +40,18 @@ VARLIST = [os.path.basename(f)[0:3] for f in pklLIST]
 
 
 for var in VARLIST:
-    print var
+    print(var)
     filebef = IN_BEFORE + '/STAT_PROFILES/' + var + '.pkl'
-    fid = open(filebef,'r')
+    fid = open(filebef,'rb')
     varbef = pkl.load(fid)
     fid.close()
 
     fileaft = IN__AFTER + '/STAT_PROFILES/' + var + '.pkl'
     if not(os.path.exists(fileaft)):
-        print var + '.pkl does not exist in ' + IN__AFTER + '/STAT_PROFILES/'
-        print ' CONTINUE on other variables'
+        print(var + '.pkl does not exist in ' + IN__AFTER + '/STAT_PROFILES/')
+        print(' CONTINUE on other variables')
         continue
-    fid = open(fileaft,'r')
+    fid = open(fileaft,'rb')
     varaft = pkl.load(fid)
     fid.close()
 
@@ -59,12 +59,12 @@ for var in VARLIST:
     TLaft = varaft[1]
 
     if not(TLbef.nTimes==TLaft.nTimes):
-        print 'Timelists after and before do not have the same lenght EXIT'
+        print('Timelists after and before do not have the same lenght EXIT')
         import sys
         sys.exit(0)
     for ii,dd in enumerate(TLbef.Timelist):
         if not(dd==TLaft.Timelist[ii]):
-            print 'Different dates at %s element of TLbef w.r.t. TLaft EXIT'
+            print('Different dates at %s element of TLbef w.r.t. TLaft EXIT')
             import sys
             sys.exit(0)
 

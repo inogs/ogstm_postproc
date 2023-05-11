@@ -81,22 +81,22 @@ AVEDIR     = addsep(args.inputdir)
 
 RD = read_descriptor.read_descriptor(args.descriptor)
 PATH_NAME = AVEDIR + args.avelist
-if rank==0 : print "INPUT_DIR =", AVEDIR
+if rank==0 : print("INPUT_DIR =", AVEDIR)
 
 
 if args.archivedir:
     ARCHIVEdir = addsep(args.archivedir)
-    if rank==0 : print "ARCHIVEDIR=", ARCHIVEdir
+    if rank==0 : print("ARCHIVEDIR=", ARCHIVEdir)
     os.system("mkdir -p " + ARCHIVEdir)
 
 if args.tmpdir:
     TMPOUTdir  = addsep(args.tmpdir)
-    if rank==0 : print "TMPOUTDIR= ", TMPOUTdir
+    if rank==0 : print("TMPOUTDIR= ", TMPOUTdir)
     os.system("mkdir -p " + TMPOUTdir)
 
 if args.chlsupdir:
     CHLSUPdir  = addsep(args.chlsupdir)
-    if rank==0 : print "CHLSUPDIR =", CHLSUPdir
+    if rank==0 : print("CHLSUPDIR =", CHLSUPdir)
     os.system("mkdir -p " + CHLSUPdir)
 
 SingleVar_filelist=glob.glob(PATH_NAME)
@@ -105,7 +105,7 @@ TheMask=Mask(args.maskfile)
 
 for N1pfile in SingleVar_filelist[rank::nranks]:
     dailyAve  = os.path.basename(N1pfile)
-    print "writing ", dailyAve
+    print("writing ", dailyAve,flush=True)
 
     if args.tmpdir:
         G.WriteAggregateAvefiles(TheMask, N1pfile, AVEDIR, TMPOUTdir, TMPOUTdir, RD)
@@ -113,7 +113,7 @@ for N1pfile in SingleVar_filelist[rank::nranks]:
     if args.chlsupdir:    
         F = G.filename_manager(N1pfile)
         chl3dfile = TMPOUTdir + F.prefix + "." + F.datestr + ".P_l.nc"
-        chl2dfile = CHLSUPdir + "chl."         + F.datestr + ".nc"
+        chl2dfile = CHLSUPdir + F.prefix + "." + F.datestr + ".P_l.nc"
         if chl3dfile.find('after')>-1:
            chlvar = 'TRNP_l'
         else:

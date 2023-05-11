@@ -17,7 +17,7 @@ def recognize_terms(formula):
         if p in operator_list:
             if keep_on_recognizing:
                 keep_on_recognizing=False
-                outlist.append(np.array(term).tostring())
+                outlist.append(np.array(term,dtype="|S1").tobytes().decode())
                 term=[]
         else:
             term.append(p)
@@ -69,7 +69,7 @@ class filename_manager():
             if var in d.variables:
                 d.close()
                 return file_try2
-        for file_try in [file_try1,file_try2]: print "try", file_try
+        for file_try in [file_try1,file_try2]: print("try", file_try)
         raise ValueError("File not found")        
 
 
@@ -96,7 +96,7 @@ class filename_manager():
                     d.close()
                 return file_try
 
-        for file_try in [file_try1,file_try2,file_try3,file_try4]: print "try", file_try
+        for file_try in [file_try1,file_try2,file_try3,file_try4]: print("try", file_try)
         raise ValueError("File not found")
 
 
@@ -126,6 +126,17 @@ class filename_manager():
             return self.search_in_postproc_files(filename_for_timelist, var,AGGREGATE_AVEDIR)
         else:
             return self.search_in_model_files(filename_for_timelist, var, INPUT_AVEDIR,AGGREGATE_AVEDIR)
+
+    def netcdf_var(self,filename,var):
+        d=netCDF4.Dataset(filename,'r')
+        if var in d.variables.keys():
+            d.close()
+            return var
+        trnvar="TRN" + var
+        if trnvar in d.variables.keys():
+            d.close()
+            return trnvar
+        raise ValueError(var + " not found")
 
 
 
@@ -161,10 +172,7 @@ def WriteAggregateAvefiles(mask, N1pfile,INPUT_AVEDIR, AGGREGATE_AVEDIR, OUTDIR,
     for formula in VarDescriptor.AGGR_FORMULAS:
         LS, RS, aggrlist = recognize_terms(formula)
         var=LS
-        if var.find('TRN')>-1:
-            avevar = var[var.find('TRN')+3:]
-        else: avevar = var
-        outfile = OUTDIR + F.prefix + "." + F.datestr + "." + avevar + ".nc"
+        outfile = OUTDIR + F.prefix + "." + F.datestr + "." + var + ".nc"
         ncOUT=NC.netcdf_file(outfile,"w")
         setattr(ncOUT,"Convenctions","COARDS")
         ncOUT.createDimension('time',  1)
@@ -185,12 +193,9 @@ def WriteAggregateAvefiles(mask, N1pfile,INPUT_AVEDIR, AGGREGATE_AVEDIR, OUTDIR,
 
         ncvar=ncOUT.createVariable(var,'f',('time','depth','lat','lon'))
         for lvar in aggrlist:
-            if lvar.find('TRN')>-1:
-                avevar = lvar[lvar.find('TRN')+3:]
-            else: avevar = lvar
-            #avefile=getfileForRead(N1pfile, lvar)
-            avefile = F.get_filename(N1pfile, avevar, INPUT_AVEDIR, AGGREGATE_AVEDIR)
-            DE = DataExtractor(mask,avefile,lvar,dimvar=3)
+            avefile = F.get_filename(N1pfile, lvar, INPUT_AVEDIR, AGGREGATE_AVEDIR)
+            actual_var=F.netcdf_var(avefile, lvar)
+            DE = DataExtractor(mask,avefile,actual_var,dimvar=3)
             commandstr=lvar + "= DE.values"
             exec(commandstr)
         junk = eval(RS)
@@ -212,10 +217,7 @@ def WriteAggregateAvefiles_old(mask, N1pfile,OUTDIR,VarDescriptor):
     F = filename_manager(N1pfile)
 
     for var in VarDescriptor.AGGREGATE_DICT.keys():
-        if var.find('TRN')>-1:
-            avevar = var[var.find('TRN')+3:]
-        else: avevar = var
-        outfile = OUTDIR + F.prefix + "." + F.datestr + "." + avevar + ".nc"
+        outfile = OUTDIR + F.prefix + "." + F.datestr + "." + var + ".nc"
         ncOUT=NC.netcdf_file(outfile,"w")
         setattr(ncOUT,"Convenctions","COARDS")
         ncOUT.createDimension('time',  1)
@@ -237,11 +239,9 @@ def WriteAggregateAvefiles_old(mask, N1pfile,OUTDIR,VarDescriptor):
         ncvar=ncOUT.createVariable(var,'f',('time','depth','lat','lon'))
         junk = np.zeros((jpk,jpj,jpi),np.float32)
         for lvar in VarDescriptor.AGGREGATE_DICT[var]:
-            if lvar.find('TRN')>-1:
-                avevar = lvar[lvar.find('TRN')+3:]
-            else: avevar = lvar
-            avefile=getfileForRead(N1pfile, avevar)
-            DE = DataExtractor(mask,avefile,lvar)
+            avefile=F.get_filename(N1pfile, lvar, INPUT_AVEDIR, AGGREGATE_AVEDIR)
+            actual_var=F.netcdf_var(avefile, lvar)
+            DE = DataExtractor(mask,avefile,actual_var,dimvar=3)
             junk +=DE.values
         junk[~mask.mask] = 1.e+20
         ncvar[:]=junk
@@ -254,7 +254,7 @@ def WriteAggregateAvefiles_old(mask, N1pfile,OUTDIR,VarDescriptor):
 def WriteBigAve(Mask,N1pfile, outfile, VARS):
       
     if len(VARS)==0:
-        print "No variables in archive list"
+        print("No variables in archive list")
         return
 
     nc=NC.netcdf_file(N1pfile,"r");
@@ -319,7 +319,10 @@ def writeChlSup(avefile, chlfile, chlvar):
 if __name__ == "__main__" :
     formula= "ppn    = ppg - 0.1 * exR2cc - exR2ac - Resp "
     left_side, right_side, outlist = recognize_terms(formula)
-    print outlist
+    print(outlist)
+    filename = "/g100_work/OGS_prod100/OPA/V9C/RUNS_SETUP/PREPROC/IC/from_V7C/RST.20180101-00:00:00.P1c.nc"
+    F=filename_manager(filename)
+    print(F.netcdf_var(filename,'P1c'))
 
     import sys
     sys.exit()
@@ -340,7 +343,7 @@ if __name__ == "__main__" :
     filename=avelist[0]
     filename='FORCINGS/Upippo.nc'
     F=filename_manager(filename)
-    print F.get_filename(filename, 'vozocrtx',INPUT_AVEDIR,AGGREGATE_AVEDIR)
+    print(F.get_filename(filename, 'vozocrtx',INPUT_AVEDIR,AGGREGATE_AVEDIR))
 
     #print F.get_filename(filename, var,INPUT_AVEDIR,AGGREGATE_AVEDIR)
 

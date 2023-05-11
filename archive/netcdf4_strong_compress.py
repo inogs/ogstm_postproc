@@ -94,24 +94,24 @@ def WRITE_AVE(inputfile, outfile,var):
     OUT = np.array(ncIN[var])
     if 'time' in ncIN.dimensions:
         if len(OUT.shape)==4:
-            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20)
+            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=2)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'long_name',var)
             ncvar[:] = OUT
         if len(OUT.shape)==3:
-            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20)
+            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=2)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'long_name',var)
             ncvar[:] =  OUT
     else:
         ncOUT.createDimension('time',0)
         if len(OUT.shape)==3:
-            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20)
+            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=2)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'long_name',var)
             ncvar[0,:] = OUT
         if len(OUT.shape)==2:
-            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20)
+            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=2)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'long_name',var)
             ncvar[0,:] =  OUT
@@ -133,7 +133,7 @@ def WRITE_RST_DA(inputfile, outfile,var,jkcut=None):
     if 'time' not in DIMS.keys():
         ncOUT.createDimension('time',1)
     dims=('time',depth_dimension_name(ncIN),lat_dimension_name(ncIN) ,lon_dimension_name(ncIN))
-    ncvar = ncOUT.createVariable("TRN" + var, 'f', dims ,zlib=True, fill_value=1.0e+20)
+    ncvar = ncOUT.createVariable("TRN" + var, 'f', dims ,zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=3)
     setattr(ncvar,'missing_value',ncvar._FillValue)
     if var in ncIN.variables:
         x=np.array(ncIN[var])

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-FREQUENCY=monthly
+FREQUENCY=daily
 
 function dataset_substr {
 #  returns BIOL, CARB, ...
@@ -15,17 +15,18 @@ function get_dataset {
    parameter=$1
    frequency=$2
    case $frequency in
-    daily )  time_flag=d ;;
-   monthly)  time_flag=m ;;
+    daily )  time_flag=D ;;
+   monthly)  time_flag=M ;;
    *) echo "ERROR"; exit 1 ;;
    esac
 
    case $parameter in
-   BIOL) DATASET=med-ogs-bio-an-fc-$time_flag ;;
-   CARB) DATASET=med-ogs-car-an-fc-$time_flag ;;
-   NUTR) DATASET=med-ogs-nut-an-fc-$time_flag ;;
-   PFTC) DATASET=med-ogs-pft-an-fc-$time_flag ;;
-   CO2F) DATASET=med-ogs-co2-an-fc-$time_flag ;;
+   BIOL) DATASET=cmems_mod_med_bgc-bio_anfc_4.2km_P1${time_flag}-m ;;
+   CARB) DATASET=cmems_mod_med_bgc-car_anfc_4.2km_P1${time_flag}-m ;;
+   NUTR) DATASET=cmems_mod_med_bgc-nut_anfc_4.2km_P1${time_flag}-m ;;
+   PFTC) DATASET=cmems_mod_med_bgc-pft_anfc_4.2km_P1${time_flag}-m ;;
+   CO2F) DATASET=cmems_mod_med_bgc-co2_anfc_4.2km_P1${time_flag}-m ;;
+   EXCO) DATASET=cmems_mod_med_bgc-optics_anfc_4.2km_P1${time_flag}-m ;;
    *)  echo "ERROR"; exit 1 ;;
    esac
    echo $DATASET
@@ -88,8 +89,8 @@ ncks -M -m ${3} | grep ${2} | grep ${1} | awk '{print $3}' | cut -d "f" -f 1
 }
 
 
-PIT=$HOME/CMEMS-MED-PIT_v202105_Rita_v2.xlsx
-DIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/POSTPROC/PROD/NRT/MONTHLY
+PIT=$HOME/CMEMS-MED-PIT-v202211_GB.xlsx
+DIR=/g100_scratch/userexternal/gbolzon0/V9C/PRODOTTI/NRT/PRODOTTI/
 TIME_TO_CHECK=20190501
 
 
@@ -114,6 +115,8 @@ for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
 done
 
 fi
+
+
 
 if [ 1 == 1 ] ; then
 
@@ -141,7 +144,7 @@ for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
      dim_check $filename zooc
   fi
   if echo $filename | grep -q CO2F ; then
-     dim_check $filename fpco2
+     dim_check $filename fgco2
      dim_check $filename spco2
   fi  
 done
@@ -162,6 +165,9 @@ for filename in `ls $DIR/${TIME_TO_CHECK}*nc `; do
    done
    
 done 
+
+
+exit 0
 
 echo "####   STATIC FILES ####"
 echo ""

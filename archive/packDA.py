@@ -24,7 +24,7 @@ def argument():
 
 def file2stringlist(filename):
     LIST=[]
-    filein=file(filename)
+    filein=open(filename)
     for line in filein:
         LIST.append(line[:-1])
     filein.close()
@@ -60,5 +60,5 @@ for var in VARLIST[rank::nranks]:
     tarfile  =  TARdir + var + ".tar"
 
     command= "tar -cf " + tarfile + "   *" + var + "*"
-    print command
+    print(command)
     os.system(command)

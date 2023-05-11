@@ -33,9 +33,11 @@ def argument():
 
 args = argument()
 
+
 from commons.Timelist import TimeList, TimeInterval
+from commons import timerequestors
 from commons.mask import Mask
-from commons.time_averagers import TimeAverager3D, TimeAverager2D
+from commons.time_averagers import TimeAverager3D_std, TimeAverager2D_std
 from commons import netcdf4
 from commons.utils import addsep
 
@@ -57,16 +59,17 @@ var = args.var
 
 TI= TimeInterval('1999','2020', '%Y')
 TL=TimeList.fromfilenames(TI, INPUTDIR, "ave*.nc", filtervar=var)
-YEARLY_REQS=TL.getYearlist()
 
-
-for req in YEARLY_REQS[rank::nranks]:
+MONTHS=range(1,13)
+for month in MONTHS[rank::nranks]:
+    req = timerequestors.Clim_month(month)
+    
     indexes,weights=TL.select(req)
 
     if len(indexes)==0: continue
     inputvar=var
 
-    outfile = OUTPUTDIR + "ave." + req.string + "0101-00:00:00." + var + ".nc"
+    outfile = OUTPUTDIR + "ave.2000" + req.string + "01-00:00:00." + var + ".nc"
     print(outfile,flush=True)
     filelist=[]
     for k in indexes:
@@ -75,8 +78,14 @@ for req in YEARLY_REQS[rank::nranks]:
         filelist.append(filename)
     for i in filelist: print(i)
     if netcdf4.dimfile(filename, var)==3:
-        M3d = TimeAverager3D(filelist, weights, inputvar, TheMask)
+        M3d,std = TimeAverager3D_std(filelist, weights, inputvar, TheMask)
         netcdf4.write_3d_file(M3d, var, outfile, TheMask)
+        std[~TheMask.mask] = 1.e+20
+        netcdf4.write_3d_file(std, var +"_std", outfile, TheMask)
     else:
-        M2d = TimeAverager2D(filelist, weights, inputvar, TheMask)
+        M2d,std = TimeAverager2D_std(filelist, weights, inputvar, TheMask)
         netcdf4.write_2d_file(M2d, var, outfile, TheMask)
+        std[~TheMask.mask_at_level(0)] = 1.e+20
+        netcdf4.write_2d_file(std, var + "_std", outfile, TheMask)
+        
+        

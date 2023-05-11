@@ -59,16 +59,17 @@ function decide_action {
 }
 
 
-BINDIR=/gpfs/work/OGS20_PRACE_P/COPERNICUS/bin/
+BINDIR=/g100_work/OGS21_PRACE_P/COPERNICUS/bin
 FILES_TO_SEND="${YEAR}*${TYPE}*.nc"
 
 
 case $TYPE in
-   "BIOL" ) dataset=med-ogs-bio-an-fc-m_202105 ;;
-   "CARB" ) dataset=med-ogs-car-an-fc-m_202105 ;;
-   "NUTR" ) dataset=med-ogs-nut-an-fc-m_202105 ;;
-   "PFTC" ) dataset=med-ogs-pft-an-fc-m_202105 ;;
-   "CO2F" ) dataset=med-ogs-co2-an-fc-m_202105 ;;
+   "BIOL" ) dataset=cmems_mod_med_bgc-bio_anfc_4.2km_P1M-m_202211 ;;
+   "CARB" ) dataset=cmems_mod_med_bgc-car_anfc_4.2km_P1M-m_202211 ;;
+   "NUTR" ) dataset=cmems_mod_med_bgc-nut_anfc_4.2km_P1M-m_202211 ;;
+   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1M-m_202211 ;;
+   "CO2F" ) dataset=cmems_mod_med_bgc-co2_anfc_4.2km_P1M-m_202211 ;;
+   "EXCO" ) dataset=cmems_mod_med_bgc-optics_anfc_4.2km_P1M-m_202211 ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac
 

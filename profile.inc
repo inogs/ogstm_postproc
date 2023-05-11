@@ -10,6 +10,45 @@ function my_prex_or_die {
 }
 
 
+function my_prex_or_die_with_tries {
+# Similar to my_prex_or_die, but in case of failure
+# halves the number of cores and retries.
+# It does not try under 4 cores.
+# It applies only to parallel python calls, because of a
+# g100 unresolved issue.
+
+typeset _command="$1"
+shift 1
+
+my_prex "$_command"
+_ec=$?
+typeset ncores
+typeset new_ncores
+typeset python_command
+typeset new_command
+if [ $_ec -ne 0 ] ; then
+  prefix=${_command%python*}    # mpirun -np 72
+  ncores=${prefix#mpirun -np}   # 72
+  python_command=${_command#*${ncores}}
+
+  while [[ $ncores -gt 4 && "$_ec" -ne 0 ]]  ; do
+    new_ncores=$(( $ncores / 2 ))
+    new_command="mpirun -np $new_ncores $python_command"
+    ncores=$new_ncores
+    my_prex "$new_command" ; _ec=$?
+
+  done
+
+fi
+if [ $_ec -ne 0 ] ; then
+ my_die "python call failed also with $ncores cores "
+fi
+
+}
+
+
+
+
 function my_date {
  date
 }

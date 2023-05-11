@@ -2,26 +2,28 @@
 
 #SBATCH --job-name=POST
 #SBATCH -N2
-#SBATCH --ntasks-per-node=16
+#SBATCH --ntasks-per-node=32
 #SBATCH --time=01:30:00
 #SBATCH --mem=300gb
-#SBATCH --account=OGS20_PRACE_P_2
+#SBATCH --account=OGS21_PRACE_P
 #SBATCH --partition=g100_usr_prod
+#SBATCH --qos=g100_qos_dbg
 
 cd $SLURM_SUBMIT_DIR
 
-. ./profile.inc
 
 module load intel/oneapi-2021--binary
 module load intelmpi/oneapi-2021--binary
-export OPA_HOME=/g100_work/OGS_prod100/OPA/V7C-prod
-export OPA_HOSTNAME=g100
-export HDF5_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
-export NETCDF4_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
-export GEOS_DIR=$OPA_HOME/HOST/$OPA_HOSTNAME
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/g100_work/OGS_prod100/OPA/V7C-prod/HOST/g100/lib:/g100_work/OGS20_PRACE_P_2/COPERNICUS/V7C/HOST/g100/lib
-source /g100_work/OGS20_PRACE_P_2/COPERNICUS/py_env_2.7.12/bin/activate
-export PYTHONPATH=$PYTHONPATH:/g100_work/OGS20_PRACE_P_2/COPERNICUS/bit.sea
+module load mkl/oneapi-2021--binary
+module load netcdf/4.7.4--oneapi--2021.2.0-ifort
+module load netcdff/4.5.3--oneapi--2021.2.0-ifort
+source /g100_work/OGS21_PRACE_P/COPERNICUS/py_env_3.6.8/bin/activate
+export PYTHONPATH=$PYTHONPATH:/g100_work/OGS21_PRACE_P/COPERNICUS/bit.sea
+
+unset I_MPI_PMI_LIBRARY
+export UCX_TLS=ib
+export SLURM_PMIX_DIRECT_CONN_UCX=false
+
 
 export OPA_HOME=TRANSITION_24
 
@@ -29,7 +31,7 @@ export OPA_HOME=TRANSITION_24
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
   TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2_tar
-my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 75 -v N1p"
+my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 64 -v N1p"
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
   TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS_tar
@@ -61,7 +63,6 @@ TARDIR=$ARCHIVE_DIR/tar
 mkdir -p $TARDIR
 #ls ave.201001* | cut -d "." -f 3 > allvarlist.txt
 my_prex_or_die " mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v allvarlist.txt"
-date
 
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
@@ -70,7 +71,6 @@ my_prex_or_die "mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *n
 TARDIR=$ARCHIVE_DIR/tar
 mkdir -p $TARDIR
 my_prex_or_die "mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v HF_varlist.txt"
-date
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
 mkdir $INPUTDIR/zipped
@@ -79,41 +79,4 @@ TARDIR=$ARCHIVE_DIR/tar
 mkdir -p $TARDIR
 #ls *N1p.nc | cut -d "-" -f 1 > rsttimes
 my_prex_or_die "mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v rsttimes"
-
-
-
-exit 0
-
-
-
-
-# PROCEDURA PER L'ARCHIVIAZIONE DEI DA files
-cd MODEL/RESTARTS
-
-
-cd DA__FREQ_1
-mkdir -p links
-for I in `ls `; do if [ -L $I ] ; then mv $I links ; fi done
-
-my_prex_or_die "mpirun python netcdf4_compress.py -i $DA__FREQ_1 -o $DA__FREQ_1/gz -l RSTbefore* -c 60 "# because RSTbefore are on jpk
-my_prex_or_die "mpirun python netcdf4_compress.py -i $DA__FREQ_1 -o $DA__FREQ_1/gz -l RST_after*"
-my_prex_or_die "mpirun python compress.py         -i $DA__FREQ_1 -o $DA__FREQ_1/gz -l [2cl]*nc "# *corr.nc, limcorr.nc, chl*nc
-
-mv $DA__FREQ_1/*dat $DA__FREQ_1/gz
-mv $DA__FREQ_1/OceanVar* $DA__FREQ_1/gz
-
-
-# rm -f *nc
-ls chl.*nc | cut -c 5-12 > daTimes  # dates with yyyymmdd
-cat MODEL/daTimes | cut -c 1-8 | uniq > daTimes # in case of multivariate
-my_prex_or_die "mpirun python packDA.py -i $DA__FREQ_1 -o $TARDIR -v daTimes"
-
-
-RESTARTS=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/true_restarts/tosave
-mpirun python compress.py -i $RESTARTS -o $RESTARTS -l *nc
-TARDIR=$RESTARTS/tar
-mkdir $TARDIR
-my_prex_or_die "mpirun python packDA.py -i $RESTARTS -o $TARDIR -v rst_times.txt"
-
-
 
