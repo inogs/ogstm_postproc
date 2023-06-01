@@ -126,5 +126,5 @@ for var in VARLIST[rank::nranks]:
         station_name=MeasPoints[iP]['Name']
         outfile="%stxt/%s_%s.txt" %(OUTDIR,var,station_name)
         print(outfile)
-        dumptxtfile(outfile, A, TL, iP)
+        dumptxtfile(outfile, TIMESERIES, TL, iP)
 
