@@ -3,8 +3,9 @@ import argparse
 def argument():
     parser = argparse.ArgumentParser(description = '''
     Creates a single pkl file, containing the overall time series, 
-    for every variable in STAT_PROFILES. 
-    
+    for every variable in PROFILES.
+    Then, in OUTDIR/txt/ it saves Hovmoeller matrices in txt files,
+    for every station in pointlist file.
     ''')
     parser.add_argument(   '--inputdir', '-i',
                                 type = str,
@@ -49,6 +50,7 @@ INPUTDIR=addsep(args.inputdir)
 OUTDIR=addsep(args.outdir)
 
 os.system("mkdir -p " + OUTDIR)
+os.system("mkdir -p " + OUTDIR + "txt/")
 
 TI = TimeInterval("1900","2150","%Y")
 TL=TimeList.fromfilenames(TI,INPUTDIR, "ave*nc")
@@ -64,6 +66,21 @@ def get_info(filename):
     nStations, jpk =VarObj.shape
     D.close()
     return VARLIST, nStations, jpk
+
+def dumptxtfile(outfile, HovMatrix, TL, iP):
+    dateformat="%Y%m%d"
+    limit_levels=(~np.isnan(HovMatrix[0,iP,:])).sum()
+    depth = TheMask.zlevels[:limit_levels]
+    depth.resize(limit_levels,1)
+
+    fid = open(outfile,'w')
+    fid.write(" \t")
+    np.savetxt(fid,depth.T, '%10.5f\t',newline="m\n")
+    for iFrame in range(TL.nTimes):
+        fid.write(TL.Timelist[iFrame].strftime(dateformat) + "\t")
+        np.savetxt(fid,HovMatrix[iFrame,iP,:limit_levels], fmt="%10.5f\t",newline="")
+        fid.write("\n")
+    fid.close()
 
 MeasPoints = read_Positions_for_Pointprofiles(args.pointlist)
 FrameDesc   =""
@@ -104,3 +121,10 @@ for var in VARLIST[rank::nranks]:
     setattr(ncOUT,"sub___list"  ,  Stations[:-2])
 
     ncOUT.close()
+    nStations = len(MeasPoints)
+    for iP in range(nStations):
+        station_name=MeasPoints[iP]['Name']
+        outfile="%stxt/%s_%s.txt" %(OUTDIR,var,station_name)
+        print(outfile)
+        dumptxtfile(outfile, A, TL, iP)
+
