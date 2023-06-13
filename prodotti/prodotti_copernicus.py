@@ -237,8 +237,8 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar[0,:] = M
 
         if FGroup == 'PFTC':
-            if args.tr=='daily'   : setattr(ncOUT,'title','Phytoplankton Carbon Biomass, Zooplankton Carbon Biomass and Chlorophyll (3D) - Daily Mean')
-            if args.tr=='monthly' : setattr(ncOUT,'title','Phytoplankton Carbon Biomass, Zooplankton Carbon Biomass and Chlorophyll (3D) - Monthly Mean')
+            if args.tr=='daily'   : setattr(ncOUT,'title','Phytoplankton Carbon Biomass, Zooplankton Carbon Biomass, Chlorophyll and PFTs (3D) - Daily Mean')
+            if args.tr=='monthly' : setattr(ncOUT,'title','Phytoplankton Carbon Biomass, Zooplankton Carbon Biomass, Chlorophyll and PFTs (3D) - Monthly Mean')
 
             ncvar = ncOUT.createVariable('phyc', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
@@ -261,6 +261,45 @@ for timestr in TIMELIST[rank::nranks]:
             pcb[~tmask] = 1.e+20
             ncvar[0,:] = pcb
             
+            ncvar = ncOUT.createVariable('diatoC', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mmol m-3')
+            setattr(ncvar,'long_name'    ,'Diatoms Carbon Biomass')
+            setattr(ncvar,'standard_name','mole_concentration_of_diatoms_expressed_as_carbon_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+            M = readdata(timestr, "P1c")
+            ncvar[0,:] = M
+
+            ncvar = ncOUT.createVariable('nanoC', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mmol m-3')
+            setattr(ncvar,'long_name'    ,'Nanoflagellates Carbon Biomass')
+            setattr(ncvar,'standard_name','mole_concentration_of_nanoflagellates_expressed_as_carbon_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+            M = readdata(timestr, "P2c")
+            ncvar[0,:] = M
+
+            ncvar = ncOUT.createVariable('picoC', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mmol m-3')
+            setattr(ncvar,'long_name'    ,'Picophytoplankton Carbon Biomass')
+            setattr(ncvar,'standard_name','mole_concentration_of_picophytoplankton_expressed_as_carbon_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+            M = readdata(timestr, "P3c")
+            ncvar[0,:] = M
+
+            ncvar = ncOUT.createVariable('dinoC', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mmol m-3')
+            setattr(ncvar,'long_name'    ,'Dinoflagellates Carbon Biomass')
+            setattr(ncvar,'standard_name','mole_concentration_of_dinoflagellates_expressed_as_carbon_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+            M = readdata(timestr, "P4c")
+            ncvar[0,:] = M
+
+
+
+
             ncvar = ncOUT.createVariable('chl', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'mg m-3')
@@ -279,6 +318,44 @@ for timestr in TIMELIST[rank::nranks]:
                 chl = (P1l + P2l + P3l +P4l)
             chl[~tmask] = 1.e+20
             ncvar[0,:] = chl
+
+            ncvar = ncOUT.createVariable('diatoChla', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mg m-3')
+            setattr(ncvar,'long_name'    ,'Diatoms Chlorophyll concentration')
+            setattr(ncvar,'standard_name','mass_concentration_of_diatoms_expressed_as_chlorophyll_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+            M = readdata(timestr, "P1l")
+            ncvar[0,:] = M
+
+            ncvar = ncOUT.createVariable('nanoChla', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mg m-3')
+            setattr(ncvar,'long_name'    ,'Nanoflagellates Chlorophyll concentration')
+            setattr(ncvar,'standard_name','mass_concentration_of_nanoflagellates_expressed_as_chlorophyll_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+            M = readdata(timestr, "P2l")
+            ncvar[0,:] = M
+
+            ncvar = ncOUT.createVariable('picoChla', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mg m-3')
+            setattr(ncvar,'long_name'    ,'Picophytoplankton Chlorophyll concentration')
+            setattr(ncvar,'standard_name','mass_concentration_of_picophytoplankton_expressed_as_chlorophyll_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+            M = readdata(timestr, "P3l")
+            ncvar[0,:] = M
+
+            ncvar = ncOUT.createVariable('dinoChla', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
+            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'units'        ,'mg m-3')
+            setattr(ncvar,'long_name'    ,'Dinoflagellates Chlorophyll concentration')
+            setattr(ncvar,'standard_name','mass_concentration_of_dinoflagellates_expressed_as_chlorophyll_in_sea_water')
+            setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
+            M = readdata(timestr, "P4l")
+            ncvar[0,:] = M
+
+
 
             ncvar = ncOUT.createVariable('zooc', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
