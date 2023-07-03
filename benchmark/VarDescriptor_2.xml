@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+<vars_for_All_Statistics description="point profiles, subbasin statistic profiles, volume integrals">
+
+<native>
+<var name="O2o" ></var>
+<var name="N1p" ></var>
+<var name="N3n" ></var>
+<var name="N4n" ></var>
+<var name="N5s" ></var>
+
+<var name="B1c" ></var>
+<var name="B1n" ></var>
+<var name="B1p" ></var>
+
+<var name="P1l" ></var>
+<var name="P2l" ></var>
+<var name="P3l" ></var>
+<var name="P4l" ></var>
+
+<var name="P1c" ></var>
+<var name="P2c" ></var>
+<var name="P3c" ></var>
+<var name="P4c" ></var>
+
+<var name="O3h" ></var>
+<var name="O3c" ></var>
+<var name="DIC" ></var>
+<var name="ALK" ></var>
+<var name="pH"  ></var>
+<var name="pCO2"></var>
+
+<var name="ruPPYc" ></var>
+
+<var name="R1c" ></var>
+<var name="R1n" ></var>
+<var name="R1p" ></var>
+<var name="R2c" ></var>
+<var name="R3c" ></var>
+<var name="R6c" ></var>
+
+<var name="R1l" ></var>
+<var name="R2l" ></var>
+<var name="R3l" ></var>
+
+<var name="O5c" ></var>
+
+</native>
+
+<aggregate>
+<!--
+<aggvar name="P_p" formula="P_p = P1p + P2p + P3p + P4p" > </aggvar>
+<aggvar name="P_n" formula="P_n = P1n + P2n + P3n + P4n" > </aggvar>
+
+-->
+<aggvar name="P_c" formula="P_c = P1c + P2c + P3c + P4c" > </aggvar>
+<aggvar name="P_l" formula="P_l = P1l + P2l + P3l + P4l" > </aggvar>
+<aggvar name="Z_c" formula="Z_c = Z3c + Z4c + Z5c + Z6c" > </aggvar>
+<aggvar name="Z_p" formula="Z_p = Z3p + Z4p + Z5p + Z6p" > </aggvar>
+<aggvar name="Z_n" formula="Z_n = Z3n + Z4n + Z5n + Z6n" > </aggvar>
+<aggvar name="R_c" formula="R_c = R1c + R2c + R6c + R3c" > </aggvar>
+<aggvar name="R_p" formula="R_p = R1p       + R6p      " > </aggvar>
+
+
+<aggvar name="exR2ac" formula= "exR2ac = BFM1D_exR2ac_iiP1 + BFM1D_exR2ac_iiP2  + BFM1D_exR2ac_iiP3 + BFM1D_exR2ac_iiP4  "  ></aggvar>
+<aggvar name="ppn"    formula= "ppn    = ruPPYc  - exR2ac - resPPYc "  ></aggvar>
+</aggregate>
+
+</vars_for_All_Statistics>
+
+
+
+<var_for_Some_Statistics description="subbasin statistic profiles without percentiles, volume integrals based on vertical profiles">
+</var_for_Some_Statistics>
+
+
+<toArchive description="list to to archive, deprecated for high resolution">
+</toArchive>
+
+<var2D>
+<vars_for_All>
+<native>
+<var name="CO2airflux"></var>
+</native>
+</vars_for_All>
+</var2D>
+
+</root>
