@@ -9,13 +9,20 @@ module load netcdff/4.5.3--oneapi--2021.2.0-ifort
 source /g100_work/OGS21_PRACE_P/COPERNICUS/py_env_3.6.8/bin/activate
 
 
+#  user settings #########################
 export CINECA_WORK=/g100_work/OGS_devC
 export OPA_HOME=Benchmark/HC
+
+##########################################
+
+
 BITSEA=$CINECA_WORK/$OPA_HOME/wrkdir/POSTPROC/bit.sea
 export PYTHONPATH=:$BITSEA
 HERE=$PWD
 
 export ONLINE_REPO=/g100_work/OGS_devC/V10C/RUNS_SETUP/ONLINE
+export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
+
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
  BASEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/PROFILATORE/
@@ -32,6 +39,9 @@ else
     cp $HERE/profiler.py .
     python profiler.py
 fi
+
+export VALIDATION_DIR=$CINECA_WORK/$OPA_HOME/wrkdir/POSTPROC/output/VALIDATION
+
 
 # 1. sbatch job.POST.slurm.galileo
 # 2. sbatch job.serial.slurm

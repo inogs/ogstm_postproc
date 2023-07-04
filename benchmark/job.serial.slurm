@@ -12,12 +12,18 @@ cd $SLURM_SUBMIT_DIR
 . ./launch.sh
 
 cd $SLURM_SUBMIT_DIR
-export    MASKFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/meshmask.nc
+
 
 $BASEDIR/jobProfiler.sh
 
 
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
+
+
+STAT_PROFILES_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES/
 
 
 
-
+./sat.sh   #13 min
+./maps.sh
+./float.sh
