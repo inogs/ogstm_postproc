@@ -30,7 +30,7 @@ my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_l  -t mean -o
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N3n  -t mean -o $VALIDATION_DIR/MAPS/N3n $COMMONS_PARAMS "     # Fig4.10 NIT-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N1p  -t mean -o $VALIDATION_DIR/MAPS/N1p $COMMONS_PARAMS "     # Fig4.9  PHOS-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v ALK  -t mean -o $VALIDATION_DIR/MAPS/ALK $COMMONS_PARAMS"      # Ac-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN  --> not requested in the ScQP
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v DIC  -t mean -o $VALIDATION_DIR/MAPS/N3n $COMMONS_PARAMS "     # DIC-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN --> not requested in the ScQP
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v DIC  -t mean -o $VALIDATION_DIR/MAPS/DIC $COMMONS_PARAMS "     # DIC-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN --> not requested in the ScQP
 
 
 #CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN from SATELLITE:
