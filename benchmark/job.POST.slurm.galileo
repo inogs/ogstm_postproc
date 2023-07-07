@@ -28,6 +28,7 @@ export PATH=$PATH:..
 
 MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
 
+if  [ 1 == 0 ]  ; then
 my_prex_or_die "mpirun -np 32 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $MODEL_AVEDIR -m $MASKFILE"
 
 
@@ -66,5 +67,53 @@ mkdir -p $KD__DAILY
 mkdir -p $KD_WEEKLY
 my_prex_or_die "mpirun python ../kd.py -i $INPUTDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
 my_prex_or_die "mpirun python ../weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t monday"
+
+## COMPRESSION ##
+fi
+
+
+cd $SLURM_SUBMIT_DIR/../archive
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1_tar
+my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v N1p"
+
+cd $INPUTDIR
+echo "Erasing original $INPUTDIR"
+rm -f ave*nc ;
+for var in N1p N3n O2o P_l P_c O3c O3h DIC ALK ppn ; do
+    echo "Unarchiving $var"
+    tar -xf ../AVE_FREQ_1_tar/${var}.tar
+done
+
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2_tar
+my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v N1p"
+
+cd $INPUTDIR
+echo "Erasing original $INPUTDIR"
+rm -f ave*nc ave*bkp;
+for var in N1p N3n O2o P_l P_c O3c O3h DIC ALK ppn ; do
+    echo "Unarchiving $var"
+    tar -xf ../AVE_FREQ_2_tar/${var}.tar
+done
+
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3_tar
+my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v Ed_0250"
+cd $INPUTDIR
+echo "Erasing original $INPUTDIR"
+rm -f ave*nc
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS_tar
+my_prex_or_die "./tar_rstdir.sh -i $INPUTDIR -o $TARDIR -n 120"
+cd $INPUTDIR
+echo "Erasing original $INPUTDIR"
+rm -f RST*nc
+
+echo "You can archive with a serial job: AVE_FREQ_1_tar, AVE_FREQ_2_tar, AVE_FREQ_3_tar, RESTARTS_tar."
+
 
 
