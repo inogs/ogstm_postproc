@@ -31,17 +31,17 @@ sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " p
 cd $CINECA_WORK/$OPA_HOME/wrkdir/POSTPROC
 
 if [[ -d bit.sea ]] ; then
-    echo "Nothing to do"
+    cd $HERE
 else
     git clone git@github.com:inogs/bit.sea.git
-    
     cd $BITSEA/validation/deliverables
     cp $HERE/profiler.py .
     python profiler.py
 fi
 
+cd $HERE
 export VALIDATION_DIR=$CINECA_WORK/$OPA_HOME/wrkdir/POSTPROC/output/VALIDATION
-
+export VALIDATION_DIR=/g100_work/OGS_devC/Benchmark/pub/HC
 
 # 1. sbatch job.POST.slurm.galileo
 # 2. sbatch job.serial.slurm
