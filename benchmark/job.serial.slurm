@@ -20,10 +20,11 @@ my_prex_or_die "$BASEDIR/jobProfiler.sh"
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
 
 
-STAT_PROFILES_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES/
+export STAT_PROFILES_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES/
 
 
 
 ./sat.sh   #13 min
-./maps.sh
+./maps.sh  # 5 min
 ./float.sh # 17 min
+./static.sh # 10 min
