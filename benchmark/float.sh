@@ -9,6 +9,7 @@ mkdir -p $VALIDATION_DIR/FLOAT
 mkdir -p $VALIDATION_DIR/FLOAT/Hov/P_l
 mkdir -p $VALIDATION_DIR/FLOAT/Hov/N3n
 mkdir -p $VALIDATION_DIR/FLOAT/Hov/O2o
+mkdir -p $VALIDATION_DIR/FLOAT/Hov/P_c
 
 mkdir -p $VALIDATION_DIR/FLOAT/Key-processes/P_l
 mkdir -p $VALIDATION_DIR/FLOAT/Key-processes/N3n
@@ -33,7 +34,7 @@ my_prex_or_die "python Hov_Stat_plot.py -m $MASKFILE -i $NCDIR -b $BASEDIR -o $V
 
 my_prex "mv $VALIDATION_DIR/FLOAT/Hov/P_l/*N3n*.png $VALIDATION_DIR/FLOAT/Hov/N3n"
 my_prex "mv $VALIDATION_DIR/FLOAT/Hov/P_l/*O2o*.png $VALIDATION_DIR/FLOAT/Hov/O2o"
-
+my_prex "mv $VALIDATION_DIR/FLOAT/Hov/P_l/*P_c*.png $VALIDATION_DIR/FLOAT/Hov/P_c"
 #------------------------------------------------------
 # Statistics about key processes for different basins
 #
