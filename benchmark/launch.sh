@@ -12,7 +12,7 @@ source /g100_work/OGS21_PRACE_P/COPERNICUS/py_env_3.6.8/bin/activate
 #  user settings #########################
 export CINECA_WORK=/g100_work/OGS_devC
 export OPA_HOME=Benchmark/HC
-
+# EDIT spaghetti_plot_user_setting.txt
 ##########################################
 
 
@@ -26,8 +26,13 @@ export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
  BASEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/PROFILATORE/
+PROFILES=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES
 
 sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " profiler.tpl > $HERE/profiler.py
+sed -e "s%actual%PROFILES%g " timeseries_user_settings.txt > $HERE/profiles_plotter_user_settings.txt
+
+cp $HERE/profiles_plotter_user_settings.txt $BITSEA/validation/deliverables
+
 cd $CINECA_WORK/$OPA_HOME/wrkdir/POSTPROC
 
 if [[ -d bit.sea ]] ; then
