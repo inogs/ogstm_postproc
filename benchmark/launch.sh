@@ -29,7 +29,7 @@ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
 PROFILES=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES
 
 sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " profiler.tpl > $HERE/profiler.py
-sed -e "s%actual%PROFILES%g " timeseries_user_settings.txt > $HERE/profiles_plotter_user_settings.txt
+sed -e "s%actual%${PROFILES}%g " timeseries_user_settings.txt > $HERE/profiles_plotter_user_settings.txt
 
 cp $HERE/profiles_plotter_user_settings.txt $BITSEA/validation/deliverables
 
