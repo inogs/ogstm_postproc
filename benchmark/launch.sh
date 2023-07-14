@@ -50,6 +50,7 @@ else
     cd $BITSEA/validation/deliverables
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " $HERE/profiler.tpl > profiler.py
     sed -e "s%actual%${PROFILES}%g " $HERE/timeseries_user_settings.txt > profiles_plotter_user_settings.txt
+    cp $HERE/VarDescriptorB.xml $BITSEA/postproc
     python profiler.py
 fi
 

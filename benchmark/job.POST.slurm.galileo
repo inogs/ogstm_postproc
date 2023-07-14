@@ -78,7 +78,7 @@ my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v N1p"
 cd $INPUTDIR
 echo "Erasing original $INPUTDIR"
 rm -f ave*nc ;
-for var in N1p N3n N5s O2o P_l P_c O3c O3h DIC ALK ppn ; do
+for var in N1p N3n O2o P_l P_c O3c O3h DIC ALK ppn ; do
     echo "Unarchiving $var"
     tar -xf ../AVE_FREQ_1_tar/${var}.tar
 done
