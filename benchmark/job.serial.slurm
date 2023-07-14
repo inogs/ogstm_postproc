@@ -13,7 +13,7 @@ cd $SLURM_SUBMIT_DIR
 
 cd $SLURM_SUBMIT_DIR
 
-
+./timeseries.sh
 my_prex_or_die "$BASEDIR/jobProfiler.sh"
 
 
@@ -28,4 +28,4 @@ export STAT_PROFILES_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FR
 ./maps.sh  # 5 min
 ./float.sh # 17 min
 ./static.sh # 10 min
-./timeseries.sh
+

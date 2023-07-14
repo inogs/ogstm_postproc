@@ -28,7 +28,6 @@ export PATH=$PATH:..
 
 MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
 
-if  [ 1 == 0 ]  ; then
 my_prex_or_die "mpirun -np 32 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $MODEL_AVEDIR -m $MASKFILE"
 
 
@@ -69,7 +68,6 @@ my_prex_or_die "mpirun python ../kd.py -i $INPUTDIR -m $MASKFILE -o $KD__DAILY -
 my_prex_or_die "mpirun python ../weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t monday"
 
 ## COMPRESSION ##
-fi
 
 
 cd $SLURM_SUBMIT_DIR/../archive
