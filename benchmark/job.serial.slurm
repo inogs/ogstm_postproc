@@ -2,8 +2,8 @@
 
 #SBATCH --job-name=valid
 #SBATCH -N1 -n 1
-#SBATCH --time=4:00:00
-#SBATCH --account=OGS21_PRACE_P
+#SBATCH --time=2:00:00
+#SBATCH --account=OGS23_PRACE_IT
 #SBATCH --partition=g100_all_serial
 
 cd $SLURM_SUBMIT_DIR
@@ -13,8 +13,8 @@ cd $SLURM_SUBMIT_DIR
 
 cd $SLURM_SUBMIT_DIR
 
-./timeseries.sh
-my_prex_or_die "$BASEDIR/jobProfiler.sh"
+./timeseries.sh # 2m
+my_prex_or_die "$BASEDIR/jobProfiler.sh" #45 min
 
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
