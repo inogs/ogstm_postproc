@@ -43,8 +43,8 @@ for VAR in kd490 P_l  P1l    P2l    P3l    P4l  ; do # kd490
    my_prex_or_die "python plot_timeseries_RMS_CORR.py -v $VAR -i $OPENSEA_PKL -o $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/offshore " # table4.1
    my_prex_or_die "python plot_timeseries_RMS_CORR.py -v $VAR -i $COAST_PKL -o $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/coast  "   # table4.2
    
-   my_prex_or_die "cp $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/offshore/table4.1_${VAR}.dat $VALIDATION_DIR/SAT/table4.1 "
-   my_prex_or_die "cp $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/coast/table4.1_${VAR}.dat    $VALIDATION_DIR/SAT/table4.2/table4.2_${VAR}.dat "
+   my_prex_or_die "cp $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/offshore/table4.1_${VAR}.txt $VALIDATION_DIR/SAT/table4.1 "
+   my_prex_or_die "cp $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/coast/table4.1_${VAR}.txt    $VALIDATION_DIR/SAT/table4.2/table4.2_${VAR}.txt "
 
 done
 
