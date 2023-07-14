@@ -28,7 +28,7 @@ export PATH=$PATH:..
 
 MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
 
-my_prex_or_die "mpirun -np 32 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $MODEL_AVEDIR -m $MASKFILE"
+my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $MODEL_AVEDIR -m $MASKFILE"
 
 
 ########  LOW FREQUENCY ######################################################
@@ -41,8 +41,8 @@ MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
         TMPS=$OUTDIR/TMPS
   CHLSUP_DIR=$OUTDIR/CHL_SUP
 
-my_prex_or_die "mpirun python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_2.xml -t $MODEL_AVEDIR -c $CHLSUP_DIR -m $MASKFILE"
-my_prex_or_die "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_2.xml -o $OUTDIR -t $TMPS  -s "
+my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_2.xml -t $MODEL_AVEDIR -c $CHLSUP_DIR -m $MASKFILE"
+my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_2.xml -o $OUTDIR -t $TMPS  -s "
 
 ANS=$?
 # ---------- cleaning
@@ -52,7 +52,7 @@ if [ $ANS == 0 ] ; then
    cd $SLURM_SUBMIT_DIR
 fi
 
-my_prex_or_die "mpirun -np 16 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
+my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
 
 ################## end of integrals/profiles stuff  ##############
 
@@ -84,6 +84,7 @@ for var in N1p N3n O2o P_l P_c O3c O3h DIC ALK ppn ; do
 done
 
 
+cd $SLURM_SUBMIT_DIR/../archive
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
   TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2_tar
 my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v N1p"
@@ -96,7 +97,7 @@ for var in N1p N3n O2o P_l P_c O3c O3h DIC ALK ppn ; do
     tar -xf ../AVE_FREQ_2_tar/${var}.tar
 done
 
-
+cd $SLURM_SUBMIT_DIR/../archive
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3
   TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3_tar
 my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v Ed_0250"
@@ -104,6 +105,7 @@ cd $INPUTDIR
 echo "Erasing original $INPUTDIR"
 rm -f ave*nc
 
+cd $SLURM_SUBMIT_DIR/../archive
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
   TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS_tar
 my_prex_or_die "./tar_rstdir.sh -i $INPUTDIR -o $TARDIR -n 120"
