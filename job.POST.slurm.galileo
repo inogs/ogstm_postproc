@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=16
 #SBATCH --time=01:30:00
 #SBATCH --mem=300gb
-#SBATCH --account=OGS21_PRACE_P
+#SBATCH --account=OGS23_PRACE_IT
 #SBATCH --partition=g100_usr_prod
 
 cd $SLURM_SUBMIT_DIR
