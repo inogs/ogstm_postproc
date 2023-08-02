@@ -1,0 +1,49 @@
+#!/bin/bash
+
+#SBATCH --job-name=POST
+#SBATCH -N2
+#SBATCH --ntasks-per-node=32
+#SBATCH --time=01:30:00
+#SBATCH --mem=300gb
+#SBATCH --account=OGS23_PRACE_IT
+#SBATCH --partition=g100_usr_prod
+#SBATCH --qos=g100_qos_dbg
+
+cd $SLURM_SUBMIT_DIR
+
+. ../profile.inc
+. ./launch.sh
+
+unset I_MPI_PMI_LIBRARY
+export UCX_TLS=ib
+export SLURM_PMIX_DIRECT_CONN_UCX=false
+
+
+DA__FREQ_1=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/DA__FREQ_1
+    TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/DA__FREQ_1_tar
+DA__FREQ_1_GZ=$TARDIR/gz
+
+mkdir -p $DA__FREQ_1_GZ $TARDIR
+
+cd $DA__FREQ_1
+mkdir -p links
+for I in `ls `; do if [ -L $I ] ; then mv $I links ; fi done
+
+cd $SLURM_SUBMIT_DIR/../archive
+my_prex_or_die "mpirun python netcdf4_strong_compress.py -i $DA__FREQ_1 -o $DA__FREQ_1_GZ -l RSTbefore* -c 60 "# because RSTbefore are on jpk
+my_prex_or_die "mpirun python netcdf4_strong_compress.py -i $DA__FREQ_1 -o $DA__FREQ_1_GZ -l 'RST_after*' "
+my_prex_or_die "mpirun python compress.py         -i $DA__FREQ_1 -o $DA__FREQ_1_GZ -l '[2cl]*nc' "# *corr.nc, limcorr.nc, chl*nc
+
+mv $DA__FREQ_1/*dat $DA__FREQ_1_GZ
+mv $DA__FREQ_1/OceanVar* $DA__FREQ_1_GZ
+
+
+cat $CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/daTimes | cut -c 1-8 | uniq | grep 2019 > daTimes # in case of multivariate
+my_prex_or_die "mpirun python packDA.py -i $DA__FREQ_1_GZ -o $TARDIR -v daTimes"
+
+echo "Removing $DA__FREQ_1"
+echo "and      $DA__FREQ_1_GZ"
+rm -rf $DA__FREQ_1 $DA__FREQ_1_GZ
+
+echo "You can now archive $TARDIR"
+
