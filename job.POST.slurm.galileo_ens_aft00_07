@@ -1,0 +1,149 @@
+#! /bin/bash
+
+#SBATCH --job-name=ENS0_7
+#SBATCH -N5
+#SBATCH --ntasks-per-node=24
+#SBATCH --time=02:30:00
+#SBATCH --mem=300gb
+#SBATCH --account=OGS_devC
+#SBATCH --partition=g100_meteo_prod
+#SBATCH --qos=qos_meteo
+
+cd $SLURM_SUBMIT_DIR
+
+. ./profile.inc
+
+module load autoload
+module load intel/oneapi-2021--binary
+module load intelmpi/oneapi-2021--binary
+module load mkl/oneapi-2021--binary
+module load netcdf/4.7.4--oneapi--2021.2.0-ifort
+module load netcdff/4.5.3--oneapi--2021.2.0-ifort
+source /g100_work/OGS21_PRACE_P/COPERNICUS/py_env_3.6.8/bin/activate
+export PYTHONPATH=$PYTHONPATH:/g100_work/OGS21_PRACE_P/COPERNICUS/bit.sea
+
+unset I_MPI_PMI_LIBRARY
+export UCX_TLS=ib
+export SLURM_PMIX_DIRECT_CONN_UCX=false
+
+#export OPA_HOME=TRANSITION_24
+
+export    MASKFILE=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/meshmask.nc
+export  KCOASTFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/mapser.npy
+
+RUN=_WP6_DAens
+MODEL_AVEDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/in${RUN}/ENS_ANALYSIS/
+      OUTDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/ENS_IC/out${RUN}/ENS_ANALYSIS/MEAN/
+
+mkdir -p $OUTDIR
+
+     TMP_DIR=$OUTDIR/TMP
+        TMPS=$OUTDIR/TMPS
+  CHLSUP_DIR=$OUTDIR/CHL_SUP
+
+
+# TODO: python timelist_generator.py -l ave*N1p.nc -i $MODEL_AVEDIR -o $OUTDIR/STAT_PROFILES/
+#my_prex_or_die "mpirun -np 30  python var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE"
+#my_prex_or_die "mpirun -np 32 python aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $TMP_DIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s " # -p punti.dat
+
+#ANS=$?
+#---------- cleaning
+#if [ $ANS == 0 ] ; then  
+#   cd $TMPS
+#   rm -f tmp.*
+#   cd $SLURM_SUBMIT_DIR
+#fi
+#my_prex_or_die "mpirun -np 30 python compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
+
+cd $SLURM_SUBMIT_DIR
+ave=RST
+
+for i in 000 001 002 003 004 005 006 007
+
+do
+        MODEL_AVEDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/in${RUN}/ENS_ANALYSIS/ENSEMBLE/
+        OUTDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/out${RUN}/ENS_ANALYSIS/$i/
+
+        mkdir -p $ OUTDIR
+
+        TMP_DIR=$OUTDIR/TMP
+        TMPS=$OUTDIR/TMPS
+        CHLSUP_DIR=$OUTDIR/CHL_SUP
+        netcdf_n=*N3n.nc
+        netcdf=*.nc
+        var1=$ave$i*2019*$netcdf_n
+        var=$ave$i*2019*$netcdf
+        echo $var
+
+
+        my_prex_or_die_with_tries "mpirun -np 32 python var_aggregator.py -l $var1 -i $MODEL_AVEDIR -d VarDescriptor_1_RSTens.xml -t $TMP_DIR -c $CHLSUP_DIR -m $MASKFILE"
+        my_prex_or_die_with_tries "mpirun -np 32 python aveScan.py  -l $var     -i $MODEL_AVEDIR -f N3n -a $TMP_DIR -d VarDescriptor_1_RSTens.xml -o $OUTDIR -t $TMPS  -s " # -p punti.dat
+
+        my_prex_or_die "mpirun -np 1 python compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/ "
+done
+
+
+exit 0
+
+########  LOW FREQUENCY ######################################################
+
+cd $SLURM_SUBMIT_DIR
+
+MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
+      OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/
+
+     TMP_DIR=$OUTDIR/TMP
+        TMPS=$OUTDIR/TMPS
+  CHLSUP_DIR=$OUTDIR/CHL_SUP
+
+my_prex_or_die "mpirun python var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_2.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE"
+my_prex_or_die "mpirun python aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $TMP_DIR -d VarDescriptor_2.xml -o $OUTDIR -t $TMPS  -s " # -p punti.dat
+
+ANS=$?
+# ---------- cleaning
+if [ $ANS == 0 ] ; then  
+   cd $TMPS
+   rm -f tmp.*
+   cd $SLURM_SUBMIT_DIR
+fi
+
+my_prex_or_die "mpirun python compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
+
+################## end of integrals/profiles stuff  ##############
+
+################ Kd  #########################
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/
+KD__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_DAILY
+KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_WEEKLY
+
+mkdir -p $KD__DAILY
+mkdir -p $KD_WEEKLY
+my_prex_or_die "mpirun python kd.py -i $INPUTDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
+my_prex_or_die "mpirun python weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t monday"
+
+
+
+##############  time average  #####################
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+OUTPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/MONTHLY/AVE
+mkdir -p $OUTPUTDIR
+for var in N1p N3n ppn ; do
+ my_prex_or_die "mpirun -np 24 python monthly_averager.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v $var "
+ my_prex_or_die "mpirun -np 24 python yearly_averager.py  -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v $var "
+done
+
+################ O3c Orh converter #########################
+
+maskfile_ingv=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/ogstm/meshmask_INGVfor_ogstm.nc
+maskfile=/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc
+INDIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/AVE_FREQ_1/
+OUTDIR=/gpfs/scratch/userexternal/gcoidess/POSTPROC_REA_24/TEST22/trash2/
+FORCDIR=/gpfs/scratch/userexternal/gbolzon0/REA_24/TEST_22/wrkdir/MODEL/FORCINGS/
+starttime=20140101
+endtime=20150101
+
+my_prex_or_die "mpirun python dic_alc_converter.py -M $maskfile_ingv -m $maskfile -i $INDIR -o $OUTDIR -f $FORCDIR -s $starttime -e $endtime"
+
+

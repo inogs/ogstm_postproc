@@ -31,9 +31,9 @@ export SLURM_PMIX_DIRECT_CONN_UCX=false
 export    MASKFILE=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/meshmask.nc
 export  KCOASTFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/mapser.npy
 
-RUN=RST0101_ensCHL_3rd
-MODEL_AVEDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/ENS_IC/in${RUN}/
-      OUTDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/ENS_IC/out${RUN}/
+RUN=_WP6_DAens
+MODEL_AVEDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/in${RUN}/RESTARTS/
+      OUTDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/ENS_IC/out${RUN}/RESTARTS/
 
 mkdir -p $OUTDIR
 
@@ -61,8 +61,8 @@ ave=RST
 for i in 000 001 002 003 004 005 006 007
 
 do
-      #   MODEL_AVEDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/in_WP5/in_WP5_${RUN}/ENSEMBLE/
-        OUTDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/ENS_IC/out${RUN}/$i/
+        MODEL_AVEDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/in${RUN}/RESTARTS/ENSEMBLE/
+        OUTDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/out${RUN}/RESTARTS/$i/
 
         mkdir -p $ OUTDIR
 

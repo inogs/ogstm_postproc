@@ -31,9 +31,9 @@ export SLURM_PMIX_DIRECT_CONN_UCX=false
 export    MASKFILE=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/meshmask.nc
 export  KCOASTFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/mapser.npy
 
-RUN=RST0101_ensCHL_3rd
-MODEL_AVEDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/ENS_IC/in${RUN}_MEAN/
-      OUTDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/ENS_IC/out${RUN}_MEAN/
+RUN=_WP6_DAens
+MODEL_AVEDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/in${RUN}/RESTARTS/
+      OUTDIR=/g100_scratch/userexternal/ateruzzi/PerSimone/EVAL_SEIK/POSTPROC/out${RUN}/RESTARTS/MEAN/
 
 mkdir -p $OUTDIR
 
