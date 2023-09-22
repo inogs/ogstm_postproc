@@ -171,7 +171,7 @@ for filename in FILELIST[rank::nranks]:
     outfile=OUTPUTDIR + basename
     print(outfile,flush=True)
     prefix, datestr, var, _ = basename.rsplit(".")
-    if prefix == 'ave':
+    if prefix.startswith('ave'):
         WRITE_AVE(filename, outfile, var)
     if prefix == "RST":
         if datestr.count("0000"):
