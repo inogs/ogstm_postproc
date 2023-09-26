@@ -8,7 +8,7 @@ def recognize_terms(formula):
 
     left_side, right_side=formula.split("=")
     left_side=left_side.replace(" ","") # deblank
-    operator_list=["+","-", "*", "/", "(",")", " "]
+    operator_list=["+","-", "*", "/", "(",")", " ", "exp"]
     termlist=[]
     outlist=[]
     term=[]
@@ -27,7 +27,8 @@ def recognize_terms(formula):
             float(hyp_var)
         except:
             termlist.append(hyp_var)
-
+    if 'exp' in termlist: termlist.remove('exp')
+    right_side = right_side.replace('exp', 'np.exp')
     return left_side, right_side, termlist
 
 class filename_manager():
@@ -318,6 +319,7 @@ def writeChlSup(avefile, chlfile, chlvar):
 
 if __name__ == "__main__" :
     formula= "ppn    = ppg - 0.1 * exR2cc - exR2ac - Resp "
+    formula = "limpar_1 = 1 - exp( -irr * alpha )"
     left_side, right_side, outlist = recognize_terms(formula)
     print(outlist)
     filename = "/g100_work/OGS_prod100/OPA/V9C/RUNS_SETUP/PREPROC/IC/from_V7C/RST.20180101-00:00:00.P1c.nc"
