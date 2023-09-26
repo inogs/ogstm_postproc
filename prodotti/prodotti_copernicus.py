@@ -273,8 +273,8 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar = ncOUT.createVariable('nanoC', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'mmol m-3')
-            setattr(ncvar,'long_name'    ,'Nanoflagellates Carbon Biomass')
-            setattr(ncvar,'standard_name','mole_concentration_of_nanoflagellates_expressed_as_carbon_in_sea_water')
+            setattr(ncvar,'long_name'    ,'Nanophytoplankton Carbon Biomass')
+            setattr(ncvar,'standard_name','mole_concentration_of_nanophytoplankton_expressed_as_carbon_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             M = readdata(timestr, "P2c")
             ncvar[0,:] = M
@@ -331,8 +331,8 @@ for timestr in TIMELIST[rank::nranks]:
             ncvar = ncOUT.createVariable('nanoChla', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'units'        ,'mg m-3')
-            setattr(ncvar,'long_name'    ,'Nanoflagellates Chlorophyll concentration')
-            setattr(ncvar,'standard_name','mass_concentration_of_nanoflagellates_expressed_as_chlorophyll_in_sea_water')
+            setattr(ncvar,'long_name'    ,'Nanophytoplankton Chlorophyll concentration')
+            setattr(ncvar,'standard_name','mass_concentration_of_nanophytoplankton_expressed_as_chlorophyll_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             M = readdata(timestr, "P2l")
             ncvar[0,:] = M
