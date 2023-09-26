@@ -31,7 +31,7 @@ MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
 my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $MODEL_AVEDIR -m $MASKFILE"
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/metrics_2d
 mkdir -o $OUTDIR
-my_prex_or_die_with_tries "mpirun -np 120 ../metrics_2d.py -i $MODEL_AVEDIR -m $MASKFILE -o $OUTDIR"
+my_prex_or_die_with_tries "mpirun -np 120 python ../metrics_2d.py -i $MODEL_AVEDIR -m $MASKFILE -o $OUTDIR"
 
 ########  LOW FREQUENCY ######################################################
 
