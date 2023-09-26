@@ -19,7 +19,7 @@ export OPA_HOME=Benchmark/DA_SAT
 #
 export VALIDATION_DIR=/g100_work/OGS_devC/Benchmark/pub/Benchmark/DA_SAT  ## the path after pub/ will be published https://medeaf.inogs.it/internal-validation
 #
-# EDIT spaghetti_plot_user_setting.txt
+# EDIT timeseries_user_setting.txt
 #
 export CINECA_WORK=/g100_work/OGS_devC
 POSTPROCDIR=$CINECA_WORK/$OPA_HOME/wrkdir/POSTPROC  ## $CINECA_WORK or $CINECA_SCRATCH
