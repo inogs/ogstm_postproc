@@ -64,6 +64,19 @@
 
 <aggvar name="exR2ac" formula= "exR2ac = BFM1D_exR2ac_iiP1 + BFM1D_exR2ac_iiP2  + BFM1D_exR2ac_iiP3 + BFM1D_exR2ac_iiP4  "  ></aggvar>
 <aggvar name="ppn"    formula= "ppn    = ruPPYc  - exR2ac - resPPYc "  ></aggvar>
+<aggvar name="theta_chl" formula= "theta_chl   = P_l/P_c "  ></aggvar>
+<aggvar name="theta_P1" formula= "theta_P1   = P1l/P1c "  ></aggvar>
+<aggvar name="theta_P2" formula= "theta_P2   = P2l/P2c "  ></aggvar>
+<aggvar name="theta_P3" formula= "theta_P3   = P3l/P3c "  ></aggvar>
+<aggvar name="theta_P4" formula= "theta_P4   = P4l/P4c "  ></aggvar>
+<!--
+p_alpha_chl  0.64E-3    0.168e-3   0.842e-3   0.218e-3
+p_sum        2.5        3.0        3.5        1.5 
+-->
+<aggvar name="limPAR_P1" formula= "limPAR_P1  = 1.0 - exp( 0.640E-3 / 2.5 * theta_P1 * PAR_phyto1 * 86400) "  ></aggvar>
+<aggvar name="limPAR_P2" formula= "limPAR_P2  = 1.0 - exp( 0.168E-3 / 3.0 * theta_P2 * PAR_phyto2 * 86400) "  ></aggvar>
+<aggvar name="limPAR_P3" formula= "limPAR_P3  = 1.0 - exp( 0.842E-3 / 3.5 * theta_P3 * PAR_phyto3 * 86400) "  ></aggvar>
+<aggvar name="limPAR_P4" formula= "limPAR_P4  = 1.0 - exp( 0.218E-3 / 1.5 * theta_P4 * PAR_phyto4 * 86400) "  ></aggvar>
 </aggregate>
 
 </vars_for_All_Statistics>
