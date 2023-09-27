@@ -63,6 +63,7 @@ FRAMES=range(nFrames)
 
 for iframe in FRAMES[rank::nranks]:
     timestr = TL.Timelist[iframe].strftime("%Y%m%d-%H:%M:%S")
+    print(timestr, flush=True)
     file_P_l=INPUTDIR + "ave." + timestr + ".P_l.nc"
     file_N1p=INPUTDIR + "ave." + timestr + ".N1p.nc"
     file_N3n=INPUTDIR + "ave." + timestr + ".N3n.nc"
@@ -75,7 +76,9 @@ for iframe in FRAMES[rank::nranks]:
     O2o=DataExtractor(TheMask,file_O2o,"O2o")
     ppn=DataExtractor(TheMask,file_ppn,"ppn")
 
-    DCM,_,_,_          = surfaces.DCM2(         P_l.values, TheMask)
+    DCM,CM,_,_         = surfaces.DCM2(         P_l.values, TheMask)
+    WLB,_,_,_          = surfaces.MWB2(         P_l.values, TheMask)
+    DOM,OM,_,_         = surfaces.DCM2(         O2o.values, TheMask)
     Phosphocline,_,_,_ = surfaces.NUTRCL_dz_max(N1p.values, TheMask)
     Nitracline_1,_,_,_ = surfaces.NUTRCL_dz_max(N3n.values, TheMask)
     Nitracline_2,_     = surfaces.NITRCL(       N3n.values, TheMask, 2.0)
@@ -87,11 +90,17 @@ for iframe in FRAMES[rank::nranks]:
     Int_O2o = MapBuilder.get_layer_average(O2o, layer200)
 
     outfile=OUTPUTDIR + "metrics." + timestr + ".nc"
-    netcdf4.write_2d_file(DCM         ,'dcm', outfile, TheMask, compression=True)
+    netcdf4.write_2d_file(DCM,'dcm', outfile, TheMask, compression=True)
+    netcdf4.write_2d_file(CM , 'cm', outfile, TheMask, compression=True)
+    netcdf4.write_2d_file(WLB,'WLB', outfile, TheMask, compression=True)
+    netcdf4.write_2d_file(DOM,'DOM', outfile, TheMask, compression=True)
+    netcdf4.write_2d_file( OM, 'OM', outfile, TheMask, compression=True)
+
     netcdf4.write_2d_file(Phosphocline,'phosphocline', outfile, TheMask, compression=True)
     netcdf4.write_2d_file(Nitracline_1,'nitracline', outfile, TheMask, compression=True)
-    netcdf4.write_2d_file(Nitracline_2,'nitracline_th', outfile, TheMask, compression=True)
+    netcdf4.write_2d_file(Nitracline_2,'nitracline_th2', outfile, TheMask, compression=True)
     netcdf4.write_2d_file(Int_P_l,'P_l', outfile, TheMask, compression=True)
     netcdf4.write_2d_file(Int_N3n,'N3n', outfile, TheMask, compression=True)
     netcdf4.write_2d_file(Int_N1p,'N1p', outfile, TheMask, compression=True)
     netcdf4.write_2d_file(Int_O2o,'O2o', outfile, TheMask, compression=True)
+    netcdf4.write_2d_file(Int_ppn,'ppn', outfile, TheMask, compression=True)
