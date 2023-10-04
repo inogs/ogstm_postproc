@@ -147,7 +147,7 @@ def WRITE_RST_DA(inputfile, outfile,var,jkcut=None):
     ncIN.close()
     ncOUT.close()
 
-def WRITE_RST(inputfile, outfile,var):
+def WRITE_RST(inputfile, outfile,var, precision="double"):
     '''
     Valid for true restarts (51 variables, double)
     '''
@@ -159,9 +159,14 @@ def WRITE_RST(inputfile, outfile,var):
     for dimName,dimObj in DIMS.items():
         ncOUT.createDimension(dimName,dimObj.size)
 
-    ncvar = ncOUT.createVariable("TRN" + var, 'd', ('time','z','y','x'),zlib=True, fill_value=1.0e+20)            
-    setattr(ncvar,'missing_value',ncvar._FillValue)
-    ncvar[:] = np.array(ncIN["TRN" + var])
+    if precision=='double':
+        ncvar = ncOUT.createVariable("TRN" + var, 'd', ('time','z','y','x'),zlib=True, fill_value=1.0e+20)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        ncvar[:] = np.array(ncIN["TRN" + var])
+    else:
+        ncvar = ncOUT.createVariable("TRN" + var, 'f', ('time','z','y','x'),zlib=True, fill_value=1.0e+20, complevel=9)
+        setattr(ncvar,'missing_value',ncvar._FillValue)
+        ncvar[:] = np.array(ncIN["TRN" + var]).astype(np.float32)
     ncIN.close()
     ncOUT.close()
     
@@ -173,11 +178,11 @@ for filename in FILELIST[rank::nranks]:
     prefix, datestr, var, _ = basename.rsplit(".")
     if prefix.startswith('ave'):
         WRITE_AVE(filename, outfile, var)
-    if prefix == "RST":
+    if prefix.startswith("RST"):
         if datestr.count("0000"):
             WRITE_RST_DA(filename, outfile, var, args.cutlevel)
         else:
-            WRITE_RST(filename, outfile, var)
+            WRITE_RST(filename, outfile, var, precision="double")
     if prefix in ["RST_after", "RSTbefore"]:
         WRITE_RST_DA(filename, outfile, var, args.cutlevel)
 
