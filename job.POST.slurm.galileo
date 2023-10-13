@@ -39,6 +39,19 @@ MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
   CHLSUP_DIR=$OUTDIR/CHL_SUP
 
 
+
+METRICS_2D=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/metrics_2d
+PERCENTILES_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/percentiles
+mkdir -p $OUTDIR $PERCENTILES_DIR
+PLOTDIR=/g100_work/OGS_devC/Benchmark/pub/gbolzon/
+RUNNAME="eas8_24h"
+
+
+my_prex_or_die_with_tries "mpirun -np 120 python metrics_2d.py -i $MODEL_AVEDIR -m $MASKFILE -o $METRICS_2D"
+my_prex_or_die "python metrics_2d_percentiles.py -i $OUTDIR -o $PERCENTILES_DIR -m $MASKFILE"
+my_prex_or_die "python metrics_2d_percentiles_plot.py -i $PERCENTILES_DIR -o $PLOTDIR -n $RUNNAME"
+
+
 # TODO: python timelist_generator.py -l ave*N1p.nc -i $MODEL_AVEDIR -o $OUTDIR/STAT_PROFILES/
 my_prex_or_die "mpirun -np 30  python var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $TMP_DIR  -c $CHLSUP_DIR -m $MASKFILE"
 my_prex_or_die "mpirun -np 32 python aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $TMP_DIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s " # -p punti.dat
