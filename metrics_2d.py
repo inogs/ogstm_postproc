@@ -83,7 +83,7 @@ for iframe in FRAMES[rank::nranks]:
     Nitracline_1,_,_,_ = surfaces.NUTRCL_dz_max(N3n.values, TheMask)
     Nitracline_2,_     = surfaces.NITRCL(       N3n.values, TheMask, 2.0)
 
-    Int_ppn = MapBuilder.get_layer_average(ppn, layer200)
+    Int_ppn = MapBuilder.get_layer_integral(ppn, layer200)
     Int_P_l = MapBuilder.get_layer_average(P_l, layer200)
     Int_N3n = MapBuilder.get_layer_average(N3n, layer200)
     Int_N1p = MapBuilder.get_layer_average(N1p, layer200)
