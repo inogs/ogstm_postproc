@@ -48,7 +48,7 @@ RUNNAME="eas8_24h"
 
 
 my_prex_or_die_with_tries "mpirun -np 120 python metrics_2d.py -i $MODEL_AVEDIR -m $MASKFILE -o $METRICS_2D"
-my_prex_or_die "python metrics_2d_percentiles.py -i $OUTDIR -o $PERCENTILES_DIR -m $MASKFILE"
+my_prex_or_die "python metrics_2d_percentiles.py -i $METRICS_2D -o $PERCENTILES_DIR -m $MASKFILE"
 my_prex_or_die "python metrics_2d_percentiles_plot.py -i $PERCENTILES_DIR -o $PLOTDIR -n $RUNNAME"
 
 
