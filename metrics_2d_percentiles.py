@@ -100,7 +100,8 @@ def get_percentiles(LIST_of_arrays):
         if (SUBPoints[isub] > 0 ):
             l = LIST_of_arrays[isub]
             good = ~np.isnan(l)
-            PERC[:,isub] = np.percentile(l[good],perc)
+            if good.any():
+                PERC[:,isub] = np.percentile(l[good],perc)
     return PERC 
 
 
