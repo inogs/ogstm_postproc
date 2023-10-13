@@ -48,24 +48,18 @@ RunName = args.runname
 OUTPUTDIR=addsep(args.outdir)
 
 
-SUBlist = OGS.P.basin_list
+SUBlist = OGS.P.basin_list[:-1]
 nSub = len(SUBlist)
 X=np.arange(nSub)
 e=0.1
 S = season.season()
 
 
-#VARLIST=["mld", "stratification_index", "KE_total", "KE_ratio"]
-#UNITS = ['m', ' ', 'm4/s2', ' ']
 VARLIST=['dcm','cm','WLB','DOM','OM','phosphocline','nitracline','nitracline_th2','P_l','N3n','N1p','O2o','ppn']
 UNITS = ['m','mmol/m$^3$','m','m','mmol/m$^3$','m','m','m','mg /m$^3$','mmol/m$^3$','mmol/m$^3$','mmol/m$^3$','g C/m$^3$']
 
-VARLIST=['dcm','phosphocline','nitracline','nitracline_th','P_l','N3n','N1p','O2o']
-UNITS = ['m','m','m','m','mg /m$^3$','mmol/m$^3$','mmol/m$^3$','mmol/m$^3$']
 
-#UNITS = ['m','mmol/m^3','m','m','mmol/m^3','m','m','m','mg /m^3','mmol/m^3','mmol/m^3','mmol/m^3','g C/m^3']
 for iSeas in range(4):
-#for iSeas in [0,2,3]:
     for ivar, var in enumerate(VARLIST):
         outfile = "%s%s_Percentiles.%s.png" %(OUTPUTDIR,var, S.SEASON_LIST_NAME[iSeas])
         fig,ax=pl.subplots(1,1)
@@ -85,7 +79,7 @@ for iSeas in range(4):
         ax.legend()
         ax.grid(True)
         ax.set_xticks(X)
-        subnames=[sub.name for sub in OGS.P]
+        subnames=[sub.name for sub in SUBlist]
         ax.set_xticklabels(subnames)
         ax.set_ylabel(var + " " + UNITS[ivar])
 
