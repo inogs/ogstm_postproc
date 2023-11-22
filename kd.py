@@ -57,7 +57,7 @@ TheMask = Mask(args.maskfile)
 jpk,jpj,jpi = TheMask.shape
 mask0 = TheMask.mask_at_level(0)
 
-opt_mask = np.zeros((jpk,jpj,jpi),np.bool)
+opt_mask = np.zeros((jpk,jpj,jpi),bool)
 bottom= TheMask.bathymetry_in_cells()
 for ji in range(jpi):
     for jj in range(jpj):
