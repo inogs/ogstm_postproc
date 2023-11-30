@@ -35,15 +35,6 @@ for I in 1 2; do
    shift 2
 done
 
-function ncftp_check {
-filename=$1
-
-HOST=nrt.cmems-du.eu
-ncftp -P 21 -u MED_OGS_TRIESTE_IT -p NEdifupa $HOST <<EOF
-dir $filename
-EOF
-
-}
 
 PRODUCT=MEDSEA_ANALYSISFORECAST_BGC_006_014
 
@@ -58,10 +49,13 @@ case $TYPE in
 esac   
 
 
-     yyyy=${DAY:0:4}
-       mm=${DAY:4:2}
-     remotepath=/Core/${PRODUCT}/${dataset}/${yyyy}/${mm}/${DAY}*
-     ncftp_check $remotepath | grep MED | awk '{ print $9}'
+echo n | copernicus-marine get -i ${dataset} --filter "*${DAY}*" --show-outputnames > copernicus_marine.out
+grep ${dataset} copernicus_marine.out | tail -1 | cut -d "/" -f 5
+
+#     yyyy=${DAY:0:4}
+#       mm=${DAY:4:2}
+#     remotepath=/Core/${PRODUCT}/${dataset}/${yyyy}/${mm}/${DAY}*
+#     ncftp_check $remotepath | grep MED | awk '{ print $9}'
      
 
 
