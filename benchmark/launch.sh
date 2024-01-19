@@ -6,7 +6,7 @@ module load intelmpi/oneapi-2021--binary
 module load mkl/oneapi-2021--binary
 module load netcdf/4.7.4--oneapi--2021.2.0-ifort
 module load netcdff/4.5.3--oneapi--2021.2.0-ifort
-source /g100_work/OGS21_PRACE_P/COPERNICUS/py_env_3.6.8/bin/activate
+source /g100_work/OGS23_PRACE_IT/COPERNICUS/py_env_3.9.18/bin/activate
 
 
 #Hypotheses:
