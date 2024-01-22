@@ -14,7 +14,6 @@ cd $SLURM_SUBMIT_DIR
 cd $SLURM_SUBMIT_DIR
 
 ./timeseries.sh # 2m
-my_prex_or_die "$BASEDIR/jobProfiler.sh" #45 min
 
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/

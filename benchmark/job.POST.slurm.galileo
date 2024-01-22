@@ -33,6 +33,21 @@ OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/metrics_2d
 mkdir -p $OUTDIR
 my_prex_or_die_with_tries "mpirun -np 120 python ../metrics_2d.py -i $MODEL_AVEDIR -m $MASKFILE -o $OUTDIR"
 
+########## Profiling in float positions ##############
+
+OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/
+  TMPS=$OUTDIR/TMPS
+
+my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $OUTDIR -t $TMPS -p $BASEDIR/PUNTI "
+ANS=$?
+# ---------- cleaning
+if [ $ANS == 0 ] ; then
+   cd $TMPS
+   rm -f tmp.*
+   cd $SLURM_SUBMIT_DIR
+fi
+
+
 ########  LOW FREQUENCY ######################################################
 
 cd $SLURM_SUBMIT_DIR
