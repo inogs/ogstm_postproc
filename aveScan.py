@@ -65,9 +65,12 @@ def argument():
     parser.add_argument(   '-s',action='store_true',
                                 help = '''Activates statistics calculation
                                 ''') 
-    parser.add_argument(   '--pointsdir',"-p",
+    parser.add_argument(   '--pointslist',"-p",
                                 type = str,
-                                help = '''Directory with the text files punti_yyyymmdd-hh:MM:ss.dat indicating where to extract point profiles''')
+                                help = '''Can be a directory or a text file.
+                                If it is a file, the template is punti.dat (Three columns, Name, Lat, Lon)
+                                If it is a directory, it has to contain multiple files with the same infos,
+                                punti_yyyymmdd-hh:MM:ss.dat ''')
     parser.add_argument(   '--ionames',
                                 type = str,
                                 default="IOnames.xml",
@@ -90,7 +93,7 @@ import read_descriptor
 import IOnames as IOname
 from maskload import *
 import GB_lib
-from commons.utils import addsep
+from commons.utils import addsep, is_valid_path
 
 
 INPUT_AVEDIR = addsep(args.inputdir)
@@ -102,9 +105,13 @@ IOnames      = IOname.IOnames(ionamesfile)
 filtervar    = args.var
 
 doPointProfiles = False
-if args.pointsdir:
+if args.pointslist:
     doPointProfiles=True
-    POINTSDIR=addsep(args.pointsdir)
+    if is_valid_path(args.pointslist, is_dir_check=True):
+        Is_points_dir=True
+        POINTSDIR=addsep(args.pointslist)
+    else:
+        Is_points_dir=False
 
 try:
     from mpi4py import MPI
@@ -509,6 +516,11 @@ def create_ave_pp_header(datestr):
     return ncOUT_Pprofiles
 
 
+if doPointProfiles:
+    if not Is_points_dir:
+        MeasPoints, nCruise, CruiseDescr = read_Positions_for_Pointprofiles(args.pointlist)
+
+
 
 
 doStatistics    = args.s
@@ -603,11 +615,9 @@ for ip in PROCESSES[rank::nranks]:
         if var_dim[ivar] == '2D' :
             getAllStatistics2D(var, ncOUT__profiles)
     if doPointProfiles :
-        puntifile = POINTSDIR + "punti_" + datestr + ".dat"
-        MeasPoints = read_Positions_for_Pointprofiles(puntifile)
-        nCruise         = len(MeasPoints)
-        CruiseDescr =""
-        for i in MeasPoints['Name']: CruiseDescr+=i + ", "
+        if Is_points_dir:
+            puntifile = POINTSDIR + "punti_" + datestr + ".dat"
+            MeasPoints, nCruise, CruiseDescr = read_Positions_for_Pointprofiles(puntifile)
         dumpPointProfiles(var)
 
     if doStatistics:
@@ -623,11 +633,10 @@ for avefile in aveLIST[rank::nranks]:
     datestr=F.datestr #os.path.basename(avefile)[IOnames.Input.date_startpos:IOnames.Input.date_endpos]
 
     if doPointProfiles:
-        puntifile = POINTSDIR + "punti_" + datestr + ".dat"
-        MeasPoints = read_Positions_for_Pointprofiles(puntifile)
-        nCruise         = len(MeasPoints)
-        CruiseDescr =""
-        for i in MeasPoints['Name']: CruiseDescr+=i + ", "
+        if Is_points_dir:
+            puntifile = POINTSDIR + "punti_" + datestr + ".dat"
+            MeasPoints,nCruise, CruiseDescr = read_Positions_for_Pointprofiles(puntifile)
+
         ncOUT_Pprofiles = create_ave_pp_header(datestr)
     if doStatistics:    ncOUT__profiles,ncOUT_integrals = create_ave_headers(datestr)
 

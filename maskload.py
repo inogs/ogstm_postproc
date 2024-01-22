@@ -149,4 +149,6 @@ def read_Positions_for_Pointprofiles(filename):
         MeasPoints_OUT['i'][k] = i
         MeasPoints_OUT['j'][k] = j
     
-    return MeasPoints_OUT
+        CruiseDescr =""
+        for i in MeasPoints_OUT['Name']: CruiseDescr+=i + ", "
+    return MeasPoints_OUT, nMeas, CruiseDescr

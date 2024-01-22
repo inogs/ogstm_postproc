@@ -82,14 +82,13 @@ def dumptxtfile(outfile, HovMatrix, TL, iP):
         fid.write("\n")
     fid.close()
 
-MeasPoints = read_Positions_for_Pointprofiles(args.pointlist)
+MeasPoints, nCruise, Stations = read_Positions_for_Pointprofiles(args.pointlist)
 FrameDesc   =""
 Stations    =""
  
 
 
 for i in TL.filelist        : FrameDesc  +=str(i).split('.')[1] + ", "
-for i in MeasPoints['Name'] : Stations   +=str(i)               + ", "
 
 
 
