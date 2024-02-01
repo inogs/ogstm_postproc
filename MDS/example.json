@@ -1,0 +1,22 @@
+{
+    "dataset_id": "med-cmcc-sal-rean-d",
+    "start_datetime": "2010-01-01",
+    "end_datetime": "2022-01-01",
+    "minimum_longitude": 12.5082483,
+    "maximum_longitude": 12.5082483,
+    "minimum_latitude": 45.3142467,
+    "maximum_latitude": 45.3142467,
+    "minimum_depth": 0,
+    "maximum_depth": 40,
+    "variables": [
+        "so"
+    ],
+    "output_directory": "Leslie_NetCDF",
+    "force_service": false,
+    "force_download": true,
+    "request_file": false,
+    "motu_api_request": false,
+    "overwrite_output_data": false,
+    "overwrite_metadata_cache": false,
+    "no_metadata_cache": false
+}
