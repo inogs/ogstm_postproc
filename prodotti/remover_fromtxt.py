@@ -36,6 +36,11 @@ DntTime=datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
 DNT_FILE="%s_%s.xml" %(PRODUCT_ID, DntTime)
 
 LINES = file2stringlist(filename)
+if len(LINES)==0:
+    print(filename + " is empty. Exit")
+    import sys
+    sys.exit()
+
 line=LINES[0]
 iStart=line.find("cmems_mod")
 iEnd=line.find("/", iStart)
