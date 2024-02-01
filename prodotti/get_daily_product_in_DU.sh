@@ -17,7 +17,7 @@ echo ""
 echo "SYNOPSYS"
 echo "get_daily_product_in_DU.sh [ -d date ] [ -t type ]   "
 echo "EXAMPLE"
-echo "check_daily_products_in_DU.sh -d 20190206 -t BIOL "
+echo "get_daily_products_in_DU.sh -d 20190206 -t BIOL "
 echo ""
 }
 
@@ -49,7 +49,7 @@ case $TYPE in
 esac   
 
 
-echo n | copernicus-marine get -i ${dataset} --filter "*${DAY}*" --show-outputnames > copernicus_marine.out
+echo n | copernicusmarine get -i ${dataset} --filter "*${DAY}*" --show-outputnames > copernicus_marine.out
 grep ${dataset} copernicus_marine.out | tail -1 | cut -d "/" -f 5
 
 #     yyyy=${DAY:0:4}
