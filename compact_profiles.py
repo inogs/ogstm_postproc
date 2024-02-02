@@ -84,6 +84,7 @@ for var in VARLIST[rank::nranks]:
     for iFrame, filename in enumerate(TL.filelist):
         A = netcdf4.readfile(filename, var)
         A[A==0]=np.nan
+        A[A>=1.e+19]=np.nan
         TIMESERIES[iFrame,:,:,:,:] = A
         
     L = [TIMESERIES,TL]
