@@ -49,7 +49,7 @@ case $TYPE in
 esac   
 
 
-echo n | copernicusmarine get -i ${dataset} --filter "*${DAY}*" --show-outputnames > copernicus_marine.out
+echo n | copernicusmarine get -i ${dataset} --filter "*${DAY}_d-OGS*" --show-outputnames > copernicus_marine.out
 grep ${dataset} copernicus_marine.out | tail -1 | cut -d "/" -f 5
 
 #     yyyy=${DAY:0:4}
