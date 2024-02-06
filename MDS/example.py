@@ -18,6 +18,7 @@ A= copernicusmarine.subset(dataset_id="med-cmcc-sal-rean-d",
                         maximum_latitude=lat,
                         minimum_depth=0,
                         maximum_depth=40,
+                        force_download=True,
                         variables=["so"])
 
 
