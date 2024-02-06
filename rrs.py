@@ -81,18 +81,27 @@ def load_data(prefix,index_freq, dateobj):
     return DataExtractor(TheMask,filename, var, dimvar=2).values
 
 
-def get_E(dateobj, interp_data):
+def get_RRS(dateobj, interp_data):
     freq_before, freq_after, w = interp_data
     E_before = load_data("Ed", freq_before, dateobj)
     E_after  = load_data("Ed", freq_after , dateobj)
     Ed = E_before*(1-w) + w*E_after
-    Ed[~opt_mask] = 1.e+20
+    Ed[~mask0] = 1.e+20
+#   Ed[~opt_mask] = 1.e+20
     
     E_before = load_data("Es", freq_before, dateobj)
     E_after  = load_data("Es", freq_after , dateobj)
     Es = E_before*(1-w) + w*E_after    
-    Es[~opt_mask] = 1.e+20
-    return Ed + Es
+    Es[~mask0] = 1.e+20
+#   Es[~opt_mask] = 1.e+20
+
+    E_before = load_data("Eu", freq_before, dateobj)
+    E_after  = load_data("Eu", freq_after , dateobj)
+    Eu = E_before*(1-w) + w*E_after    
+    Eu[~mask0] = 1.e+20
+#   Eu[~opt_mask] = 1.e+20
+
+    return Eu/(Ed + Es)
 
 def freq_absorption(interp_data):
     freq_before, freq_after, w = interp_data
@@ -101,24 +110,21 @@ def freq_absorption(interp_data):
 TL = TimeList.fromfilenames(None, INPUTDIR, args.avelist, filtervar="Ed_0500")
 
 for d in TL.Timelist[rank::nranks]:
+
+    Q = 4.0 # To be substituted by time/space dependent formula
+
     for wavelengh in [412, 443, 490, 510, 555, 670]:
+
         interp_data = data_for_linear_interp(freq_nanom,wavelengh)
-        E = get_E(d, interp_data)
-        
-        
-        KD = np.ones((jpk,jpj,jpi),np.float32) * freq_absorption(interp_data)
-        jk_lim = TheMask.getDepthIndex(500.)
+        RRS0m = get_RRS(d, interp_data)
 
+#derive Rrs0p from Rrs0m using the correction by Lee et al. 2002
+        T=0.52
+        GammaQ=1.7
+        RRS0p = T*RRS0m/(1.0-GammaQ*RRS0m)/Q
+        RRS0p[~mask0] = 1.e+20
 
-        KD[:jk_lim,:,:] = -np.log(E[1:jk_lim+1,:,:]/E[0:jk_lim,:,:])/TheMask.e3t[:jk_lim,:,:]
-        KD[~TheMask.mask] = 1.e+20
-
-
-        varname="kd%s" %wavelengh
+        varname="RRS%s" %wavelengh
         outfile ="%save.%s.%s.nc" %(OUTDIR,d.strftime("%Y%m%d-%H:%M:%S"),varname)
         print("rank %d dumps %s" %(rank,outfile))
-        netcdf4.write_3d_file(KD, varname, outfile, TheMask, compression=True)
-
-                
-                
-    
+        netcdf4.write_2d_file(RRS0p, varname, outfile, TheMask, compression=True)
