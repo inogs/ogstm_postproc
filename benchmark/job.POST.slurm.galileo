@@ -35,10 +35,9 @@ my_prex_or_die_with_tries "mpirun -np 120 python ../metrics_2d.py -i $MODEL_AVED
 
 ########## Profiling in float positions ##############
 
-OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/
-  TMPS=$OUTDIR/TMPS
+  TMPS=$BASEDIR/TMPS
 
-my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $OUTDIR -t $TMPS -p $BASEDIR/PUNTI "
+my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $BASEDIR -t $TMPS -p $BASEDIR/PUNTI "
 ANS=$?
 # ---------- cleaning
 if [ $ANS == 0 ] ; then
