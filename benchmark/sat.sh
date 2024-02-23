@@ -41,8 +41,8 @@ for VAR in kd490 P_l  P1l    P2l    P3l    P4l  ; do
    
    cd $BITSEA/validation/deliverables/
    
-   my_prex_or_die "python ScMYvalidation_plan.py -v $VAR -s $SAT_DIR -i $MODELDIR -m $MASKFILE -c open_sea -l $LAYER  -o $OPENSEA_PKL"
-   my_prex_or_die "python ScMYvalidation_plan.py -v $VAR -s $SAT_DIR -i $MODELDIR -m $MASKFILE -c coast    -l $LAYER  -o $COAST_PKL"
+   my_prex_or_die "python ScMYvalidation_plan.py -t 20190101 -e 20200101 -v $VAR -s $SAT_DIR -i $MODELDIR -m $MASKFILE -c open_sea -l $LAYER  -o $OPENSEA_PKL"
+   my_prex_or_die "python ScMYvalidation_plan.py -t 20190101 -e 20200101 -v $VAR -s $SAT_DIR -i $MODELDIR -m $MASKFILE -c coast    -l $LAYER  -o $COAST_PKL"
    my_prex_or_die "python plot_timeseries_STD.py -v $VAR -i $OPENSEA_PKL -o $VALIDATION_DIR/SAT/Fig4.2_Timeseries/offshore/${VAR}"
    my_prex_or_die "python plot_timeseries_RMS_CORR.py -v $VAR -i $OPENSEA_PKL -o $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/offshore/${VAR} " # table4.1
    my_prex_or_die "python plot_timeseries_RMS_CORR.py -v $VAR -i $COAST_PKL -o $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/coast/${VAR}  "   # table4.2
