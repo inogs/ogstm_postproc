@@ -59,7 +59,7 @@ for line in LINES:
     dataset=line[iStart:iEnd]
     filename=line[iEnd+1:]
 
-    OUTLINES.append("<file Filename=\"%s\" > <KeyWord>Delete</KeyWord> </file> " %(filename))
+    OUTLINES.append("<file FileName=\"%s\" > <KeyWord>Delete</KeyWord> </file> " %(filename))
     #print(dataset, filename)
     
 OUTLINES.append("  </dataset>")    
