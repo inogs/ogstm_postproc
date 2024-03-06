@@ -8,6 +8,8 @@ export MASKFILE
 
 
 KD_MODEL_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_WEEKLY/
+RRS_MODEL_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/RRS_WEEKLY/
+
 SAT_KD_WEEKLY_DIR=/g100_work/OGS_devC/Benchmark/SETUP/POSTPROC/SAT/KD/WEEKLY_4_24
 SAT_CHLWEEKLY_DIR=/g100_work/OGS_devC/Benchmark/SETUP/POSTPROC/SAT/CHL/WEEKLY_4_24
 SAT_RRS_WEEKLY_DIR=/g100_work/OGS_devC/Benchmark/SETUP/POSTPROC/SAT/reflectance/WEEKLY_24
@@ -21,7 +23,7 @@ my_prex_or_die "mkdir -p $VALIDATION_DIR/SAT/table4.2_coast"
 my_prex_or_die "mkdir -p $VALIDATION_DIR/SAT/pfts"
 
 
-for VAR in kd490 P_l  P1l    P2l    P3l    P4l  ; do
+for VAR in kd490    P_l  P1l    P2l    P3l    P4l    RRS412    RRS443    RRS490    RRS510    RRS555    RRS670 ; do
    my_prex_or_die "mkdir -p $VALIDATION_DIR/SAT/Fig4.2_Timeseries/offshore/${VAR}"
    my_prex_or_die "mkdir -p $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/offshore/${VAR}"
    my_prex_or_die "mkdir -p $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/coast/${VAR}"
@@ -31,13 +33,19 @@ for VAR in kd490 P_l  P1l    P2l    P3l    P4l  ; do
 
    MODELDIR=$INPUTDIR
    SAT_DIR=$SAT_CHLWEEKLY_DIR
+
+   LAYER=10
+
    if [ $VAR == 'kd490' ] ; then 
         MODELDIR=$KD_MODEL_DIR
         SAT_DIR=$SAT_KD_WEEKLY_DIR
-    fi
+   fi
 
-   LAYER=10
-   # if [ $VAR == 'kd490' ] ; then LAYER=0 ; fi
+   if [ ${VAR:0:3} == 'RRS' ] ; then
+        MODELDIR=${RRS_MODEL_DIR}
+        SAT_DIR=${SAT_RRS_WEEKLY_DIR}
+	LAYER=0
+   fi
    
    cd $BITSEA/validation/deliverables/
    
