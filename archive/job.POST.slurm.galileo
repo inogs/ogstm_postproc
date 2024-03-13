@@ -3,11 +3,10 @@
 #SBATCH --job-name=POST
 #SBATCH -N2
 #SBATCH --ntasks-per-node=32
-#SBATCH --time=01:30:00
+#SBATCH --time=01:00:00
 #SBATCH --mem=300gb
 #SBATCH --account=OGS23_PRACE_IT
-#SBATCH --partition=g100_usr_prod
-#SBATCH --qos=g100_qos_dbg
+#SBATCH --partition=g100_usr_dbg
 
 cd $SLURM_SUBMIT_DIR
 
