@@ -93,7 +93,7 @@ import read_descriptor
 import IOnames as IOname
 from maskload import *
 import GB_lib
-from commons.utils import addsep, is_valid_path
+from commons.utils import addsep, isvalidpath
 
 
 INPUT_AVEDIR = addsep(args.inputdir)
@@ -107,7 +107,7 @@ filtervar    = args.var
 doPointProfiles = False
 if args.pointslist:
     doPointProfiles=True
-    if is_valid_path(args.pointslist, is_dir_check=True):
+    if isvalidpath(args.pointslist, is_dir_check=True):
         Is_points_dir=True
         POINTSDIR=addsep(args.pointslist)
     else:
@@ -518,7 +518,7 @@ def create_ave_pp_header(datestr):
 
 if doPointProfiles:
     if not Is_points_dir:
-        MeasPoints, nCruise, CruiseDescr = read_Positions_for_Pointprofiles(args.pointlist)
+        MeasPoints, nCruise, CruiseDescr = read_Positions_for_Pointprofiles(args.pointslist)
 
 
 
