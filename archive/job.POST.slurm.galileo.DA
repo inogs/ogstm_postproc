@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=32
 #SBATCH --time=01:30:00
 #SBATCH --mem=300gb
-#SBATCH --account=OGS21_PRACE_P
+#SBATCH --account=OGS23_PRACE_IT
 #SBATCH --partition=g100_usr_prod
 #SBATCH --qos=g100_qos_dbg
 
@@ -17,8 +17,8 @@ module load intelmpi/oneapi-2021--binary
 module load mkl/oneapi-2021--binary
 module load netcdf/4.7.4--oneapi--2021.2.0-ifort
 module load netcdff/4.5.3--oneapi--2021.2.0-ifort
-source /g100_work/OGS21_PRACE_P/COPERNICUS/py_env_3.6.8/bin/activate
-export PYTHONPATH=$PYTHONPATH:/g100_work/OGS21_PRACE_P/COPERNICUS/bit.sea
+source /g100_work/OGS23_PRACE_IT/COPERNICUS/py_env_3.9.18/bin/activate
+export PYTHONPATH=$PYTHONPATH:/g100_work/OGS23_PRACE_IT/COPERNICUS/bit.sea
 
 unset I_MPI_PMI_LIBRARY
 export UCX_TLS=ib
