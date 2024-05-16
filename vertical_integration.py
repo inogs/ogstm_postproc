@@ -6,7 +6,7 @@ def argument():
        - an integrated 2d file for each time and layer
        - a 4D [nFrames,nlayers,jpj,jpi] file, redundant, but useful for some other readers
 
-    User should edit code for Time Interval and Layer List
+    User should edit code for Layer List
     ''', formatter_class=argparse.RawTextHelpFormatter)
 
 
@@ -43,7 +43,7 @@ from commons.utils import addsep
 import GB_lib
 import numpy as np
 import netCDF4
-from commons import netcdf3
+from commons import netcdf4
 
 var=args.var
 
@@ -52,8 +52,7 @@ OUTDIR  =addsep(args.outdir)
 TheMask= Mask(args.maskfile)
 _,jpj,jpi = TheMask.shape
 
-TI=TimeInterval("2017","2018","%Y")
-TL=TimeList.fromfilenames(TI, INPUTDIR, "ave*nc", filtervar=var)
+TL=TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar=var)
 LAYERLIST=[Layer(0,50), Layer(50,100), Layer(100,150)]
 LAYERLIST = [Layer(0,200)]
 
@@ -80,8 +79,6 @@ def dump_integrated_file(outfile, M, varname, lon, lat):
     ncOUT.close() 
 
 M = np.zeros((nFrames,ndepth,jpj,jpi),np.float32)
-longitude=TheMask.xlevels[0, :]
-latitude =TheMask.ylevels[:, 0]
 
 
 for iFrame, filename in enumerate(TL.filelist):
@@ -89,11 +86,11 @@ for iFrame, filename in enumerate(TL.filelist):
     De=DataExtractor(TheMask,filename,var)
     for ilayer, layer in enumerate(LAYERLIST):
         outfile= "%s%s.%s.%s.%s.nc" %( OUTDIR, F.prefix, F.datestr, F.varname, layer.string())
-        print outfile
+        print(outfile, flush=True)
         mask=TheMask.mask_at_level(layer.top)
         integrated = MapBuilder.get_layer_integral(De, layer)
         integrated[~mask] = 1.e+20
-        M[iFrame,ilayer,:,:] = integrated
-        netcdf3.write_2d_file(integrated,var,outfile,TheMask)
-outfile=OUTDIR + var + ".nc"
-dump_integrated_file(outfile, M, var, longitude, latitude)
+        #M[iFrame,ilayer,:,:] = integrated
+        netcdf4.write_2d_file(integrated,var,outfile,TheMask, compression=True)
+#outfile=OUTDIR + var + ".nc"
+#dump_integrated_file(outfile, M, var, TheMask.lon, TheMask.lat)
