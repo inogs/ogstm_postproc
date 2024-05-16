@@ -45,6 +45,17 @@ import numpy as np
 import netCDF4
 from commons import netcdf4
 
+try:
+    from mpi4py import MPI
+    comm  = MPI.COMM_WORLD
+    rank  = comm.Get_rank()
+    nranks =comm.size
+except:
+    rank   = 0
+    nranks = 1
+
+
+
 var=args.var
 
 INPUTDIR=addsep(args.inputdir)
@@ -81,7 +92,7 @@ def dump_integrated_file(outfile, M, varname, lon, lat):
 M = np.zeros((nFrames,ndepth,jpj,jpi),np.float32)
 
 
-for iFrame, filename in enumerate(TL.filelist):
+for iFrame, filename in enumerate(TL.filelist[rank::nranks]):
     F=GB_lib.filename_manager(filename)
     De=DataExtractor(TheMask,filename,var)
     for ilayer, layer in enumerate(LAYERLIST):

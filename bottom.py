@@ -73,7 +73,7 @@ def getBottom(M3d):
     return M2d
 
 
-for filename in TL.filelist:
+for filename in TL.filelist[rank::nranks]:
     outfile= OUTPUTDIR / os.path.basename(filename)
     print(outfile, flush=True)
     M3d = DataExtractor(TheMask,filename, var).values
