@@ -112,6 +112,9 @@ for var in VARLIST[COMM.Get_rank()::COMM.size]:
     L = [TIMESERIES, TL]
     with open(outfile, "wb") as fid:
         pickle.dump(L, fid)
+
+    time_array = TL.get_datetime_array(resolution='s')
+
     with netCDF4.Dataset(OUTDIR / (var + ".nc"), "w") as ncOUT:
         ncOUT.createDimension('nFrames', nFrames)
         ncOUT.createDimension('nSub',   nSub)
@@ -139,6 +142,10 @@ for var in VARLIST[COMM.Get_rank()::COMM.size]:
             )
         )
         ncvar[:] = nav_lev
+
+        time_var = ncOUT.createVariable('time', np.int64, ('nFrames',))
+        time_var.units = 'seconds since 1970-01-01 00:00:00'
+        time_var[:] = time_array
 
         setattr(ncOUT, "frame_list", FrameDesc)
         for attribute, attribute_value in file_attributes.items():
