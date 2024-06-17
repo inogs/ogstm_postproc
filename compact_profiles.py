@@ -24,6 +24,7 @@ def argument():
 args = argument()
 
 
+from collections import OrderedDict
 import numpy as np
 import netCDF4
 import pickle
@@ -33,11 +34,12 @@ try:
 except ImportError:
     pass
 
-from basins import V2
 from commons.Timelist import TimeInterval, TimeList
 from utilities.mpi_serial_interface import get_mpi_communicator
 
 COMM = get_mpi_communicator()
+FILL_VALUE = np.nan
+
 
 INPUTDIR = args.inputdir
 OUTDIR = args.outdir
@@ -53,6 +55,7 @@ nFrames = TL.nTimes
 DEFAULT_COASTNESS_LIST = tuple(COASTNESS_LIST)
 DEFAULT_SUBlist = tuple(SUBlist)
 DEFAULT_DEPTHlist = tuple(DEPTHlist)
+DEFAULT_StatDescr   = "Mean, Std, min, p05, p25, p50, p75, p95, max"
 
 
 def get_info(filename):
@@ -61,22 +64,38 @@ def get_info(filename):
         first_var = VARLIST[0]
         VarObj = D.variables[first_var]
         nSub, nCoast, jpk, nStat = VarObj.shape
-    return VARLIST, nSub, nCoast, jpk, nStat
+
+        attributes = OrderedDict()
+        if 'sub___list' in D.ncattrs():
+            attributes['sub___list'] = D.sub___list
+        else:
+            sub_list = ', '.join([str(basin) for basin in DEFAULT_SUBlist])
+            attributes['sub___list'] = sub_list
+
+        if 'coast_list' in D.ncattrs():
+            attributes['coast_list'] = D.coast_list
+        else:
+            attributes['coast_list'] = ', '.join(DEFAULT_COASTNESS_LIST)
+
+        if 'depth_list' in D.ncattrs():
+            attributes['depth_list'] = D.depth_list
+        else:
+            attributes['depth_list'] = ', '.join(DEFAULT_DEPTHlist)
+
+        if "stat__list" in D.ncattrs():
+            attributes['stat__list'] = D.stat__list
+        else:
+            attributes['stat__list'] = DEFAULT_StatDescr
+
+    return VARLIST, nSub, nCoast, jpk, nStat, attributes
 
 
-FrameDesc   =""
-SubDescr    =""
-CoastDescr  =""
-DepthDescr  =""
-StatDescr   = "Mean, Std, min, p05, p25, p50, p75, p95, max"
-
-for i in TL.filelist             : FrameDesc  +=str(i).split('.')[1] + ", "
-for i in DEFAULT_SUBlist         : SubDescr   +=str(i)               + ", "
-for i in DEFAULT_COASTNESS_LIST  : CoastDescr +=str(i)               + ", "
-for i in DEFAULT_DEPTHlist       : DepthDescr +=str(i)               + ", "
+FrameDesc = ""
+for i in TL.filelist:
+    FrameDesc += str(i).split('.')[1] + ", "
 
 
-VARLIST, nSub, nCoast, jpk, nStat = get_info(TL.filelist[0])
+VARLIST, nSub, nCoast, jpk, nStat, file_attributes = get_info(TL.filelist[0])
 
 for var in VARLIST[COMM.Get_rank()::COMM.size]:
     outfile = OUTDIR / (var + ".pkl")
@@ -86,32 +105,41 @@ for var in VARLIST[COMM.Get_rank()::COMM.size]:
     for iFrame, filename in enumerate(TL.filelist):
         with netCDF4.Dataset(filename, 'r') as f:
             A = f.variables[var][:]
-        A[A==0]=np.nan
-        A[A>=1.e+19]=np.nan
+        A[A == 0] = FILL_VALUE
+        A[A >= 1.e+19] = FILL_VALUE
         TIMESERIES[iFrame] = A
 
-    L = [TIMESERIES,TL]
-    fid = open(outfile,"wb")
-    pickle.dump(L, fid)
-    fid.close()
+    L = [TIMESERIES, TL]
+    with open(outfile, "wb") as fid:
+        pickle.dump(L, fid)
     with netCDF4.Dataset(OUTDIR / (var + ".nc"), "w") as ncOUT:
-        ncOUT.createDimension('nFrames',nFrames)
+        ncOUT.createDimension('nFrames', nFrames)
         ncOUT.createDimension('nSub',   nSub)
-        ncOUT.createDimension('nCoast',nCoast)
+        ncOUT.createDimension('nCoast', nCoast)
         ncOUT.createDimension('depth', jpk)
-        ncOUT.createDimension('nStat',nStat)
+        ncOUT.createDimension('nStat', nStat)
 
-        ncvar = ncOUT.createVariable(var,'f',('nFrames','nSub','nCoast','depth', 'nStat'))
+        ncvar = ncOUT.createVariable(
+            var,
+            'f',
+            ('nFrames', 'nSub', 'nCoast', 'depth', 'nStat'),
+            fill_value=FILL_VALUE
+        )
         ncvar[:] = TIMESERIES
 
-        ncvar = ncOUT.createVariable('depth','f',('depth',))
+        ncvar = ncOUT.createVariable('depth', 'f', ('depth',))
         setattr(ncvar, 'units', 'meters')
         setattr(ncvar, 'positive', 'down')
-        setattr(ncvar, 'actual_range', '4.9991f, 4450.068f')
+        setattr(
+            ncvar,
+            'actual_range',
+            '{}, {}'.format(
+                np.float32(np.ma.min(nav_lev)),
+                np.float32(np.ma.max(nav_lev))
+            )
+        )
         ncvar[:] = nav_lev
 
-        setattr(ncOUT,"frame_list"  ,  FrameDesc)
-        setattr(ncOUT,"sub___list"  ,  SubDescr[:-2])
-        setattr(ncOUT,"coast_list"  ,CoastDescr[:-2])
-        setattr(ncOUT,"depth_list"  ,DepthDescr[:-2])
-        setattr(ncOUT,"stat__list"  , StatDescr    )
+        setattr(ncOUT, "frame_list", FrameDesc)
+        for attribute, attribute_value in file_attributes.items():
+            setattr(ncOUT, attribute, attribute_value)
