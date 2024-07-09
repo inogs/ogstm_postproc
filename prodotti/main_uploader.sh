@@ -1,6 +1,14 @@
 #! /bin/bash
 
 
+PROD_DIR=/g100_work/OGS_prodC/OPA/Interim-dev/archive/202404/POSTPROC/MONTHLY/PRODUCTS/
+logDir=./XML
+mkdir -p $logDir
+
+for type in BIOL CARB NUTR PFTC CO2F; do
+     ./Phase2_DU_uploader_dataset_006_008_monthly.sh -i $PROD_DIR -t $type -l $logDir -p interim -y 2024
+done
+
 PROD_DIR=/g100_scratch/userexternal/gbolzon0/RA_24/PRODUCTS/YEARLY/
 logDir=./XML
 mkdir -p $logDir

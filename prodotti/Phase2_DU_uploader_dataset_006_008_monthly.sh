@@ -37,7 +37,7 @@ for I in 1 2 3 4 5; do
 done
 
 
-BINDIR=/g100_work/OGS20_PRACE_P_2/COPERNICUS/bin/
+BINDIR=/g100_work/OGS23_PRACE_IT/COPERNICUS/bin/
 
 
 
@@ -87,7 +87,7 @@ PushingEntity="MED-OGS-TRIESTE-IT"
 product=MEDSEA_MULTIYEAR_BGC_006_008
 username=cmems_med_ogs
 password=9J2e+uLU
-host=my.cmems-du.eu
+host=ftp-my.marine.copernicus.eu
 port=21
 ###
 
