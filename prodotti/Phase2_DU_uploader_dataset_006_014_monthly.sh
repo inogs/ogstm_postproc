@@ -80,7 +80,7 @@ PushingEntity="MED-OGS-TRIESTE-IT"
 product=MEDSEA_ANALYSISFORECAST_BGC_006_014
 username=cmems_med_ogs
 password=9J2e+uLU
-host=nrt.cmems-du.eu
+host=ftp-nrt.marine.copernicus.eu
 port=21
 ###
 

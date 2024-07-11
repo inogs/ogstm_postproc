@@ -46,7 +46,7 @@ PushingEntity="MED-OGS-TRIESTE-IT"
 product=MEDSEA_MULTIYEAR_BGC_006_008
 username=cmems_med_ogs
 password=9J2e+uLU
-host=my.cmems-du.eu
+host=ftp-my.marine.copernicus.eu
 port=21
 ###
 
