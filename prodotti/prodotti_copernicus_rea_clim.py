@@ -2,7 +2,7 @@ import argparse
 
 def argument():
     parser = argparse.ArgumentParser(description = '''
-   Creates COPERNICUS products files from reanalysis.
+   Creates COPERNICUS climatology product file from reanalysis.
    Product name = MEDSEA_MULTIYEAR_BGC_006_008
    Standard names are choose from
    http://cfconventions.org/Data/cf-standard-names/30/build/cf-standard-name-table.html.
@@ -25,10 +25,6 @@ def argument():
                                 type = str,
                                 required = True,
                                 help = '''The bulletin time a string time in the format yyyymmdd ''')
-    parser.add_argument(    '--bulltype',
-                                type = str,
-                                required = True,
-                                choices = ["analysis","interim"])# it should be reanalysis
     parser.add_argument(    '--maskfile', "-m",
                                 type = str,
                                 required = True,
@@ -90,8 +86,6 @@ tmask = tmask[:,:,cut:]
 
 FGROUPS = ['NUTR', 'PFTC', 'BIOL', 'CARB','CO2F']
 
-bulletin_type='analysis'
-
 
 bulletin_time = datetime.strptime(bulletin_date,"%Y%m%d")
 
@@ -130,7 +124,7 @@ def create_Structure(filename):
     setattr(ncOUT,'comment'      , ref)
     setattr(ncOUT,'contact'      ,'servicedesk.cmems@mercator-ocean.eu')
     setattr(ncOUT,'bulletin_date', bulletin_time.strftime("%Y-%m-%d") )
-    setattr(ncOUT,'bulletin_type', args.bulltype)
+    setattr(ncOUT,'bulletin_type', 'reanalysis')
     setattr(ncOUT,'field_type'   , field_type)
     
     ncvar = ncOUT.createVariable('time','i',('time',))

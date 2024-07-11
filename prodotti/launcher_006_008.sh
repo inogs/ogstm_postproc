@@ -25,7 +25,7 @@ done
 INPUTDIR=/g100_scratch/userexternal/gbolzon0/RA_24/AVE/CLIM
 OUTPUTDIR=/g100_scratch/userexternal/gbolzon0/RA_24/PRODUCTS/CLIM
 
-my_prex_or_die "python prodotti_copernicus_rea_clim.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -b 20221013 --bulltype analysis"
+my_prex_or_die "python prodotti_copernicus_rea_clim.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -b 20221013"
 
 exit 0
 
