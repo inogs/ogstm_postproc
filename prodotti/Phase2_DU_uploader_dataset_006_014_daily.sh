@@ -116,7 +116,6 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
  case $ACTION in
    1) echo "$basefile already in DU" ;;
    2|3) echo "$basefile has to be sent"
-    upload_xml=True
     if [ $ACTION -eq 3 ]; then echo " and $remote_name will be removed "; fi
     remotedir=/${product}/${dataset}/$yyyy/$mm
     remotefile="${yyyy}/${mm}/${basefile}"
