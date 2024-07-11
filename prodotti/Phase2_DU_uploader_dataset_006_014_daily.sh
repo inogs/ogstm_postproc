@@ -1,6 +1,6 @@
 #!/bin/bash
 
-####     DNT_generator_dataset.sh  #           #####
+##  Phase2_DU_uploader_dataset_006_014_daily.sh   ##
 #   Sends products to COPERNICUS phase II DU       #
 #      generates delivery note xml file            #
 #                                                  #
@@ -11,7 +11,7 @@
 usage() {
 echo "Uploads chain product files"
 echo "SYNOPSYS"
-echo "DNT_generator_dataset.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y $YEAR ] [ -l LOGDIR ]"
+echo "Phase2_DU_uploader_dataset_006_014_daily.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y $YEAR ] [ -l LOGDIR ]"
 echo ""
 }
 
@@ -63,14 +63,14 @@ function decide_action {
 }
 
 
-BINDIR=/g100_work/OGS21_PRACE_P/COPERNICUS/bin
+BINDIR=/g100_work/OGS23_PRACE_IT/COPERNICUS/bin/
 FILES_TO_SEND="${YEAR}*${TYPE}*.nc"
 
 case $TYPE in
    "BIOL" ) dataset=cmems_mod_med_bgc-bio_anfc_4.2km_P1D-m_202211 ;;
    "CARB" ) dataset=cmems_mod_med_bgc-car_anfc_4.2km_P1D-m_202211 ;;
    "NUTR" ) dataset=cmems_mod_med_bgc-nut_anfc_4.2km_P1D-m_202211 ;;
-   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1D-m_202211 ;;
+   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1D-m_202311 ;;
    "CO2F" ) dataset=cmems_mod_med_bgc-co2_anfc_4.2km_P1D-m_202211 ;;
    "EXCO" ) dataset=cmems_mod_med_bgc-optics_anfc_4.2km_P1D-m_202211 ;;
    * )  echo Wrong type ; usage; exit 1 ;;

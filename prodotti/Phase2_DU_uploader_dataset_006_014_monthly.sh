@@ -59,7 +59,7 @@ function decide_action {
 }
 
 
-BINDIR=/g100_work/OGS21_PRACE_P/COPERNICUS/bin
+BINDIR=/g100_work/OGS23_PRACE_IT/COPERNICUS/bin/
 FILES_TO_SEND="${YEAR}*${TYPE}*.nc"
 
 
@@ -67,7 +67,7 @@ case $TYPE in
    "BIOL" ) dataset=cmems_mod_med_bgc-bio_anfc_4.2km_P1M-m_202211 ;;
    "CARB" ) dataset=cmems_mod_med_bgc-car_anfc_4.2km_P1M-m_202211 ;;
    "NUTR" ) dataset=cmems_mod_med_bgc-nut_anfc_4.2km_P1M-m_202211 ;;
-   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1M-m_202211 ;;
+   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1M-m_202311 ;;
    "CO2F" ) dataset=cmems_mod_med_bgc-co2_anfc_4.2km_P1M-m_202211 ;;
    "EXCO" ) dataset=cmems_mod_med_bgc-optics_anfc_4.2km_P1M-m_202211 ;;
    * )  echo Wrong type ; usage; exit 1 ;;

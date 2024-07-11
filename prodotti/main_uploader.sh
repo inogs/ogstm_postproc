@@ -43,7 +43,7 @@ PROD_DIR=/gpfs/scratch/userexternal/gbolzon0/OPEN_BOUNDARY/TEST_07/wrkdir/POSTPR
 
 YEAR=2019
 for type in BIOL CARB NUTR PFTC CO2F EXCO; do
-    ./Phase2_DU_uploader_dataset_006_014_monthly.sh -i $PROD_DIR -t $type -y $YEAR
+    ./Phase2_DU_uploader_dataset_006_014_monthly.sh -i $PROD_DIR -t $type -y $YEAR -l $logDir
 done
 
 
@@ -53,5 +53,5 @@ PROD_DIR=/gpfs/scratch/userexternal/gbolzon0/OPEN_BOUNDARY/TEST_07/wrkdir/POSTPR
 
 YEAR=2019
 for type in BIOL CARB NUTR PFTC CO2F EXCO; do
-    ./Phase2_DU_uploader_dataset_006_014_daily.sh -i $PROD_DIR -t $type -y $YEAR
+    ./Phase2_DU_uploader_dataset_006_014_daily.sh -i $PROD_DIR -t $type -y $YEAR -l $logDir
 done
