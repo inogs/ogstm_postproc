@@ -47,12 +47,10 @@ from commons.genUserDateList import getTimeList
 INPUTDIR  = addsep(args.inputdir)
 OUTPUTDIR = addsep(args.outputdir)
 
-if args.bulltype == 'analysis' :
-    DType     = "re"
-    source    = '3DVAR-OGSTM-BFM'
-else:
-    DType     = "in"
-    source    = '3DVAR-OGSTM-BFMI'
+
+DType     = "re"
+source    = '3DVAR-OGSTM-BFM'
+
 bulletin_date = args.bulltime
 maskfile = args.maskfile
 
@@ -105,7 +103,6 @@ def readdata(time, var, ndims=3, std=False ):
 
 def create_Structure(filename):
     ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_MULTIYEAR_BGC_006_008 - http://marine.copernicus.eu/'
-    ref2 = "Teruzzi, A., Feudale, L., Bolzon, G., Lazzari, P., Salon, S., Di Biagio, V., Coidessa, G., & Cossarini, G. (2021). Mediterranean Sea Biogeochemical Reanalysis INTERIM (CMEMS MED-Biogeochemistry, MedBFM3i system) (Version 1) [Data set]. Copernicus Monitoring Environment Marine Service (CMEMS). https://doi.org/10.25423/CMCC/MEDSEA_MULTIYEAR_BGC_006_008_MEDBFM3I"
     inst  ='OGS (Istituto Nazionale di Oceanografia e di Geofisica Sperimentale) , Sgonico (Trieste) - Italy'
     ncOUT = netCDF4.Dataset(filename,"w",format="NETCDF4")
     ncOUT.createDimension('longitude', jpi-cut)
@@ -115,10 +112,9 @@ def create_Structure(filename):
     ncOUT.createDimension('nv'      ,  2)
     
     setattr(ncOUT,'Conventions'  ,'CF-1.0' )
-    if args.bulltype == 'analysis':
-        setattr(ncOUT,'references'   , ref    )
-    else:
-        setattr(ncOUT,'references'   , ref2    )
+
+    setattr(ncOUT,'references'   , ref    )
+
     setattr(ncOUT,'institution'  , inst    )
     setattr(ncOUT,'source'       , source)
     setattr(ncOUT,'comment'      , ref)

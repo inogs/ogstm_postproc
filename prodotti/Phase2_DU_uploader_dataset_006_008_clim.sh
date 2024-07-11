@@ -31,11 +31,11 @@ for I in 1 2 ; do
 done
 
 
-BINDIR=/g100_work/OGS21_PRACE_P/COPERNICUS/bin
+BINDIR=/g100_work/OGS23_PRACE_IT/COPERNICUS/bin/
 
 
 
-FILES_TO_SEND=19990101-20191231_m-OGS--CLIM-MedBFM3-MED-b20221013_re-sv05.00.nc
+FILES_TO_SEND=19990101-20191231_m-OGS--CLIM-MedBFM3-MED-b*_re-sv05.00.nc
 dataset=cmems_mod_med_bgc_my_4.2km-climatology_P1M-m_202211/
 
 
