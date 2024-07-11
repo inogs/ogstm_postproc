@@ -42,10 +42,11 @@ args = argument()
 
 import netCDF4
 import numpy as np
-import datetime,os
+from datetime import datetime, timedelta
 from commons.utils import addsep
 from commons.mask import Mask
 from commons.dataextractor_open import DataExtractor
+from commons.genUserDateList import getTimeList
 
 INPUTDIR  = addsep(args.inputdir)
 OUTPUTDIR = addsep(args.outputdir)
@@ -63,7 +64,18 @@ maskfile = args.maskfile
 tr='m'
 field_type='monthly_climatology'
 
-    
+Dref = datetime(1970,1,1,0,0,0)
+DL_start=getTimeList('19990101-00:00:00','19991201-00:00:00', months=1)
+DL_end  =getTimeList('20190201-00:00:00','20200101-00:00:00', months=1)
+TIME = np.zeros((12,),int)
+CLIM_BNDS = np.zeros((12,2),int)
+for it, d in enumerate(DL_start):
+    delta = d - Dref
+    TIME[it] = delta.days + 14
+    CLIM_BNDS[it,0] = delta.days
+    delta = DL_end[it] - Dref
+    CLIM_BNDS[it,1] = delta.days
+
 
 cut = 80 #1/24
 TheMask = Mask(maskfile,ylevelsmatvar="gphit", xlevelsmatvar="glamt")
@@ -81,7 +93,7 @@ FGROUPS = ['NUTR', 'PFTC', 'BIOL', 'CARB','CO2F']
 bulletin_type='analysis'
 
 
-bulletin_time = datetime.datetime.strptime(bulletin_date,"%Y%m%d")
+bulletin_time = datetime.strptime(bulletin_date,"%Y%m%d")
 
 def readfile(filename,var,ndims):
     M=DataExtractor(TheMask,filename,var, dimvar=ndims).values
@@ -106,6 +118,7 @@ def create_Structure(filename):
     ncOUT.createDimension('latitude' ,jpj)
     ncOUT.createDimension('depth'    ,jpk)
     ncOUT.createDimension('time'     , 12)
+    ncOUT.createDimension('nv'      ,  2)
     
     setattr(ncOUT,'Conventions'  ,'CF-1.0' )
     if args.bulltype == 'analysis':
@@ -120,14 +133,20 @@ def create_Structure(filename):
     setattr(ncOUT,'bulletin_type', args.bulltype)
     setattr(ncOUT,'field_type'   , field_type)
     
-    ncvar = ncOUT.createVariable('time','d',('time',))
-    setattr(ncvar,'units',       'months since 1998-12-01 00:00:00')
+    ncvar = ncOUT.createVariable('time','i',('time',))
+    setattr(ncvar,'units',       'days since 1970-01-01 00:00:00')
     setattr(ncvar,'long_name'    ,'time')
     setattr(ncvar,'standard_name','time')
     setattr(ncvar,'axis'         ,'T')
     setattr(ncvar,'calendar'     ,'standard')
-    ncvar[:] = np.arange(1,13)
-    
+    setattr(ncvar,'climatology'  ,'climatology_bounds')
+    ncvar[:] = TIME
+
+    ncvar = ncOUT.createVariable('climatology_bounds','i',('time','nv'))
+    setattr(ncvar,'units',       'days since 1970-01-01 00:00:00')
+    setattr(ncvar,'standard_name','time')
+    setattr(ncvar,'calendar'     ,'standard')
+    ncvar[:] = CLIM_BNDS
 
     ncvar = ncOUT.createVariable('depth'   ,'f', ('depth',))
     setattr(ncvar,'units'        ,'m')
@@ -188,7 +207,7 @@ for FGroup in FGROUPS:
             timestr = "2000%02d01" %(iFrame+1)
             M = readdata(timestr, "N3n", std=True)
             ncvar[iFrame,:] = M
-        
+
 
         ncvar = ncOUT.createVariable('po4_avg', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
