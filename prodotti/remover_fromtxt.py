@@ -29,19 +29,23 @@ from commons.utils import addsep
 filename=args.inputfile
 OUTDIR=addsep(args.outdir)
 
-PRODUCT_ID="MEDSEA_ANALYSISFORECAST_BGC_006_014"
+
 PushingEntity="MED-OGS-TRIESTE-IT"
 DntTime=datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
 
-DNT_FILE="%s_%s.xml" %(PRODUCT_ID, DntTime)
+
 
 LINES = file2stringlist(filename)
+
 if len(LINES)==0:
     print(filename + " is empty. Exit")
     import sys
     sys.exit()
 
 line=LINES[0]
+iStart=line.find("MEDSEA")
+iEnd=line.find("/", iStart)
+PRODUCT_ID=line[iStart:iEnd]
 iStart=line.find("cmems_mod")
 iEnd=line.find("/", iStart)
 dataset=line[iStart:iEnd]
@@ -67,7 +71,7 @@ OUTLINES.append("</delivery>")
 
 
 
-outfile=OUTDIR + "MEDSEA_ANALYSISFORECAST_BGC_006_014_" + DntTime + ".xml"
+outfile= "%s%s_%s.xml" %(OUTDIR, PRODUCT_ID, DntTime)
 
 fid=open(outfile,'wt')
 for line in OUTLINES:
