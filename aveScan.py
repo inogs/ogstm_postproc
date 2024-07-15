@@ -398,7 +398,7 @@ def ProfilesStats2D(Mask, flagSort):
             Statistics[k,:] = CoreStatistics(V[M],area[M])
     else:
         for k in range(1):
-            V =  VAR
+            V =  VAR[k,:,:]
             M = Mask[k,:,:]                    
             Statistics[k,:] = CoreStatistics_noSort(V[M],area[M])                
     
