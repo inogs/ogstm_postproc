@@ -38,11 +38,12 @@ class read_descriptor():
             self.ARCHIVE_VARS.append( str(n.attributes['name'].value) )
             
         
-        self.vars2D=set()
+        self.vars2D=list()
         NODE=xmldoc.getElementsByTagName("var2D")[0].getElementsByTagName("vars_for_All")[0].getElementsByTagName("native")
         NATIVE_NODES=NODE[0].getElementsByTagName("var")
         for n in NATIVE_NODES:
-            self.vars2D.add(str(n.attributes['name'].value))
+            var=str(n.attributes['name'].value)
+            if var not in self.vars2D: self.vars2D.add(var)
         
         self.AGGREGATE_VARS=[]
         self.AGGR_FORMULAS=[]        
