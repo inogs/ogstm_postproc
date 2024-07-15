@@ -48,14 +48,11 @@ case $TYPE in
    * )  echo Wrong type ; usage; exit 1 ;;
 esac   
 
+rm -f copernicusmarineout.txt
+copernicusmarine get -i ${dataset} --filter "*${DAY}_d-OGS*" --disable-progress-bar --create-file-list copernicusmarineout.txt > /dev/null 2>&1
+for I in $( cat copernicusmarineout.txt) ; do echo $I | cut -d "/" -f 9 ; done
+rm -f copernicusmarineout.txt
 
-echo n | copernicusmarine get -i ${dataset} --filter "*${DAY}_d-OGS*" --show-outputnames --disable-progress-bar > copernicus_marine.out
-grep ${dataset} copernicus_marine.out | tail -1 | cut -d "/" -f 5
-
-#     yyyy=${DAY:0:4}
-#       mm=${DAY:4:2}
-#     remotepath=/Core/${PRODUCT}/${dataset}/${yyyy}/${mm}/${DAY}*
-#     ncftp_check $remotepath | grep MED | awk '{ print $9}'
      
 
 
