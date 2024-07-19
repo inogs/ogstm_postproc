@@ -43,7 +43,7 @@ class read_descriptor():
         NATIVE_NODES=NODE[0].getElementsByTagName("var")
         for n in NATIVE_NODES:
             var=str(n.attributes['name'].value)
-            if var not in self.vars2D: self.vars2D.add(var)
+            if var not in self.vars2D: self.vars2D.append(var)
         
         self.AGGREGATE_VARS=[]
         self.AGGR_FORMULAS=[]        
