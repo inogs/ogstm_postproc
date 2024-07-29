@@ -1,5 +1,11 @@
 #! /bin/bash
 
+
+# Get the directory where this script is saved. This fails if the directory is
+# a symlink or if we use ksh instead of bash. It must be executed at the begining
+# of the script (or before we change the working dir)
+BENCHMARK_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 . ../profile.inc
 . ./launch.sh
 
@@ -7,10 +13,11 @@ rm -rf $VALIDATION_DIR/TIMESERIES
 mkdir -p $VALIDATION_DIR/TIMESERIES
 
 
+my_prex_or_die "python ${BENCHMARK_DIR}/draw_timeseries.py -o ${VALIDATION_DIR}/TIMESERIES -m $MASKFILE -f ${BENCHMARK_DIR}/timeseries_user_settings.txt"
+
+
 cd $BITSEA/validation/deliverables
 
-
-my_prex_or_die "python profiles_plotter.py -o $VALIDATION_DIR/TIMESERIES -m $MASKFILE -f profiles_plotter_user_settings.txt"
 
 # moving optical variables in TIMESERIES/optics/
 mkdir -p $VALIDATION_DIR/TIMESERIES/optics
