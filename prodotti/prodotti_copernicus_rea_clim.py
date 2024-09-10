@@ -39,10 +39,10 @@ args = argument()
 import netCDF4
 import numpy as np
 from datetime import datetime, timedelta
-from commons.utils import addsep
-from commons.mask import Mask
-from commons.dataextractor_open import DataExtractor
-from commons.genUserDateList import getTimeList
+from bitsea.commons.utils import addsep
+from bitsea.commons.mask import Mask
+from bitsea.commons.dataextractor_open import DataExtractor
+from bitsea.commons.genUserDateList import getTimeList
 
 INPUTDIR  = addsep(args.inputdir)
 OUTPUTDIR = addsep(args.outputdir)

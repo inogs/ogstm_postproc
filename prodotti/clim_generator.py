@@ -34,12 +34,12 @@ def argument():
 args = argument()
 
 
-from commons.Timelist import TimeList, TimeInterval
-from commons import timerequestors
-from commons.mask import Mask
-from commons.time_averagers import TimeAverager3D_std, TimeAverager2D_std
-from commons import netcdf4
-from commons.utils import addsep
+from bitsea.commons.Timelist import TimeList, TimeInterval
+from bitsea.commons import timerequestors
+from bitsea.commons.mask import Mask
+from bitsea.commons.time_averagers import TimeAverager3D_std, TimeAverager2D_std
+from bitsea.commons import netcdf4
+from bitsea.commons.utils import addsep
 
 try:
     from mpi4py import MPI

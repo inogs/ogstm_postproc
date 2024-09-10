@@ -1,10 +1,10 @@
 import flux_reader
-from commons.Timelist import TimeList, TimeInterval
+from bitsea.commons.Timelist import TimeList, TimeInterval
 import numpy as np
 import pickle
-from commons import season
-from commons import timerequestors
-from commons.utils import writetable
+from bitsea.commons import season
+from bitsea.commons import timerequestors
+from bitsea.commons.utils import writetable
 iDard=7
 
 flux_dt =np.dtype([('adv-u',np.float),('adv-v',np.float),('adv-w',np.float),('sed-w',np.float),\

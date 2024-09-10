@@ -36,10 +36,10 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import pylab as pl
-from basins import V2 as OGS
-from commons import season
-from commons.utils import addsep
-from commons.layer import Layer
+from bitsea.basins import V2 as OGS
+from bitsea.commons import season
+from bitsea.commons.utils import addsep
+from bitsea.commons.layer import Layer
 
 
 color='b'

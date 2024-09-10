@@ -1,5 +1,5 @@
 import netCDF4
-from commons.mask import Mask
+from bitsea.commons.mask import Mask
 import numpy as np
 maskfile="/gss/gss_work/DRES_OGS_BiGe/gbolzon/masks/V4/mesh_mask_V1INGV.nc"
 # git clone git@gitlab.hpc.cineca.it:OGS/preproc.git mesh_gen

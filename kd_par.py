@@ -29,11 +29,11 @@ args = argument()
 
 
 import numpy as np
-from commons.mask import Mask
-from commons.dataextractor import DataExtractor
-from commons import netcdf4
-from commons.Timelist import TimeList
-from commons.utils import addsep
+from bitsea.commons.mask import Mask
+from bitsea.commons.dataextractor import DataExtractor
+from bitsea.commons import netcdf4
+from bitsea.commons.Timelist import TimeList
+from bitsea.commons.utils import addsep
 
 try:
     from mpi4py import MPI

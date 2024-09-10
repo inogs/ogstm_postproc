@@ -38,7 +38,7 @@ def aliasing_test(T=26):
     # T 26h : 13 days
     # T 25h : 25 days
 
-from timeseries.plot import read_pickle_file
+from bitsea.timeseries.plot import read_pickle_file
 
 my_dytype=[('varname','U10'),('xlim_max',np.float32),('ylim_max',np.float32)]
 

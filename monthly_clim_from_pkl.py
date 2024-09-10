@@ -28,10 +28,10 @@ def argument():
 args = argument()
 
 import numpy as np
-from commons import timerequestors
-from timeseries.plot import read_pickle_file
-from commons import genUserDateList as DL
-from commons.Timelist import TimeList
+from bitsea.commons import timerequestors
+from bitsea.timeseries.plot import read_pickle_file
+from bitsea.commons import genUserDateList as DL
+from bitsea.commons.Timelist import TimeList
 import pickle
 
 dataIN,TL=read_pickle_file(args.inputfile)

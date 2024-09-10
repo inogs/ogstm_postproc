@@ -33,9 +33,9 @@ args = argument()
 import netCDF4
 import numpy as np
 import os
-from commons.utils import addsep
+from bitsea.commons.utils import addsep
 import glob
-from commons.netcdf4 import lon_dimension_name, lat_dimension_name, depth_dimension_name
+from bitsea.commons.netcdf4 import lon_dimension_name, lat_dimension_name, depth_dimension_name
 
 try:
     from mpi4py import MPI

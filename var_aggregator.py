@@ -54,7 +54,7 @@ import glob
 import os
 import GB_lib as G
 import read_descriptor
-from commons.mask import Mask
+from bitsea.commons.mask import Mask
 
 if args.serial:
     rank   = 0

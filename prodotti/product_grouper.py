@@ -1,6 +1,6 @@
-from commons.timeseries import TimeSeries
-from commons.time_interval import TimeInterval
-from commons.utils import addsep
+from bitsea.commons.timeseries import TimeSeries
+from bitsea.commons.time_interval import TimeInterval
+from bitsea.commons.utils import addsep
 
 starttime="20170901"
 end__time="20180601"

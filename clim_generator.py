@@ -38,13 +38,13 @@ import argparse
 # args = argument()
 
 
-from commons.Timelist import TimeInterval,TimeList
-from commons import timerequestors
-from commons.time_averagers import TimeAverager3D
-from commons.mask import Mask
-from commons import netcdf4
-from commons import interpolators
-from commons.utils import file2stringlist
+from bitsea.commons.Timelist import TimeInterval,TimeList
+from bitsea.commons import timerequestors
+from bitsea.commons.time_averagers import TimeAverager3D
+from bitsea.commons.mask import Mask
+from bitsea.commons import netcdf4
+from bitsea.commons import interpolators
+from bitsea.commons.utils import file2stringlist
 
 
 try:
