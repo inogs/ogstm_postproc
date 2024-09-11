@@ -47,6 +47,8 @@ if [[ -d bit.sea ]] ; then
     cd $HERE
 else
     git clone git@github.com:inogs/bit.sea.git
+    cd $BITSEA
+    git checkout V10C
     cd $BITSEA/validation/deliverables
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " $HERE/profiler.tpl > profiler.py
     cp $HERE/VarDescriptorB.xml $BITSEA/postproc
