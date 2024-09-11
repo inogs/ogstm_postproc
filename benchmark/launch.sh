@@ -29,7 +29,7 @@ POSTPROCDIR=$CINECA_WORK/$OPA_HOME/wrkdir/POSTPROC  ## $CINECA_WORK or $CINECA_S
 
 
 BITSEA=${POSTPROCDIR}/bit.sea
-export PYTHONPATH=:$BITSEA
+export PYTHONPATH=$BITSEA
 HERE=$PWD
 
 export ONLINE_REPO=/g100_work/OGS_devC/V10C/RUNS_SETUP/ONLINE
@@ -38,7 +38,7 @@ export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
  BASEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/PROFILATORE/
-PROFILES=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES
+export STATPROFILESDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES
 
 cd $POSTPROCDIR
 
@@ -49,7 +49,6 @@ else
     git clone git@github.com:inogs/bit.sea.git
     cd $BITSEA/validation/deliverables
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " $HERE/profiler.tpl > profiler.py
-    sed -e "s%actual%${PROFILES}%g " $HERE/timeseries_user_settings.txt > profiles_plotter_user_settings.txt
     cp $HERE/VarDescriptorB.xml $BITSEA/postproc
     python profiler.py
 fi
