@@ -1,6 +1,6 @@
 import argparse
-from utilities.argparse_types import (existing_dir_path,
-                                      path_inside_an_existing_dir)
+from bitsea.utilities.argparse_types import (existing_dir_path,
+                                             path_inside_an_existing_dir)
 
 def argument():
     parser = argparse.ArgumentParser(description = '''
@@ -34,8 +34,8 @@ try:
 except ImportError:
     pass
 
-from commons.Timelist import TimeInterval, TimeList
-from utilities.mpi_serial_interface import get_mpi_communicator
+from bitsea.commons.Timelist import TimeInterval, TimeList
+from bitsea.utilities.mpi_serial_interface import get_mpi_communicator
 
 COMM = get_mpi_communicator()
 FILL_VALUE = np.nan
