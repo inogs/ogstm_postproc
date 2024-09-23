@@ -27,13 +27,13 @@ def argument():
 args = argument()
 
 
-from commons.Timelist import TimeInterval,TimeList
+from bitsea.commons.Timelist import TimeInterval,TimeList
 import netCDF4
 import numpy as np
-from commons import netcdf4
+from bitsea.commons import netcdf4
 from maskload import *
 import pickle,os
-from commons.utils import addsep
+from bitsea.commons.utils import addsep
 try:
     from mpi4py import MPI
     comm  = MPI.COMM_WORLD

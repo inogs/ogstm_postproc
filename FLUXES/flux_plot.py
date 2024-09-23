@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import glob
 import pylab as pl
-from commons.Timelist import TimeList
+from bitsea.commons.Timelist import TimeList
 
 flux_dt =np.dtype([('adv-u',np.float),('adv-v',np.float),('adv-w',np.float),('sed-w',np.float),\
                    ('hdf-x',np.float),('hdf-y',np.float),('zdf-z',np.float)])
@@ -44,7 +44,7 @@ fig.show()
 fig.savefig("Nitrate_monthly_flux_dardanelles.png")
 
 import matplotlib.dates as mdates
-from commons.mask import Mask
+from bitsea.commons.mask import Mask
 from datetime import datetime
 TheMask=Mask("/gpfs/scratch/userexternal/gbolzon0/OPEN_BOUNDARY/TEST_02/wrkdir/MODEL/meshmask.nc",loadtmask=False)
 L=TL.Timelist

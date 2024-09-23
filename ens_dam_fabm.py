@@ -1,8 +1,8 @@
 import numpy as np
 import netCDF4
-from commons import netcdf4
+from bitsea.commons import netcdf4
 from datetime import datetime, timedelta
-from commons.Timelist import TimeList
+from bitsea.commons.Timelist import TimeList
 obs_file="/g100_scratch/userexternal/ateruzzi/EAT_DA/ENS_CHLprof_IC/Obs2016_short_perGP/ToAssimilate/profile_P_Chl.obs"
 dtype=[("day","U10"),('hr',"U8"),("z",np.float32),('chl',np.float32),('err',np.float32)]
 

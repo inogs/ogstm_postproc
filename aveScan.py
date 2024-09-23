@@ -85,7 +85,7 @@ args = argument()
 
 import scipy.io as NC
 import netCDF4 as NC4
-from commons.dataextractor import DataExtractor
+from bitsea.commons.dataextractor import DataExtractor
 import glob
 import os
 import numpy as np
@@ -93,7 +93,7 @@ import read_descriptor
 import IOnames as IOname
 from maskload import *
 import GB_lib
-from commons.utils import addsep, isvalidpath
+from bitsea.commons.utils import addsep, isvalidpath
 
 
 INPUT_AVEDIR = addsep(args.inputdir)

@@ -23,14 +23,14 @@ args = argument()
 
 
 import numpy as np
-from commons.mask import Mask
-from commons.submask import SubMask
-from commons.dataextractor import DataExtractor
-from commons.Timelist import TimeList
-from basins import V2 as OGS
-from commons import season
-from commons import timerequestors
-from commons.utils import addsep
+from bitsea.commons.mask import Mask
+from bitsea.commons.submask import SubMask
+from bitsea.commons.dataextractor import DataExtractor
+from bitsea.commons.Timelist import TimeList
+from bitsea.basins import V2 as OGS
+from bitsea.commons import season
+from bitsea.commons import timerequestors
+from bitsea.commons.utils import addsep
 
 
 

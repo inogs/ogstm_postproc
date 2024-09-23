@@ -1,4 +1,4 @@
-from commons import netcdf4
+from bitsea.commons import netcdf4
 import numpy as np
 import glob
 

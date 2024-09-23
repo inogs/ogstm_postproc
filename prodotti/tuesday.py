@@ -12,8 +12,8 @@ def argument():
     return parser.parse_args()
 
 args = argument()
-from commons.Timelist import TimeList
-from commons.utils import addsep
+from bitsea.commons.Timelist import TimeList
+from bitsea.commons.utils import addsep
 
 MODELDIR=addsep(args.inputdir)
 

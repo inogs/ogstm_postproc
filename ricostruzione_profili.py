@@ -23,8 +23,8 @@ args = argument()
 import scipy.io.netcdf as NC
 import numpy as np
 import glob
-from commons.mask import Mask
-from commons.utils import addsep
+from bitsea.commons.mask import Mask
+from bitsea.commons.utils import addsep
 
 
 TheMask=Mask(args.maskfile)

@@ -1,7 +1,7 @@
 import numpy as np
-from commons.mask import Mask
-from commons.dataextractor import DataExtractor
-import Sat.SatManager as Satmodule
+from bitsea.commons.mask import Mask
+from bitsea.commons.dataextractor import DataExtractor
+import bitsea.Sat.SatManager as Satmodule
 import netCDF4
 
 

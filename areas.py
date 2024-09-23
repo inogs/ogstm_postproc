@@ -1,8 +1,8 @@
-from commons.mask import Mask
-from commons.submask import SubMask
-from basins import V2 as OGS
+from bitsea.commons.mask import Mask
+from bitsea.commons.submask import SubMask
+from bitsea.basins import V2 as OGS
 import numpy as np
-from commons.utils import writetable
+from bitsea.commons.utils import writetable
 
 maskfile="/g100_work/OGS21_PRACE_P/CLIMA_100/meshmask.nc"
 

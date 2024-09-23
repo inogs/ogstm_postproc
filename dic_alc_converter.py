@@ -46,13 +46,13 @@ def argument():
 
 args = argument()
 
-from commons.mask import Mask
+from bitsea.commons.mask import Mask
 import numpy as np
-from commons import density
-from commons import netcdf4
-from commons.dataextractor import DataExtractor
-from commons.Timelist import TimeInterval,TimeList
-from commons.utils import addsep
+from bitsea.commons import density
+from bitsea.commons import netcdf4
+from bitsea.commons.dataextractor import DataExtractor
+from bitsea.commons.Timelist import TimeInterval,TimeList
+from bitsea.commons.utils import addsep
 
 try:
     from mpi4py import MPI

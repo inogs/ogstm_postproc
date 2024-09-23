@@ -27,7 +27,7 @@ args = argument()
 import numpy as np
 import pickle as pkl
 import os,glob
-from commons.utils import addsep
+from bitsea.commons.utils import addsep
 
 
 IN_BEFORE=addsep(args.inputbef)

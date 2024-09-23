@@ -30,15 +30,15 @@ def argument():
 
 args = argument()
 
-from commons.mask import Mask
-from commons.dataextractor import DataExtractor
+from bitsea.commons.mask import Mask
+from bitsea.commons.dataextractor import DataExtractor
 import numpy as np
-from commons.Timelist import TimeList
-from commons.utils import addsep
-from surf import surfaces
-from commons.layer import Layer
-from layer_integral.mapbuilder import MapBuilder
-from commons import netcdf4
+from bitsea.commons.Timelist import TimeList
+from bitsea.commons.utils import addsep
+from bitsea.surf import surfaces
+from bitsea.commons.layer import Layer
+from bitsea.layer_integral.mapbuilder import MapBuilder
+from bitsea.commons import netcdf4
 
 try:
     from mpi4py import MPI

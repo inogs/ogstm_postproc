@@ -57,10 +57,10 @@ def argument():
 
 args = argument()
 
-from commons.utils import addsep
-from timeseries.plot import read_pickle_file
-from commons.Timelist import TimeList,TimeInterval
-from commons.mask import Mask
+from bitsea.commons.utils import addsep
+from bitsea.timeseries.plot import read_pickle_file
+from bitsea.commons.Timelist import TimeList,TimeInterval
+from bitsea.commons.mask import Mask
 import numpy as np
 
 

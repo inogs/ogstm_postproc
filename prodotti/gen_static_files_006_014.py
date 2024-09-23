@@ -1,5 +1,5 @@
 import netCDF4
-from commons.mask import Mask
+from bitsea.commons.mask import Mask
 import numpy as np
 maskfile="/gpfs/work/IscrC_REBIOMED/NRT_EAS6/PREPROC/MASK/ogstm/meshmask.nc"
 M=Mask(maskfile)

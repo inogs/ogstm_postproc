@@ -53,9 +53,9 @@ args = argument()
 import netCDF4
 import numpy as np
 import datetime,os
-from commons.utils import addsep, file2stringlist
-from commons.mask import Mask
-from commons.dataextractor_open import DataExtractor
+from bitsea.commons.utils import addsep, file2stringlist
+from bitsea.commons.mask import Mask
+from bitsea.commons.dataextractor_open import DataExtractor
 
 try:
     from mpi4py import MPI
