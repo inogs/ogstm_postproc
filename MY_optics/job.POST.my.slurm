@@ -82,8 +82,8 @@ MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
         TMPS=$OUTDIR/TMPS
   CHLSUP_DIR=$OUTDIR/CHL_SUP
 
-my_prex_or_die_with_tries "mpirun -np 120 python var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d benchmark/VarDescriptor_2.xml -t $MODEL_AVEDIR -c $CHLSUP_DIR -m $MASKFILE"
-my_prex_or_die_with_tries "mpirun python aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d benchmark/VarDescriptor_2.xml -o $OUTDIR -t $TMPS  -s "
+my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_2.xml -t $MODEL_AVEDIR -c $CHLSUP_DIR -m $MASKFILE"
+my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_2.xml -o $OUTDIR -t $TMPS  -s "
 
 ANS=$?
 # ---------- cleaning
@@ -93,7 +93,7 @@ if [ $ANS == 0 ] ; then
    cd $SLURM_SUBMIT_DIR
 fi
 
-my_prex_or_die_with_tries "mpirun -np 16 python compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
+my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
 
 ################## end of integrals/profiles stuff  ##############
 
@@ -105,8 +105,8 @@ KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 
 mkdir -p $KD__DAILY
 mkdir -p $KD_WEEKLY
-my_prex_or_die "mpirun python kd.py -i $INPUTDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
-my_prex_or_die "mpirun python weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t thursday"
+my_prex_or_die "mpirun python ../kd.py -i $INPUTDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
+my_prex_or_die "mpirun python ../weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t thursday"
 
 
 RRS__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/RRS_DAILY/${YEAR}
@@ -114,10 +114,10 @@ RRS_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 
 mkdir -p $RRS__DAILY
 mkdir -p $RRS_WEEKLY
-my_prex_or_die "mpirun python rrs.py -i $INPUTDIR -m $MASKFILE -o $RRS__DAILY -l ave*.nc"
+my_prex_or_die "mpirun python ../rrs.py -i $INPUTDIR -m $MASKFILE -o $RRS__DAILY -l ave*.nc"
 
 for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
-    my_prex_or_die "python weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
+    my_prex_or_die "python ../weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
 done
 
 
