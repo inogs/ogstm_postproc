@@ -38,6 +38,7 @@ export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
  BASEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/PROFILATORE/
+EBASEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/PROFILATORE_EMODNET/
 export STATPROFILESDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES
 
 cd $POSTPROCDIR
@@ -48,9 +49,12 @@ if [[ -d bit.sea ]] ; then
 else
     git clone git@github.com:inogs/bit.sea.git
     cd $BITSEA/src/bitsea/validation/deliverables
+    # float profiler
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " $HERE/profiler.tpl > profiler.py
-    cp $HERE/VarDescriptorB.xml $BITSEA/postproc
     python profiler.py
+    # Nutrients profiler
+    sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${EBASEDIR}%g " $HERE/profiler_RA_N.tpl > profiler_RA_N.py
+    python profiler_RA_N.py
 fi
 
 cd $HERE
