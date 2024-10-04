@@ -9,6 +9,25 @@
 #SBATCH --partition=g100_meteo_prod
 #SBATCH --qos=qos_meteo
 
+
+usage() {
+echo "SYNOPSYS"
+echo "sbatch job.POST.my.slurm -y YEAR"
+echo "Caveat: the user has to have writing permissions on wrkdir/MODEL
+echo "If not, use MODEL_linker.sh to generate a suitable wrkdir/MODEL
+}
+
+if [ $# -lt 2 ] ; then
+  usage
+  exit 1
+fi
+
+case $1 in
+      "-y" ) YEAR=$2;;
+        *  ) echo "Unrecognized option $1." ; usage;  exit 1;;
+esac
+shift 2
+
 cd $SLURM_SUBMIT_DIR
 
 . ../profile.inc
@@ -26,7 +45,24 @@ export  KCOASTFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/mapser.npy
 
 export PATH=$PATH:..
 
-MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
+####### moving in year/ directories ################
+MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/
+cd $MODEL_AVEDIR
+rm -f AVE_FREQ_1/*nc
+mkdir -p AVE_FREQ_2/${YEAR} AVE_FREQ_3/${YEAR} RESTARTS/${YEAR}
+cd AVE_FREQ_2
+my_prex "mv ave.${YEAR}*.nc ${YEAR}/ "
+rm -f ave.${YEAR}.nc.bkp
+
+cd $MODEL_AVEDIR/AVE_FREQ_3
+my_prex "mv ave.${YEAR}*.nc ${YEAR}/"
+
+cd $MODEL_AVEDIR/RESTARTS
+my_prex "mv RST.${YEAR}*.nc ${YEAR}/"
+
+########  HIGH FREQUENCY ######################################################
+
+MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/${YEAR}
 
 my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $MODEL_AVEDIR -m $MASKFILE"
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/metrics_2d
@@ -40,7 +76,7 @@ my_prex_or_die_with_tries "mpirun -np 120 python ../metrics_2d.py -i $MODEL_AVED
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $BASEDIR -t $TMPS -p $BASEDIR/PUNTI "
 my_prex_or_die "rm -rf $TMPS"
 
-########  HIGH FREQUENCY ######################################################
+
 export BASINS=RIVERS
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/${BASINS}/AVE_FREQ_1/
 TMPS=$OUTDIR/TMPS
@@ -60,7 +96,7 @@ my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDI
 
 cd $SLURM_SUBMIT_DIR
 
-MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
+MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
       OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/
 
         TMPS=$OUTDIR/TMPS
@@ -78,7 +114,7 @@ my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDI
 
 ################ Kd  #########################
 
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
 KD__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_DAILY
 KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_WEEKLY
 
@@ -105,22 +141,22 @@ done
 
 
 cd $SLURM_SUBMIT_DIR/../archive
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1
-  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1_tar
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/${YEAR}
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1_tar/${YEAR}
 my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v N1p"
 
 
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
-  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2_tar
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2_tar/${YEAR}
 my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v N1p"
 
 
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3
-  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3_tar
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3_tar/${YEAR}
 my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v Ed_0250"
 
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
-  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS_tar
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS/${YEAR}
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS_tar/${YEAR}
 my_prex_or_die "./tar_rstdir.sh -i $INPUTDIR -o $TARDIR -n 120"
 
 
