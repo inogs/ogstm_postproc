@@ -48,9 +48,13 @@ export PATH=$PATH:..
 ####### moving in year/ directories ################
 MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/
 cd $MODEL_AVEDIR
-rm -f AVE_FREQ_1/*nc
-mkdir -p AVE_FREQ_2/${YEAR} AVE_FREQ_3/${YEAR} RESTARTS/${YEAR}
-cd AVE_FREQ_2
+
+mkdir -p AVE_FREQ_1/${YEAR} AVE_FREQ_2/${YEAR} AVE_FREQ_3/${YEAR} RESTARTS/${YEAR}
+
+cd $MODEL_AVEDIR/AVE_FREQ_1
+my_prex "mv ave.${YEAR}*.nc ${YEAR}/ "
+
+cd $MODEL_AVEDIR/AVE_FREQ_2
 my_prex "mv ave.${YEAR}*.nc ${YEAR}/ "
 rm -f ave.${YEAR}.nc.bkp
 
