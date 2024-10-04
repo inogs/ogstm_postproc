@@ -26,9 +26,6 @@ POSTPROCDIR=$CINECA_WORK/$OPA_HOME/wrkdir/POSTPROC  ## $CINECA_WORK or $CINECA_S
 ##########################################
 
 
-# temporary #####################
-ln -fs ../benchmark/VarDescriptorB.xml
-ln -fs ../benchmark/profiler.tpl
 
 
 BITSEA=${POSTPROCDIR}/bit.sea/src/bitsea

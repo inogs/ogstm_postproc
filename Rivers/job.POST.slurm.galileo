@@ -66,6 +66,8 @@ my_prex "mv RST.${YEAR}*.nc ${YEAR}/"
 
 ########  HIGH FREQUENCY ######################################################
 
+cd $SLURM_SUBMIT_DIR
+
 MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/${YEAR}
 
 my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_1.xml -t $MODEL_AVEDIR -m $MASKFILE"
