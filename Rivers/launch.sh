@@ -28,8 +28,8 @@ POSTPROCDIR=$CINECA_WORK/$OPA_HOME/wrkdir/POSTPROC  ## $CINECA_WORK or $CINECA_S
 
 
 
-BITSEA=${POSTPROCDIR}/bit.sea/src/bitsea
-export PYTHONPATH=$BITSEA
+BITSEA=${POSTPROCDIR}/bit.sea
+export PYTHONPATH=$BITSEA/src/
 HERE=$PWD
 
 export ONLINE_REPO=/g100_work/OGS_devC/V10C/RUNS_SETUP/ONLINE
@@ -47,9 +47,7 @@ if [[ -d bit.sea ]] ; then
     cd $HERE
 else
     git clone git@github.com:inogs/bit.sea.git
-    cd $BITSEA
-    git checkout EmodnetInt2023
-    cd $BITSEA/validation/deliverables
+    cd $BITSEA/src/bitsea/validation/deliverables
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " $HERE/profiler.tpl > profiler.py
     cp $HERE/VarDescriptorB.xml $BITSEA/postproc
     python profiler.py
