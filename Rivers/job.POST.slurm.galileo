@@ -3,7 +3,7 @@
 #SBATCH --job-name=POST
 #SBATCH -N5
 #SBATCH --ntasks-per-node=24
-#SBATCH --time=01:30:00
+#SBATCH --time=02:30:00
 #SBATCH --mem=300gb
 #SBATCH --account=OGS_devC
 #SBATCH --partition=g100_meteo_prod
@@ -75,13 +75,19 @@ OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_1/metrics_2d
 mkdir -p $OUTDIR
 my_prex_or_die_with_tries "mpirun -np 120 python ../metrics_2d.py -i $MODEL_AVEDIR -m $MASKFILE -o $OUTDIR"
 
-########## Profiling in float positions ##############
+########## Profiling model in observation positions ##############
 
   TMPS=$BASEDIR/TMPS
-
+# floats
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $BASEDIR -t $TMPS -p $BASEDIR/PUNTI "
 my_prex_or_die "rm -rf $TMPS"
 
+
+# Emodnet
+my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $BASEDIR -t $TMPS -p $EBASEDIR/PUNTI "
+my_prex_or_die "rm -rf $TMPS"
+
+########## Profiling in float positions ##############
 
 export BASINS=RIVERS
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/${BASINS}/AVE_FREQ_1/
