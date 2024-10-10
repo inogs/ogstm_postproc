@@ -147,6 +147,15 @@ for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
     my_prex_or_die "python ../weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
 done
 
+############     yearly averages   ###########################
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
+OUTPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/YEARLY
+mkdir -p $OUTDIR
+
+for var in ppn P_l N3N N1p ALK DIC O2o; do
+    my_prex_or_die "python ../yearly_averager.py -i $INPUTDIR -o $OUTPUTDIR -v $var -m $MASKFILE"
+done
 
 
 ## COMPRESSION ##
