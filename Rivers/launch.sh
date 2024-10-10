@@ -1,5 +1,36 @@
 #! /bin/bash
 
+usage() {
+echo "Is a config file for automatic postproc, it needs to be edited by user"
+echo "SYNOPSIS"
+echo "./launch.sh -y [ YEAR ] --init "
+echo "Prepares som and launches profiler.py"
+echo ""
+echo "source launch.sh"
+echo "exports internal settings as a config file" 
+
+}
+
+if [ $# -lt 2 ] ; then
+  usage
+  exit 1
+fi
+
+RUN_PROFILER=0
+for I in 1 2 ; do 
+	case $1 in
+	    -y | --year )
+	            YEAR=$2
+	            shift 2
+	            ;;
+	    --init )
+	       RUN_PROFILER=1
+	       shift 1
+	       ;;
+	esac
+done
+
+
 module load autoload
 module load intel/oneapi-2021--binary
 module load intelmpi/oneapi-2021--binary
@@ -15,15 +46,16 @@ source /g100_work/OGS23_PRACE_IT/COPERNICUS/py_env_3.9.18_new/bin/activate
 
 
 #  user settings #########################
-export OPA_HOME=Benchmark/DA_SAT
+export OPA_HOME=EFAS/run05
 #
-export VALIDATION_DIR=/g100_work/OGS_devC/Benchmark/pub/Benchmark/DA_SAT  ## the path after pub/ will be published https://medeaf.inogs.it/internal-validation
+export VALIDATION_DIR=/g100_work/OGS_devC/Benchmark/pub/gbolzon/EFAS/run05  ## the path after pub/ will be published https://medeaf.inogs.it/internal-validation
 #
 # EDIT timeseries_user_setting.txt
 #
 export CINECA_WORK=/g100_work/OGS_devC
-POSTPROCDIR=$CINECA_WORK/$OPA_HOME/wrkdir/POSTPROC  ## $CINECA_WORK or $CINECA_SCRATCH
+POSTPROCDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC  ## $CINECA_WORK or $CINECA_SCRATCH
 ##########################################
+
 
 
 
@@ -41,23 +73,33 @@ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
 EBASEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/PROFILATORE_EMODNET/
 export STATPROFILESDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES
 
-cd $POSTPROCDIR
+
+# Robustness about mv ave files
+[[ -f $INPUTDIR/ave.${YEAR}0101-12:00:00.N1p.nc ]] ||  INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/${YEAR}
 
 
-if [[ -d bit.sea ]] ; then
-    cd $HERE
-else
-    git clone git@github.com:inogs/bit.sea.git
+if [ $RUN_PROFILER -eq 1 ] ; then
+    echo "RUN PROFILER=$RUN_PROFILER"
+    echo "INPUTDIR=$INPUTDIR"
+
+    YEAR2=$(( YEAR + 1 ))
+    cd $POSTPROCDIR
+    if  ! [ -d bit.sea ] ; then
+        git clone git@github.com:inogs/bit.sea.git
+    fi
     cd $BITSEA/src/bitsea/validation/deliverables
     # float profiler
-    sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " $HERE/profiler.tpl > profiler.py
+    sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " \
+        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    $HERE/profiler.tpl > profiler.py
     python profiler.py
     # Nutrients profiler
-    sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${EBASEDIR}%g " $HERE/profiler_RA_N.tpl > profiler_RA_N.py
+    sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${EBASEDIR}%g " \
+        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    $HERE/profiler_RA_N.tpl > profiler_RA_N.py
     python profiler_RA_N.py
+
 fi
 
-cd $HERE
+
 
 
 # 1. sbatch job.POST.slurm.galileo # 1h
