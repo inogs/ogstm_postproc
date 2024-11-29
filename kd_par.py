@@ -61,6 +61,7 @@ def load_data(var, dateobj):
 
 TL = TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar="PAR")
 jk_lim = TheMask.getDepthIndex(500.) -2
+Bathycells = TheMask.bathymetry_in_cells()
 
 for d in TL.Timelist[rank::nranks]:
     
@@ -87,9 +88,14 @@ for d in TL.Timelist[rank::nranks]:
 
 
     KD = np.ones((jpk,jpj,jpi),np.float32)* 1.e-8
-    KD[:jk_lim,:,:] = -np.log(E[1:jk_lim+1,:,:]/E[0:jk_lim,:,:])/TheMask.e3t[:jk_lim,:,:]
     KD[~TheMask.mask] = 1.e+20
 
+    for i in range(jpi):
+        for j in range(jpj):
+            b = min(Bathycells[j,i]-2,jk_lim)
+            for k in range(b):
+                KD[k,j,i] = -np.log(E[k+1,j,i]/E[k,j,i])/TheMask.e3t[k,j,i]
+    #KD[:jk_lim,:,:] = -np.log(E[1:jk_lim+1,:,:]/E[0:jk_lim,:,:])/TheMask.e3t[:jk_lim,:,:]
 
     varname ="kd"
     outfile ="%save.%s.%s.nc" %(OUTDIR,d.strftime("%Y%m%d-%H:%M:%S"),varname)
