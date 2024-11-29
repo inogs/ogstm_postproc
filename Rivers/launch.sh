@@ -102,6 +102,6 @@ fi
 
 
 
-# 1. sbatch job.POST.slurm.galileo # 1h
-# 2. sbatch job.serial.slurm       # 1h30
+# 1. sbatch job.POST.slurm.galileo -y 2020 # 2h
+# 2. sbatch job.serial.slurm               # 1h30
 
