@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from utilities.argparse_types import existing_file_path, \
+from bitsea.utilities.argparse_types import existing_file_path, \
     path_inside_an_existing_dir
 
 
@@ -46,15 +46,15 @@ from dataclasses import dataclass
 from os import PathLike, environ
 import re
 from typing import Union, Tuple
-from validation.multirun.plot_profiles import Config, DataDirSource, \
+from bitsea.validation.multirun.plot_profiles import Config, DataDirSource, \
     DepthProfilesOptions, PlotConfig, TimeSeriesOptions, draw_profile_plots, \
     OutputOptions
-from validation.multirun.plot_profiles.plot_inputs.single_line_plot import \
+from bitsea.validation.multirun.plot_profiles.plot_inputs.single_line_plot import \
     SingleLineInputData
-from validation.multirun.plot_profiles.tools.depth_profile_algorithms import \
+from bitsea.validation.multirun.plot_profiles.tools.depth_profile_algorithms import \
     DepthProfileMode, DepthProfileAlgorithm
 
-from basins.V2 import P
+from bitsea.basins.V2 import P
 
 
 COAST_INDEX = 1
