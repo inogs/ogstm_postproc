@@ -515,6 +515,17 @@ def create_ave_pp_header(datestr):
         setattr(ncOUT_Pprofiles,"CruiseIndex",CruiseDescr)
     return ncOUT_Pprofiles
 
+def has_point_profile(avefile):
+    '''
+    Arguments: avefile, string
+    Returns:
+    True if the associated text file .dat of PUNTI/ dir exists
+    '''
+    F = GB_lib.filename_manager(avefile)
+    datestr=F.datestr
+    puntifile = POINTSDIR + "punti_" + datestr + ".dat"
+    return isvalidpath(puntifile)
+
 
 if doPointProfiles:
     if not Is_points_dir:
@@ -564,6 +575,8 @@ if rank==0 :
 aveLIST = glob.glob(INPUT_AVEDIR + args.avelist)
 if not filtervar is None:
     aveLIST=[f for f in aveLIST if filtervar in os.path.basename(f) ]
+if (doPointProfiles and Is_points_dir):
+    aveLIST=[f for f in aveLIST if has_point_profile(f)]
 aveLIST.sort()
 
 VARLIST=[]

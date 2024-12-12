@@ -56,7 +56,7 @@ TheMask=Mask(args.maskfile)
 var = args.var
 
 TI= TimeInterval('1999','2020', '%Y')
-TL=TimeList.fromfilenames(TI, INPUTDIR, "ave*.nc", filtervar=var)
+TL=TimeList.fromfilenames(None, INPUTDIR, "ave*.nc", filtervar=var)
 YEARLY_REQS=TL.getYearlist()
 
 
