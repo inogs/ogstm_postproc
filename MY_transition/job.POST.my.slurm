@@ -89,19 +89,13 @@ my_prex_or_die "rm -rf $TMPS"
 
 ########## Profiling in float positions ##############
 
-export BASINS=RIVERS
+export BASINS=V2
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/${BASINS}/AVE_FREQ_1/
 TMPS=$OUTDIR/TMPS
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s "
 my_prex_or_die "rm -rf $TMPS"
 my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
 
-export BASINS=COASTAL12NM
-OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/${BASINS}/AVE_FREQ_1/
-TMPS=$OUTDIR/TMPS
-my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s "
-my_prex_or_die "rm -rf $TMPS"
-my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
 
 
 ########  LOW FREQUENCY ######################################################
