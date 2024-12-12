@@ -1,7 +1,7 @@
 #! /bin/bash
 
 . ../profile.inc
-. ./launch.sh
+. ./launch.sh -y 2021
 
 rm -rf $VALIDATION_DIR/FLOAT
 mkdir -p $VALIDATION_DIR/FLOAT
@@ -26,7 +26,7 @@ mkdir -p $VALIDATION_DIR/FLOAT/Weekly/POC
 
 NCDIR=tmp_nc
 
-cd $BITSEA/validation/deliverables
+cd $BITSEA/src/bitsea/validation/deliverables
 mkdir -p $NCDIR
 
 my_prex_or_die "python SingleFloat_vs_Model_Stat_Timeseries.py -m $MASKFILE -b $BASEDIR -o $NCDIR"
