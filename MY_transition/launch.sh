@@ -86,6 +86,8 @@ if [ $RUN_PROFILER -eq 1 ] ; then
     cd $POSTPROCDIR
     if  ! [ -d bit.sea ] ; then
         git clone git@github.com:inogs/bit.sea.git
+        cd $BITSEA
+        git checkout floatsV11C
     fi
     cd $BITSEA/src/bitsea/validation/deliverables
     # float profiler
