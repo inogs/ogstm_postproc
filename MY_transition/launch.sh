@@ -46,9 +46,9 @@ source /g100_work/OGS23_PRACE_IT/COPERNICUS/py_env_3.9.18_new/bin/activate
 
 
 #  user settings #########################
-export OPA_HOME=EFAS/run05
+export OPA_HOME=V11C/TRANSITION
 #
-export VALIDATION_DIR=/g100_work/OGS_devC/Benchmark/pub/gbolzon/EFAS/run05  ## the path after pub/ will be published https://medeaf.inogs.it/internal-validation
+export VALIDATION_DIR=/g100_work/OGS_devC/Benchmark/pub/gbolzon/V11C/TRANSITION  ## the path after pub/ will be published https://medeaf.inogs.it/internal-validation
 #
 # EDIT timeseries_user_setting.txt
 #
@@ -64,7 +64,7 @@ BITSEA=${POSTPROCDIR}/bit.sea
 export PYTHONPATH=$BITSEA/src/
 HERE=$PWD
 
-export ONLINE_REPO=/g100_work/OGS_devC/V10C/RUNS_SETUP/ONLINE
+export ONLINE_REPO=/g100_work/OGS_devC/V11C/TRANSITION/ONLINE
 export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
 
 
