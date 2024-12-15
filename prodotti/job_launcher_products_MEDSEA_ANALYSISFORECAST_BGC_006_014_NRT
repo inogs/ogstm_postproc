@@ -29,7 +29,7 @@ OUTPUTDIR=/g100_scratch/userexternal/gbolzon0/V11C/TRANSITION/wrkdir/POSTPROC/ou
 MASKFILE=/g100_scratch/userexternal/gbolzon0/V11C/TRANSITION/wrkdir/MODEL/meshmask.nc
 mkdir -p $OUTPUTDIR
 
-my_prex_or_die "python TimeList_generator.py -s 20221001-12:00:00 -e 20241202-12:00:00 --days 1 --dateformat %Y%m%d > timelist_daily_NRT
+my_prex_or_die "python TimeList_generator.py -s 20221001-12:00:00 -e 20241202-12:00:00 --days 1 --dateformat %Y%m%d > timelist_daily_NRT"
 my_prex_or_die "mpirun python prodotti_copernicus.py -i $INPUTDIR -o $OUTPUTDIR -t timelist_daily_NRT -m $MASKFILE -b $bulltime --tr daily  -d an"
 
 
@@ -40,6 +40,6 @@ OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI_NRT/prodotti_nrt/monthly/
 
 
 mkdir -p $OUTPUTDIR
-my_prex_or_die "python TimeList_generator.py -s 20221001-00:00:00 -e 20241201-00:00:00 --months 1 --dateformat %Y%m%d" > timelist_monthly_NRT
+my_prex_or_die "python TimeList_generator.py -s 20221001-00:00:00 -e 20241201-00:00:00 --months 1 --dateformat %Y%m%d" > timelist_monthly_NRT"
 my_prex_or_die "mpirun python prodotti_copernicus.py -i $INPUTDIR -o $OUTPUTDIR -t timelist_monthly_NRT -m $MASKFILE -b $bulltime --tr monthly -d an "
 
