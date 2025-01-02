@@ -19,8 +19,8 @@ INPUTDIR='@@INPUTDIR@@'
 BASEDIR='@@BASEDIR@@'
 
 
-DATESTART = '20190101'
-DATE__END = '20200101'
+DATESTART = '@@YEAR1@@0101'
+DATE__END = '@@YEAR2@@0101'
 
 T_INT = TimeInterval(DATESTART,DATE__END, '%Y%m%d')
 TL = TimeList.fromfilenames(T_INT, INPUTDIR,"ave*.nc",filtervar="N1p")

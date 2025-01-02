@@ -2,7 +2,14 @@ import numpy as np
 import os, sys
 from bitsea.commons.mask import Mask
 from bitsea.commons.submask import SubMask
-from bitsea.basins import V2 as OGS
+basins=os.getenv("BASINS","V2")
+
+if basins == 'V2':
+    from bitsea.basins import V2 as OGS
+elif basins == "RIVERS":
+    from bitsea.basins import RiverBoxes as OGS
+elif basins == "COASTAL12NM":
+    from bitsea.basins import COASTAL12nm as OGS
 
 
 annaCoast = False
