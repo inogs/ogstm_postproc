@@ -102,6 +102,9 @@ if [ $RUN_PROFILER -eq 1 ] ; then
 fi
 
 
+# static Validation dirs
+export SAT_CHLWEEKLY_DIR=/g100_scratch/userexternal/gbolzon0/V11C/SAT/CHL/DT/WEEKLY_4_24
+export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
 
 
 # 1. sbatch job.POST.slurm.galileo -y 2020 # 2h

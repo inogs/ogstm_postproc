@@ -15,16 +15,14 @@ YEAR=2021
 cd $SLURM_SUBMIT_DIR
 
 ./timeseries.sh # 16m serial
-
+./sat.sh
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
-
-
 export STAT_PROFILES_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES/
 
 
 
-./sat.sh  -y $YEAR   #13 min
+
 ./maps.sh -y $YEAR   # 5 min
 ./float.sh           # 17 min
 ./static.sh -y $YEAR # 10 min
