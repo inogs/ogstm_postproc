@@ -1,9 +1,21 @@
 #! /bin/bash
 
-. ../profile.inc
-. ./launch.sh
+usage() {
+echo "Is a config file for automatic postproc, it needs to be edited by user"
+echo "SYNOPSIS"
+echo "./maps.sh -y [ YEAR ]"
+}
 
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
+if [ $# -lt 2 ] ; then
+  usage
+  exit 1
+fi
+YEAR=$2
+
+. ../profile.inc
+. ./launch.sh -y $YEAR
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/YEARLY
 SAT_CHLWEEKLY_DIR=/g100_work/OGS_devC/Benchmark/SETUP/POSTPROC/SAT/CHL/WEEKLY_4_24
 
 rm -rf $VALIDATION_DIR/MAPS/
@@ -18,12 +30,12 @@ mkdir -p $VALIDATION_DIR/MAPS/N3n/
 mkdir -p $VALIDATION_DIR/MAPS/ALK/
 mkdir -p $VALIDATION_DIR/MAPS/DIC/
 
-cd $BITSEA/validation/deliverables
+cd $BITSEA/src/bitsea/validation/deliverables/
 
 my_prex_or_die "python averager_and_plot_map_ppn_refScale.py -i $INPUTDIR  -v ppn  -t integral -m $MASKFILE -o $VALIDATION_DIR/MAPS/ppn/ -l Plotlist_bio.xml -s 20190101 -e 20200101 "
 #there is also a table
 
-COMMONS_PARAMS="-m $MASKFILE  -l Plotlist_bio.xml -s 20190101 -e 20200101"
+COMMONS_PARAMS="-m $MASKFILE  -l Plotlist_bio.xml -s ${YEAR}0101 -e ${YEAR}1231"
 
 
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_l  -t mean -o $VALIDATION_DIR/MAPS/P_l $COMMONS_PARAMS "     # Fig4.1 CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN
@@ -34,5 +46,5 @@ my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v DIC  -t mean -o
 
 
 #CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN from SATELLITE:
-my_prex_or_die "python sat_ave_and_plot.py      -i $SAT_CHLWEEKLY_DIR -m $MASKFILE  -o  $VALIDATION_DIR/MAPS/P_l"
+my_prex_or_die "python sat_ave_and_plot.py -i $SAT_CHLWEEKLY_DIR -m $MASKFILE  -o  $VALIDATION_DIR/MAPS/P_l   -s ${YEAR}0101 -e ${YEAR}1231 "
 my_prex_or_die "python sat_model_RMSD_and_plot.py -s $SAT_CHLWEEKLY_DIR -i $INPUTDIR -m $MASKFILE -o $VALIDATION_DIR/MAPS/P_l -st 20190101 -et 20200101"
