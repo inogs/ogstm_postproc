@@ -1,0 +1,45 @@
+#! /bin/bash
+
+#SBATCH --job-name=POST
+#SBATCH -N5
+#SBATCH --ntasks-per-node=24
+#SBATCH --time=02:30:00
+#SBATCH --mem=300gb
+#SBATCH --account=OGS_devC
+#SBATCH --partition=g100_meteo_prod
+#SBATCH --qos=qos_meteo
+
+cd $SLURM_SUBMIT_DIR
+
+module load autoload
+module load intel/oneapi-2021--binary
+module load intelmpi/oneapi-2021--binary
+module load mkl/oneapi-2021--binary
+module load netcdf/4.7.4--oneapi--2021.2.0-ifort
+module load netcdff/4.5.3--oneapi--2021.2.0-ifort
+source /g100_work/OGS23_PRACE_IT/COPERNICUS/py_env_3.9.18_new/bin/activate
+
+
+
+. ../profile.inc
+#daily
+bulltime=20141216
+INPUTDIR=/g100_scratch/userexternal/gbolzon0/V11C/TRANSITION/wrkdir/MODEL/AVE_FREQ_1/
+OUTPUTDIR=/g100_scratch/userexternal/gbolzon0/V11C/TRANSITION/wrkdir/POSTPROC/output/PRODUCTS/DAILY
+MASKFILE=/g100_scratch/userexternal/gbolzon0/V11C/TRANSITION/wrkdir/MODEL/meshmask.nc
+mkdir -p $OUTPUTDIR
+
+my_prex_or_die "python TimeList_generator.py -s 20221001-12:00:00 -e 20241202-12:00:00 --days 1 --dateformat %Y%m%d > timelist_daily_NRT"
+my_prex_or_die "mpirun python prodotti_copernicus.py -i $INPUTDIR -o $OUTPUTDIR -t timelist_daily_NRT -m $MASKFILE -b $bulltime --tr daily  -d an"
+
+
+#monthly
+
+INPUTDIR=/gpfs/scratch/userexternal/gcoidess/TRANSITION_AVESCAN/OUTPUT/MONTHLY/monthly_ave/
+OUTPUTDIR=/gpfs/scratch/userexternal/gcoidess/PRODOTTI_NRT/prodotti_nrt/monthly/
+
+
+mkdir -p $OUTPUTDIR
+my_prex_or_die "python TimeList_generator.py -s 20221001-00:00:00 -e 20241201-00:00:00 --months 1 --dateformat %Y%m%d" > timelist_monthly_NRT"
+my_prex_or_die "mpirun python prodotti_copernicus.py -i $INPUTDIR -o $OUTPUTDIR -t timelist_monthly_NRT -m $MASKFILE -b $bulltime --tr monthly -d an "
+
