@@ -44,9 +44,9 @@ my_prex "mv $VALIDATION_DIR/FLOAT/Hov/P_l/*P_c*.png $VALIDATION_DIR/FLOAT/Hov/P_
 #  DO-PROF-D-CLASS4-PROF-CORR-BASIN 
 
 
-my_prex_or_die "python BASIN_Float_vs_Model_Stat_Timeseries_monthly.py -m $MASKFILE -o $NCDIR"
+my_prex_or_die "python BASIN_Float_vs_Model_Stat_Timeseries_monthly.py -m $MASKFILE -b $BASEDIR -o $NCDIR"
 
-my_prex_or_die "python BASIN_Float_vs_Model_Stat_Timeseries_monthly_plotter.py -m $MASKFILE -i $NCDIR -o $VALIDATION_DIR/FLOAT/Key-processes/P_l"
+my_prex_or_die "python BASIN_Float_vs_Model_Stat_Timeseries_monthly_plotter.py -m $MASKFILE -i $NCDIR -b $BASEDIR -o $VALIDATION_DIR/FLOAT/Key-processes/P_l"
 my_prex "mv $VALIDATION_DIR/FLOAT/Key-processes/P_l/*N3n* $VALIDATION_DIR/FLOAT/Key-processes/N3n/"
 my_prex "mv $VALIDATION_DIR/FLOAT/Key-processes/P_l/*O2o* $VALIDATION_DIR/FLOAT/Key-processes/O2o/"
 my_prex "mv $VALIDATION_DIR/FLOAT/Key-processes/P_l/*P_c* $VALIDATION_DIR/FLOAT/Key-processes/P_c/"
