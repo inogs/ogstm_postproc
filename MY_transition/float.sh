@@ -59,9 +59,9 @@ my_prex "mv $VALIDATION_DIR/FLOAT/Key-processes/P_l/*P_c* $VALIDATION_DIR/FLOAT/
 # NIT-LAYER-D-CLASS4-PROF-[BIAS/RMS]-BASIN
 #  DO-LAYER-D-CLASS4-PROF-[BIAS/RMS]-BASIN
 
-my_prex_or_die "python biofloats_ms.py  -m $MASKFILE -o float_bias_rmse.nc"
+my_prex_or_die "python biofloats_ms.py  -m $MASKFILE -b $BASEDIR -o float_bias_rmse.nc"
 
 for var in P_l N3n O2o P_c ; do
-    my_prex_or_die "python biofloats_ms_plotter.py -i float_bias_rmse.nc -o $VALIDATION_DIR/FLOAT/Weekly/$var -v $var"
+    my_prex_or_die "python biofloats_ms_plotter.py -b $BASEDIR -i float_bias_rmse.nc -o $VALIDATION_DIR/FLOAT/Weekly/$var -v $var"
 done
 
