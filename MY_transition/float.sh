@@ -24,13 +24,14 @@ mkdir -p $VALIDATION_DIR/FLOAT/Weekly/POC
 
 
 
-NCDIR=tmp_nc
+TMPDIR=$PWD/tmp_nc
+TMPFILE=$PWD/float_bias_rmse.nc
 
 cd $BITSEA/src/bitsea/validation/deliverables
-mkdir -p $NCDIR
+mkdir -p $TMPDIR
 
-my_prex_or_die "python SingleFloat_vs_Model_Stat_Timeseries.py -m $MASKFILE -b $BASEDIR -o $NCDIR"
-my_prex_or_die "python Hov_Stat_plot.py -m $MASKFILE -i $NCDIR -b $BASEDIR -o $VALIDATION_DIR/FLOAT/Hov/P_l"
+my_prex_or_die "python SingleFloat_vs_Model_Stat_Timeseries.py -m $MASKFILE -b $BASEDIR -o $TMPDIR"
+my_prex_or_die "python Hov_Stat_plot.py -m $MASKFILE -i $TMPDIR -b $BASEDIR -o $VALIDATION_DIR/FLOAT/Hov/P_l"
 
 my_prex "mv $VALIDATION_DIR/FLOAT/Hov/P_l/*N3n*.png $VALIDATION_DIR/FLOAT/Hov/N3n"
 my_prex "mv $VALIDATION_DIR/FLOAT/Hov/P_l/*O2o*.png $VALIDATION_DIR/FLOAT/Hov/O2o"
@@ -44,9 +45,9 @@ my_prex "mv $VALIDATION_DIR/FLOAT/Hov/P_l/*P_c*.png $VALIDATION_DIR/FLOAT/Hov/P_
 #  DO-PROF-D-CLASS4-PROF-CORR-BASIN 
 
 
-my_prex_or_die "python BASIN_Float_vs_Model_Stat_Timeseries_monthly.py -m $MASKFILE -b $BASEDIR -o $NCDIR"
+my_prex_or_die "python BASIN_Float_vs_Model_Stat_Timeseries_monthly.py -m $MASKFILE -b $BASEDIR -o $TMPDIR"
 
-my_prex_or_die "python BASIN_Float_vs_Model_Stat_Timeseries_monthly_plotter.py -m $MASKFILE -i $NCDIR -b $BASEDIR -o $VALIDATION_DIR/FLOAT/Key-processes/P_l"
+my_prex_or_die "python BASIN_Float_vs_Model_Stat_Timeseries_monthly_plotter.py -m $MASKFILE -i $TMPDIR -b $BASEDIR -o $VALIDATION_DIR/FLOAT/Key-processes/P_l"
 my_prex "mv $VALIDATION_DIR/FLOAT/Key-processes/P_l/*N3n* $VALIDATION_DIR/FLOAT/Key-processes/N3n/"
 my_prex "mv $VALIDATION_DIR/FLOAT/Key-processes/P_l/*O2o* $VALIDATION_DIR/FLOAT/Key-processes/O2o/"
 my_prex "mv $VALIDATION_DIR/FLOAT/Key-processes/P_l/*P_c* $VALIDATION_DIR/FLOAT/Key-processes/P_c/"
@@ -59,9 +60,10 @@ my_prex "mv $VALIDATION_DIR/FLOAT/Key-processes/P_l/*P_c* $VALIDATION_DIR/FLOAT/
 # NIT-LAYER-D-CLASS4-PROF-[BIAS/RMS]-BASIN
 #  DO-LAYER-D-CLASS4-PROF-[BIAS/RMS]-BASIN
 
-my_prex_or_die "python biofloats_ms.py  -m $MASKFILE -b $BASEDIR -o float_bias_rmse.nc"
+
+my_prex_or_die "python biofloats_ms.py  -m $MASKFILE -b $BASEDIR -o $TMPFILE"
 
 for var in P_l N3n O2o P_c ; do
-    my_prex_or_die "python biofloats_ms_plotter.py -b $BASEDIR -i float_bias_rmse.nc -o $VALIDATION_DIR/FLOAT/Weekly/$var -v $var"
+    my_prex_or_die "python biofloats_ms_plotter.py -b $BASEDIR -i $TMPFILE -o $VALIDATION_DIR/FLOAT/Weekly/$var -v $var"
 done
 
