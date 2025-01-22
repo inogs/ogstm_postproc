@@ -18,11 +18,11 @@ if annaCoast:
         print("Error: Environment variable KCOASTFILE must be defined ")
         sys.exit(1)
 
-TheMask=Mask(maskfile,ylevelsmatvar="gphit", xlevelsmatvar="glamt")
+TheMask=Mask.from_file(maskfile, ylevels_var_name="gphit", xlevels_var_name="glamt")
 jpk,jpj,jpi = TheMask.shape
 
 
-tmask   =  TheMask.mask
+tmask   =  TheMask.as_array()
 nav_lev =  TheMask.zlevels
 Lon     =  TheMask.xlevels
 Lat     =  TheMask.ylevels
@@ -102,8 +102,8 @@ if not submask_on_the_fly:
             index= SUBlist.index(sub)
             if index==index_med: continue
             basin = OGS.P.basin_list[index]
-            s=SubMask(basin,maskobject = TheMask)
-            SUBM[sub] = s.mask
+            s=SubMask(basin,TheMask)
+            SUBM[sub] = s[:]
     #  SUBM med is calculated as OR of all the others
         for sub in OGS.Pred.basin_list[:-1]: # removing atlantic
             SUBM['med']=(SUBM['med'] | SUBM[sub.name])
@@ -111,8 +111,8 @@ if not submask_on_the_fly:
         for sub in SUBlist:
             index= SUBlist.index(sub)
             basin = OGS.P.basin_list[index]
-            s=SubMask(basin,maskobject = TheMask)
-            SUBM[sub] = s.mask
+            s=SubMask(basin,TheMask)
+            SUBM[sub] = s[:]
 
 
 def SUB(sub):
@@ -120,8 +120,8 @@ def SUB(sub):
     if submask_on_the_fly:
         index= SUBlist.index(sub)
         basin = OGS.P.basin_list[index]
-        s=SubMask(basin,maskobject = TheMask)
-        return s.mask
+        s=SubMask(basin,TheMask)
+        return s[:]
     else:
         return SUBM[sub]
         
