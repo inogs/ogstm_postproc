@@ -90,7 +90,7 @@ if args.tr=='yearly':
 
 
 cut = 80 #1/24
-TheMask = Mask(maskfile,ylevelsmatvar="gphit", xlevelsmatvar="glamt")
+TheMask = Mask.from_file(maskfile, ylevels_var_name="gphit", xlevels_var_name="glamt")
 jpk, jpj, jpi = TheMask.shape
 nav_lev = TheMask.zlevels
 Lon = TheMask.xlevels[0,:].astype(np.float32)
