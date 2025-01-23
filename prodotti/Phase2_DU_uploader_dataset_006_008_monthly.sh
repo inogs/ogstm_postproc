@@ -65,19 +65,19 @@ fi
 if [[ "$PRODUCT_TYPE" == "extension" ]]; then
 
 	if [[ "$type" == "BIOL" ]]; then
-        dataset=med-ogs-bio-rean-m_Ext
+        dataset=med-ogs-bio-rean-m_202105
         fi
         if [[ "$type" == "CARB" ]]; then
-        dataset=med-ogs-car-rean-m_Ext
+        dataset=med-ogs-car-rean-m_202105
         fi
         if [[ "$type" == "CO2F" ]]; then
-        dataset=med-ogs-co2-rean-m_Ext
+        dataset=med-ogs-co2-rean-m_202105
         fi
         if [[ "$type" == "NUTR" ]]; then
-        dataset=med-ogs-nut-rean-m_Ext
+        dataset=med-ogs-nut-rean-m_202105
         fi
         if [[ "$type" == "PFTC" ]]; then
-        dataset=med-ogs-pft-rean-m_Ext
+        dataset=med-ogs-pft-rean-m_202105
         fi
 fi
 

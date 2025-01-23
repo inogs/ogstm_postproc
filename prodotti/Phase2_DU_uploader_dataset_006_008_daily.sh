@@ -33,25 +33,25 @@ for I in 1 2 3 4; do
 done
 
 
-BINDIR=/g100_work/OGS20_PRACE_P_2/COPERNICUS/bin/
+BINDIR=/g100_work/OGS23_PRACE_IT/COPERNICUS/bin
 
 
 FILES_TO_SEND="${YEAR}*${type}*.nc"
 
 if [[ "$type" == "BIOL" ]]; then
-   dataset=med-ogs-bio-rean-d_Ext
+   dataset=med-ogs-bio-rean-d_202105
 fi
 if [[ "$type" == "CARB" ]]; then
-   dataset=med-ogs-car-rean-d_Ext
+   dataset=med-ogs-car-rean-d_202105
 fi
 if [[ "$type" == "CO2F" ]]; then
-   dataset=med-ogs-co2-rean-d_Ext
+   dataset=med-ogs-co2-rean-d_202105
 fi
 if [[ "$type" == "NUTR" ]]; then
-   dataset=med-ogs-nut-rean-d_Ext
+   dataset=med-ogs-nut-rean-d_202105
 fi
 if [[ "$type" == "PFTC" ]]; then
-   dataset=med-ogs-pft-rean-d_Ext
+   dataset=med-ogs-pft-rean-d_202105
 fi
 
 
