@@ -105,7 +105,12 @@ for var in VARLIST[COMM.Get_rank()::COMM.size]:
 
     for iFrame, filename in enumerate(TL.filelist):
         with netCDF4.Dataset(filename, 'r') as f:
-            A = f.variables[var][:]
+            if var in f.variables.keys():
+                A = f.variables[var][:]
+            else:
+                msg=f"{var} not present in {str(filename)}"
+                #print(msg)
+                raise ValueError( f"{var} not present in {str(filename)}" )
         A[A == 0] = FILL_VALUE
         A[A >= 1.e+19] = FILL_VALUE
         TIMESERIES[iFrame] = A
