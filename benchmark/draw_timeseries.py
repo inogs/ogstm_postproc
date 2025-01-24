@@ -181,15 +181,22 @@ def main():
         show_y_ticks='right',
         y_ticks_position='right'
     )
+    def create_output_path(varname,basinname):
+        vardir=args.outdir / varname
+        vardir.mkdir(exist_ok=True)
+        return vardir / f"Multirun_Profiles.{varname}.{basinname}.png"
 
+    output_options=OutputOptions(show_legend=True,
+            output_paths=create_output_path
+            )
     config = Config(
         plots,
         time_series_options=timeseries_options,
         depth_profiles_options=depth_profiles_options,
-        output_options=OutputOptions(show_legend=True)
+        output_options=output_options
     )
 
-    draw_profile_plots(config, P, output_dir)
+    draw_profile_plots(config, P)
 
 
 if __name__ == "__main__":
