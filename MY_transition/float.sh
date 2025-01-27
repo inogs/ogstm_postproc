@@ -1,7 +1,7 @@
 #! /bin/bash
 
 . ../profile.inc
-. ./launch.sh -y 2021
+. ./config.sh -y 2021
 
 rm -rf $VALIDATION_DIR/FLOAT
 mkdir -p $VALIDATION_DIR/FLOAT

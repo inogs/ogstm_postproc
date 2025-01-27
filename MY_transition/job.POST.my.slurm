@@ -31,7 +31,7 @@ shift 2
 cd $SLURM_SUBMIT_DIR
 
 . ../profile.inc
-. ./launch.sh -y ${YEAR}
+. ./config.sh -y ${YEAR}
 
 cd $SLURM_SUBMIT_DIR
 
@@ -154,7 +154,7 @@ done
 
 ###### Sat Validation ############
 
-# SAT_CHLWEEKLY_DIR and SAT_VALID_DIR come from launch.sh
+# SAT_CHLWEEKLY_DIR and SAT_VALID_DIR come from config.sh
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 SAT_DIR=$SAT_CHLWEEKLY_DIR
 LAYER=10

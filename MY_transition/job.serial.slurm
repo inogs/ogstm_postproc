@@ -10,7 +10,7 @@ cd $SLURM_SUBMIT_DIR
 
 YEAR=2021
 . ../profile.inc
-. ./launch.sh -y $YEAR
+. ./config.sh -y $YEAR
 
 cd $SLURM_SUBMIT_DIR
 

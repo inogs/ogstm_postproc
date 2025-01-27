@@ -3,10 +3,10 @@
 usage() {
 echo "Is a config file for automatic postproc, it needs to be edited by user"
 echo "SYNOPSIS"
-echo "./launch.sh -y [ YEAR ] --init "
+echo "./config.sh -y [ YEAR ] --init "
 echo "Prepares som and launches profiler.py"
 echo ""
-echo "source launch.sh"
+echo "source config.sh"
 echo "exports internal settings as a config file" 
 
 }

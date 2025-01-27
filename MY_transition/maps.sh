@@ -12,7 +12,7 @@ fi
 YEAR=$2
 
 . ../profile.inc
-. ./launch.sh -y $YEAR
+. ./config.sh -y $YEAR
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/YEARLY
 

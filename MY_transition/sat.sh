@@ -2,7 +2,7 @@
 
 YEAR=2021 # not important here, not passed from job
 . ../profile.inc
-. ./launch.sh -y $YEAR
+. ./config.sh -y $YEAR
 
 rm -rf $VALIDATION_DIR/SAT
 mkdir -p $VALIDATION_DIR/SAT
