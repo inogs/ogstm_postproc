@@ -73,6 +73,16 @@ MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
   CHLSUP_DIR=$OUTDIR/CHL_SUP
 
 my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_2.xml -t $MODEL_AVEDIR -c $CHLSUP_DIR -m $MASKFILE"
+my_prex_or_die_with_tries "mpirun -np 120 python metrics_2d.py -i $MODEL_AVEDIR -m $MASKFILE -o $MODEL_AVEDIR"
+
+for filename in metrics*; do
+    date17=${filename:8:17}
+    for var in mld phosphocline nitracline; do
+      ln -s $filename ave.${date17}.${var}.nc
+   done
+done
+
+export BASINS=V2
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_2.xml -o $OUTDIR -t $TMPS  -s "
 
 ANS=$?
@@ -112,6 +122,21 @@ done
 
 
 # ToDo daily (surf,bottom) of AVE_FREQ_3
+
+
+###### Sat Validation ############
+
+# SAT_CHLWEEKLY_DIR and SAT_VALID_DIR come from config.sh
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
+SAT_DIR=$SAT_CHLWEEKLY_DIR
+LAYER=10
+mkdir -p $SAT_VALID_DIR
+YEAR2=$(( YEAR + 1 ))
+PERIOD="-t ${YEAR}0101 -e ${YEAR2}0101"
+command="mpirun python $BITSEA/src/bitsea/validation/deliverables/ScMYvalidation_plan.py"
+for VAR in   P_l  P1l    P2l    P3l    P4l; do
+   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
+done
 
 
 ## COMPRESSION ##
