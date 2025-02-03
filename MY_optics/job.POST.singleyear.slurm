@@ -11,7 +11,7 @@
 
 usage() {
 echo "SYNOPSYS"
-echo "sbatch job.POST.my.slurm -y YEAR"
+echo "sbatch job.POST.singleyear.slurm -y YEAR"
 echo "Caveat: the user has to have writing permissions on wrkdir/MODEL
 echo "If not, use MODEL_linker.sh to generate a suitable wrkdir/MODEL
 }
