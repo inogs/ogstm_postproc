@@ -29,7 +29,7 @@ shift 2
 
 cd $SLURM_SUBMIT_DIR
 
-. ./profile.inc
+. ../profile.inc
 . ./config.sh -y ${YEAR}
 
 unset I_MPI_PMI_LIBRARY
@@ -73,25 +73,20 @@ MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
   CHLSUP_DIR=$OUTDIR/CHL_SUP
 
 my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_2.xml -t $MODEL_AVEDIR -c $CHLSUP_DIR -m $MASKFILE"
-my_prex_or_die_with_tries "mpirun -np 120 python metrics_2d.py -i $MODEL_AVEDIR -m $MASKFILE -o $MODEL_AVEDIR"
+my_prex_or_die_with_tries "mpirun -np 120 python ../metrics_2d.py -i $MODEL_AVEDIR -m $MASKFILE -o $MODEL_AVEDIR"
 
+cd $MODEL_AVEDIR
 for filename in metrics*; do
     date17=${filename:8:17}
-    for var in mld phosphocline nitracline; do
-      ln -s $filename ave.${date17}.${var}.nc
+    for var in dcm phosphocline nitracline; do
+      ln -fs $filename ave.${date17}.${var}.nc
    done
 done
 
+cd $SLURM_SUBMIT_DIR
 export BASINS=V2
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_2.xml -o $OUTDIR -t $TMPS  -s "
-
-ANS=$?
-# ---------- cleaning
-if [ $ANS == 0 ] ; then  
-   cd $TMPS
-   rm -f tmp.*
-   cd $SLURM_SUBMIT_DIR
-fi
+rm -rf $TMPS
 
 my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
 
