@@ -85,6 +85,7 @@ fi
 
 # static Validation dirs
 export SAT_CHLWEEKLY_DIR=/g100_work/OGS_devC/V11C/TRANSITION/POSTPROC/validation/SAT/CHL/DT/WEEKLY_4_24
+export SAT_RRSWEEKLY_DIR=/g100_work/OGS23_PRACE_IT/csoto/rrs_data/V11C/SAT/WEEKLY_24
 export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
 
 

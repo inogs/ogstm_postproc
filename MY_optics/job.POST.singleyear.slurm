@@ -112,7 +112,7 @@ mkdir -p $RRS_WEEKLY
 my_prex_or_die "mpirun python ../rrs.py -i $INPUTDIR -m $MASKFILE -o $RRS__DAILY -l ave*.nc"
 
 for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
-    my_prex_or_die "python ../weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
+    my_prex_or_die "mpirun python ../weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
 done
 
 
@@ -130,6 +130,11 @@ YEAR2=$(( YEAR + 1 ))
 PERIOD="-t ${YEAR}0101 -e ${YEAR2}0101"
 command="mpirun python $BITSEA/src/bitsea/validation/deliverables/ScMYvalidation_plan.py"
 for VAR in   P_l  P1l    P2l    P3l    P4l; do
+   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
+done
+
+SAT_DIR=$SAT_RRSWEEKLY_DIR
+for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
    my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
 done
 
