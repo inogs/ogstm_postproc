@@ -31,7 +31,7 @@ shift 2
 cd $SLURM_SUBMIT_DIR
 
 . ../profile.inc
-. ./launch.sh -y ${YEAR}
+. ./config.sh -y ${YEAR}
 
 cd $SLURM_SUBMIT_DIR
 
