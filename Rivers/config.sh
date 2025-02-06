@@ -3,7 +3,7 @@
 usage() {
 echo "Is a config file for automatic postproc, it needs to be edited by user"
 echo "SYNOPSIS"
-echo "./launch.sh -y [ YEAR ] --init "
+echo "./config.sh -y [ YEAR ] --init "
 echo "Prepares som and launches profiler.py"
 echo ""
 echo "source launch.sh"
@@ -56,16 +56,21 @@ export CINECA_WORK=/g100_work/OGS_devC
 POSTPROCDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC  ## $CINECA_WORK or $CINECA_SCRATCH
 ##########################################
 
+# static Validation dirs
+export SAT_CHLWEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/SAT/CHL/DT/WEEKLY_4_24
+export SAT_RRSWEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/SAT/RRS/DT/WEEKLY_4_24
+export SAT_KD_WEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/SAT/KD490/DT/WEEKLY_4_24
 
-
+export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
+export ONLINE_REPO=/g100_work/OGS_devC/V10C/RUNS_SETUP/ONLINE
+export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
 
 
 BITSEA=${POSTPROCDIR}/bit.sea
 export PYTHONPATH=$BITSEA/src/
 HERE=$PWD
 
-export ONLINE_REPO=/g100_work/OGS_devC/V10C/RUNS_SETUP/ONLINE
-export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
+
 
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
@@ -86,20 +91,20 @@ if [ $RUN_PROFILER -eq 1 ] ; then
     cd $POSTPROCDIR
     if  ! [ -d bit.sea ] ; then
         git clone git@github.com:inogs/bit.sea.git
+        cd $BITSEA
+        git checkout floatsV11C
     fi
-    cd $BITSEA/src/bitsea/validation/deliverables
+
     # float profiler
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " \
-        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    $HERE/profiler.tpl > profiler.py
+        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler.tpl > profiler.py
     python profiler.py
     # Nutrients profiler
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${EBASEDIR}%g " \
-        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    $HERE/profiler_RA_N.tpl > profiler_RA_N.py
+        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler_RA_N.tpl > profiler_RA_N.py
     python profiler_RA_N.py
 
 fi
-
-
 
 
 # 1. sbatch job.POST.slurm.galileo -y 2020 # 2h
