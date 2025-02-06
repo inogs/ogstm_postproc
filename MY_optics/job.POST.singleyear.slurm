@@ -97,7 +97,11 @@ my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDI
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
 KD__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_DAILY/${YEAR}
 KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
+BOTTOMDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/SURF/${YEAR}
+SURF__DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/BOTTOM/{$YEAR}
 
+mkdir -p $BOTTOMDIR
+mkdir -p $SURF__DIR
 mkdir -p $KD__DAILY
 mkdir -p $KD_WEEKLY
 my_prex_or_die "mpirun python ../kd.py -i $INPUTDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
@@ -116,8 +120,28 @@ for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
 done
 
 
-# ToDo daily (surf,bottom) of AVE_FREQ_3
+my_prex_or_die "mpirun python ../bottom.py -i $INPUTDIR -o $BOTTOMDIR -m $MASKFILE -l ave*nc"
+my_prex_or_die "mpirun python ../surf.py   -i $INPUTDIR -o $SURF__DIR -m $MASKFILE -l ave*nc"
 
+OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/bottom/
+my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $BOTTOMDIR -f Eu_0475 -a $BOTTOMDIR -d VarDescriptor_3.xml -o $OUTDIR -t $TMPS  -s "
+rm -rf $TMPS
+my_prex_or_die_with_tries "mpirun -np 100 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
+
+OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/surf/
+my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $SURF__DIR -f Eu_0475 -a $SURF__DIR -d VarDescriptor_3.xml -o $OUTDIR -t $TMPS  -s "
+rm -rf $TMPS
+my_prex_or_die_with_tries "mpirun -np 100 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
+
+# cleaning setup 
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
+mkdir -p $INPUTDIR/tosave
+cd $INPUTDIR
+for nanom in 375 400 425 475 500; do
+   my_prex "mv ave.*.Es_0${nanom}.nc tosave/ "
+   my_prex "mv ave.*.Ed_0${nanom}.nc tosave/ "
+   my_prex "mv ave.*.Eu_0${nanom}.nc tosave/ "
+done
 
 ###### Sat Validation ############
 
@@ -157,9 +181,18 @@ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v N1p"
 
 
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}/tosave
   TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3_tar/${YEAR}
 my_prex_or_die "./lossy_tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v Ed_0250 -s 5"
+
+INPUTDIR=$BOTTOMDIR
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3_tar/${YEAR}/bottom/
+my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v Ed_0250"
+
+INPUTDIR=$SURF__DIR
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3_tar/${YEAR}/surf/
+my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 120 -v Ed_0250"
+
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS/${YEAR}
   TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS_tar
