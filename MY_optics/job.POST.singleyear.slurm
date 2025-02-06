@@ -149,6 +149,7 @@ done
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 SAT_DIR=$SAT_CHLWEEKLY_DIR
 LAYER=10
+
 mkdir -p $SAT_VALID_DIR
 YEAR2=$(( YEAR + 1 ))
 PERIOD="-t ${YEAR}0101 -e ${YEAR2}0101"
@@ -157,9 +158,14 @@ for VAR in   P_l  P1l    P2l    P3l    P4l; do
    my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
 done
 
-SAT_DIR=$SAT_RRSWEEKLY_DIR
-for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
+SAT_DIR=$SAT_KD_WEEKLY_DIR
+for var in kd490 ; do
    my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
+done
+
+SAT_DIR=$SAT_RRSWEEKLY_DIR
+for VAR in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
+   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l 0 -o $SAT_VALID_DIR -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
 done
 
 

@@ -57,15 +57,18 @@ POSTPROCDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC  ## $CINECA_WORK or $CINEC
 ##########################################
 
 
-
+# static Validation dirs
+export SAT_CHLWEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/SAT/CHL/DT/WEEKLY_4_24
+export SAT_RRSWEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/SAT/RRS/DT/WEEKLY_4_24
+export SAT_KD_WEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/SAT/KD490/DT/WEEKLY_4_24
+export SAT_RRSWEEKLY_DIR=/g100_work/OGS23_PRACE_IT/csoto/rrs_data/V11C/SAT/WEEKLY_24
+export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
+export ONLINE_REPO=/g100_work/OGS_devC/V11C/TRANSITION/ONLINE
 
 
 BITSEA=${POSTPROCDIR}/bit.sea
 export PYTHONPATH=$BITSEA/src/
 HERE=$PWD
-
-export ONLINE_REPO=/g100_work/OGS_devC/V11C/TRANSITION/ONLINE
-
 
 
 export STATPROFILESDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES
@@ -81,12 +84,6 @@ if [ $RUN_PROFILER -eq 1 ] ; then
     fi
 
 fi
-
-
-# static Validation dirs
-export SAT_CHLWEEKLY_DIR=/g100_work/OGS_devC/V11C/TRANSITION/POSTPROC/validation/SAT/CHL/DT/WEEKLY_4_24
-export SAT_RRSWEEKLY_DIR=/g100_work/OGS23_PRACE_IT/csoto/rrs_data/V11C/SAT/WEEKLY_24
-export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
 
 
 # 1. sbatch job.POST.slurm.galileo -y 2020 # 2h
