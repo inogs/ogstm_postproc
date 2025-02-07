@@ -97,8 +97,8 @@ my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDI
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
 KD__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_DAILY/${YEAR}
 KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
-BOTTOMDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/SURF/${YEAR}
-SURF__DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/BOTTOM/{$YEAR}
+BOTTOMDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/BOTTOM/${YEAR}
+SURF__DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/SURF/{$YEAR}
 
 mkdir -p $BOTTOMDIR
 mkdir -p $SURF__DIR
@@ -120,8 +120,8 @@ for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
 done
 
 
-my_prex_or_die "mpirun python ../bottom.py -i $INPUTDIR -o $BOTTOMDIR -m $MASKFILE -l ave*nc"
-my_prex_or_die "mpirun python ../surf.py   -i $INPUTDIR -o $SURF__DIR -m $MASKFILE -l ave*nc"
+my_prex_or_die "mpirun python ../bottom.py -i $INPUTDIR -o $BOTTOMDIR -m $MASKFILE -s ave*nc"
+my_prex_or_die "mpirun python ../surf.py   -i $INPUTDIR -o $SURF__DIR -m $MASKFILE -s ave*nc"
 
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/bottom/
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $BOTTOMDIR -f Eu_0475 -a $BOTTOMDIR -d VarDescriptor_3.xml -o $OUTDIR -t $TMPS  -s "
