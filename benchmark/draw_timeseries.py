@@ -10,7 +10,11 @@ DEFAULT_MESHMASK = Path(
 
 
 def read_command_line_arguments():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="""
+    Using -v filevarlist, a text file with a column of vars,
+    the user can filter the varlist.
+    Otherwise, we will have a variable for each pkl file.
+    """, formatter_class=argparse.RawTextHelpFormatter)
 
     parser.add_argument(
         '--maskfile', '-m',
@@ -35,6 +39,14 @@ def read_command_line_arguments():
         required=True,
         help="Path where the output will be saved"
     )
+    parser.add_argument(
+        '--varlistfile', '-v',
+        type=existing_file_path,
+        default=None,
+        required=False,
+        help="Optional file with variable list"
+    )
+
 
     return parser.parse_args()
 
@@ -53,6 +65,7 @@ from bitsea.validation.multirun.plot_profiles.plot_inputs.single_line_plot impor
     SingleLineInputData
 from bitsea.validation.multirun.plot_profiles.tools.depth_profile_algorithms import \
     DepthProfileMode, DepthProfileAlgorithm
+from bitsea.commons.utils import file2stringlist
 
 from bitsea.basins.V2 import P
 import mpi4py.MPI
@@ -119,19 +132,22 @@ def read_setting_file(setting_file_path: Union[str, PathLike]) -> FILE_LINES:
     return tuple(plots)
 
 
-def find_all_dataset_variables(dataset_path: Union[str, PathLike]):
-    dataset_path = Path(dataset_path)
-    if not dataset_path.exists():
-        raise IOError('Path {} does not exist'.format(dataset_path))
-    if not dataset_path.is_dir():
-        raise IOError('Path {} is not a directory'.format(dataset_path))
+def find_all_dataset_variables(dataset_path: Union[str, PathLike], varlistfile:Path=None):
+    if varlistfile is None:
+        dataset_path = Path(dataset_path)
+        if not dataset_path.exists():
+            raise IOError('Path {} does not exist'.format(dataset_path))
+        if not dataset_path.is_dir():
+            raise IOError('Path {} is not a directory'.format(dataset_path))
 
-    variables = []
-    for f in dataset_path.glob('*.pkl'):
-        variable = f.stem
-        variables.append(variable)
+        variables = []
+        for f in dataset_path.glob('*.pkl'):
+            variable = f.stem
+            variables.append(variable)
 
-    return tuple(sorted(variables))
+        return tuple(sorted(variables))
+    else:
+        return file2stringlist(varlistfile)
 
 
 def main():
@@ -141,7 +157,7 @@ def main():
     plots = []
     file_data = read_setting_file(args.settings_file)
     for line in file_data:
-        variables = find_all_dataset_variables(line.data_path)
+        variables = find_all_dataset_variables(line.data_path, args.varlistfile)
         if len(variables) == 0:
             raise ValueError(
                 'No variables (no pkl files) found inside dir {}'.format(
