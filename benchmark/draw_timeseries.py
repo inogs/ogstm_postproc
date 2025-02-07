@@ -55,7 +55,7 @@ from bitsea.validation.multirun.plot_profiles.tools.depth_profile_algorithms imp
     DepthProfileMode, DepthProfileAlgorithm
 
 from bitsea.basins.V2 import P
-#import mpi4py.MPI
+import mpi4py.MPI
 
 COAST_INDEX = 1
 INDICATOR_INDEX = 0  # Read the average
