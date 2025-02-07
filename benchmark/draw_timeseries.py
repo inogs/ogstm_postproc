@@ -56,7 +56,7 @@ args = read_command_line_arguments()
 
 from dataclasses import dataclass
 from os import PathLike, environ
-import re
+import re,os
 from typing import Union, Tuple
 from bitsea.validation.multirun.plot_profiles import Config, DataDirSource, \
     DepthProfilesOptions, PlotConfig, TimeSeriesOptions, draw_profile_plots, \
@@ -67,7 +67,14 @@ from bitsea.validation.multirun.plot_profiles.tools.depth_profile_algorithms imp
     DepthProfileMode, DepthProfileAlgorithm
 from bitsea.commons.utils import file2stringlist
 
-from bitsea.basins.V2 import P
+basins=os.getenv("BASINS","V2")
+
+if basins == 'V2':
+    from bitsea.basins import V2 as OGS
+elif basins == "RIVERS":
+    from bitsea.basins import RiverBoxes as OGS
+elif basins == "COASTAL12NM":
+    from bitsea.basins import COASTAL12nm as OGS
 import mpi4py.MPI
 
 COAST_INDEX = 1
@@ -212,7 +219,7 @@ def main():
         output_options=output_options
     )
 
-    draw_profile_plots(config, P)
+    draw_profile_plots(config, OGS.P)
 
 
 if __name__ == "__main__":
