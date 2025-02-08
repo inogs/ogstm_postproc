@@ -89,14 +89,14 @@ if [ $RUN_PROFILER -eq 1 ] ; then
         cd $BITSEA
         git checkout floatsV11C
     fi
-    cd $BITSEA/src/bitsea/validation/deliverables
+    cd $HERE
     # float profiler
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " \
-        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    $HERE/profiler.tpl > profiler.py
+        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler.tpl > profiler.py
     python profiler.py
     # Nutrients profiler
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${EBASEDIR}%g " \
-        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    $HERE/profiler_RA_N.tpl > profiler_RA_N.py
+        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler_RA_N.tpl > profiler_RA_N.py
     python profiler_RA_N.py
 
 fi
