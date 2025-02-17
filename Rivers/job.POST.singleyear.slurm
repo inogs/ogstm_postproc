@@ -31,7 +31,7 @@ shift 2
 cd $SLURM_SUBMIT_DIR
 
 . ../profile.inc
-. ./launch.sh -y ${YEAR}
+. ./config.sh -y ${YEAR}
 
 cd $SLURM_SUBMIT_DIR
 
@@ -77,7 +77,7 @@ my_prex_or_die_with_tries "mpirun -np 120 python ../metrics_2d.py -i $MODEL_AVED
 
 ########## Profiling model in observation positions ##############
 
-  TMPS=$BASEDIR/TMPS
+  TMPS=$BASEDIR/TMPS/${YEAR}
 # floats
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $BASEDIR -t $TMPS -p $BASEDIR/PUNTI "
 my_prex_or_die "rm -rf $TMPS"
@@ -91,14 +91,14 @@ my_prex_or_die "rm -rf $TMPS"
 
 export BASINS=RIVERS
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/${BASINS}/AVE_FREQ_1/
-TMPS=$OUTDIR/TMPS
+TMPS=$OUTDIR/TMPS/${YEAR}
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s "
 my_prex_or_die "rm -rf $TMPS"
 my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
 
 export BASINS=COASTAL12NM
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/${BASINS}/AVE_FREQ_1/
-TMPS=$OUTDIR/TMPS
+TMPS=$OUTDIR/TMPS/${YEAR}
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s "
 my_prex_or_die "rm -rf $TMPS"
 my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
@@ -111,7 +111,7 @@ cd $SLURM_SUBMIT_DIR
 MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
       OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/
 
-        TMPS=$OUTDIR/TMPS
+        TMPS=$OUTDIR/TMPS/${YEAR}
   CHLSUP_DIR=$OUTDIR/CHL_SUP
 
 my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_2.xml -t $MODEL_AVEDIR -c $CHLSUP_DIR -m $MASKFILE"
@@ -128,19 +128,17 @@ my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDI
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
 KD__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_DAILY
-KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/KD_WEEKLY
+KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 
 mkdir -p $KD__DAILY
-mkdir -p $KD_WEEKLY
 my_prex_or_die "mpirun python ../kd.py -i $INPUTDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
 my_prex_or_die "mpirun python ../weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t monday"
 
 
 RRS__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/RRS_DAILY
-RRS_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/RRS_WEEKLY
+RRS_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 
 mkdir -p $RRS__DAILY
-mkdir -p $RRS_WEEKLY
 my_prex_or_die "mpirun python ../rrs.py -i $INPUTDIR -m $MASKFILE -o $RRS__DAILY -l ave*.nc"
 
 for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
@@ -156,6 +154,38 @@ mkdir -p $OUTPUTDIR
 for var in ppn P_l N3n N1p ALK DIC O2o; do
     my_prex_or_die "python ../yearly_averager.py -i $INPUTDIR -o $OUTPUTDIR -v $var -m $MASKFILE"
 done
+
+
+###### Sat Validation ############
+
+# SAT_CHLWEEKLY_DIR and SAT_VALID_DIR come from config.sh
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
+SAT_DIR=$SAT_CHLWEEKLY_DIR
+LAYER=10
+
+mkdir -p $SAT_VALID_DIR/RIVERS
+YEAR2=$(( YEAR + 1 ))
+PERIOD="-t ${YEAR}0101 -e ${YEAR2}0101"
+command="mpirun python $BITSEA/src/bitsea/validation/deliverables/ScMYvalidation_plan.py"
+for VAR in   P_l  P1l    P2l    P3l    P4l; do
+   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR        -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
+   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR/RIVERS -c everywhere     $PERIOD -v $VAR -m $MASKFILE -z rivers"
+done
+
+
+SAT_DIR=$SAT_KD_WEEKLY_DIR
+for VAR in kd490 ; do
+   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR        -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
+   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR/RIVERS -c everywhere     $PERIOD -v $VAR -m $MASKFILE -z rivers"
+done
+
+SAT_DIR=$SAT_RRSWEEKLY_DIR
+for VAR in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
+   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l 0 -o $SAT_VALID_DIR             -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
+   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR/RIVERS -c everywhere     $PERIOD -v $VAR -m $MASKFILE -z rivers"
+done
+
+
 
 
 ## COMPRESSION ##

@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from  bitsea.utilities.argparse_types import existing_file_path, \
+from bitsea.utilities.argparse_types import existing_file_path, \
     path_inside_an_existing_dir
 
 
