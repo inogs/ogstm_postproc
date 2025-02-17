@@ -77,7 +77,7 @@ my_prex_or_die_with_tries "mpirun -np 120 python ../metrics_2d.py -i $MODEL_AVED
 
 ########## Profiling model in observation positions ##############
 
-  TMPS=$BASEDIR/TMPS
+  TMPS=$BASEDIR/TMPS/${YEAR}
 # floats
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $BASEDIR -t $TMPS -p $BASEDIR/PUNTI "
 my_prex_or_die "rm -rf $TMPS"
@@ -91,14 +91,14 @@ my_prex_or_die "rm -rf $TMPS"
 
 export BASINS=RIVERS
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/${BASINS}/AVE_FREQ_1/
-TMPS=$OUTDIR/TMPS
+TMPS=$OUTDIR/TMPS/${YEAR}
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s "
 my_prex_or_die "rm -rf $TMPS"
 my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
 
 export BASINS=COASTAL12NM
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/${BASINS}/AVE_FREQ_1/
-TMPS=$OUTDIR/TMPS
+TMPS=$OUTDIR/TMPS/${YEAR}
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc     -i $MODEL_AVEDIR -f N1p -a $MODEL_AVEDIR -d VarDescriptor_1.xml -o $OUTDIR -t $TMPS  -s "
 my_prex_or_die "rm -rf $TMPS"
 my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
@@ -111,7 +111,7 @@ cd $SLURM_SUBMIT_DIR
 MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
       OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/
 
-        TMPS=$OUTDIR/TMPS
+        TMPS=$OUTDIR/TMPS/${YEAR}
   CHLSUP_DIR=$OUTDIR/CHL_SUP
 
 my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_2.xml -t $MODEL_AVEDIR -c $CHLSUP_DIR -m $MASKFILE"
