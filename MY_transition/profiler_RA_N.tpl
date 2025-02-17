@@ -5,7 +5,7 @@
 # such as bioFloats, mooring or vessels have been found.
 # When imported, this scripts only defines settings for matchup generation.
 
-from bitsea.instruments.superfloat import FloatSelector
+from bitsea.static.Nutrients_reader import NutrientsReader
 
 from bitsea.instruments.matchup_manager import Matchup_Manager
 from bitsea.commons.time_interval import TimeInterval
@@ -19,13 +19,13 @@ INPUTDIR='@@INPUTDIR@@'
 BASEDIR='@@BASEDIR@@'
 
 
-DATESTART = '20190101'
-DATE__END = '20200101'
+DATESTART = '@@YEAR1@@0101'
+DATE__END = '@@YEAR2@@0101'
 
 T_INT = TimeInterval(DATESTART,DATE__END, '%Y%m%d')
 TL = TimeList.fromfilenames(T_INT, INPUTDIR,"ave*.nc",filtervar="N1p")
-
-ALL_PROFILES = FloatSelector(None,T_INT, Rectangle(-6,36,30,46))
+N = NutrientsReader("/g100_scratch/userexternal/vdibiagi/EMODnet_2022/NEW_int/toBeRead/savedforG100down/Dataset_Med_Nutrients.nc")
+ALL_PROFILES = N.Selector(None,T_INT, Rectangle(-6,36,30,46))
 
 
 vardescriptorfile="VarDescriptorB.xml"
