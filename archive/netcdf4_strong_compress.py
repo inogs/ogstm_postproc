@@ -23,7 +23,12 @@ def argument():
                                 required= False, 
                                 type = int,
                                 default = None,
-                                help = 'depth levels on output files')  
+                                help = 'depth levels on output files')
+    parser.add_argument(   '--significant_digits',"-s",
+                                required= False,
+                                type = int,
+                                default = 2,
+                                help = 'depth levels on output files')
  
     return parser.parse_args()
 
@@ -52,7 +57,7 @@ PATH_NAME = args.filelist
 os.chdir(INPUTDIR)
 FILELIST=glob.glob(PATH_NAME)
 FILELIST.sort()
-
+digits = args.significant_digits
 
 def WRITE_AVE(inputfile, outfile,var):
     
@@ -94,24 +99,24 @@ def WRITE_AVE(inputfile, outfile,var):
     OUT = np.array(ncIN[var])
     if 'time' in ncIN.dimensions:
         if len(OUT.shape)==4:
-            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=2)
+            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=digits)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'long_name',var)
             ncvar[:] = OUT
         if len(OUT.shape)==3:
-            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=2)
+            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=digits)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'long_name',var)
             ncvar[:] =  OUT
     else:
         ncOUT.createDimension('time',0)
         if len(OUT.shape)==3:
-            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=2)
+            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=digits)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'long_name',var)
             ncvar[0,:] = OUT
         if len(OUT.shape)==2:
-            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=2)
+            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=digits)
             setattr(ncvar,'missing_value',ncvar._FillValue)
             setattr(ncvar,'long_name',var)
             ncvar[0,:] =  OUT
