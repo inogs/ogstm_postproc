@@ -69,7 +69,7 @@ MODEL_AVEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 
 
 
-        TMPS=$OUTDIR/TMPS
+        TMPS=$OUTDIR/TMPS/${YEAR}
   CHLSUP_DIR=$OUTDIR/CHL_SUP
 
 my_prex_or_die_with_tries "mpirun -np 120 python ../var_aggregator.py -l ave*N1p.nc -i $MODEL_AVEDIR -d VarDescriptor_2.xml -t $MODEL_AVEDIR -c $CHLSUP_DIR -m $MASKFILE"
@@ -124,11 +124,13 @@ my_prex_or_die "mpirun python ../bottom.py -i $INPUTDIR -o $BOTTOMDIR -m $MASKFI
 my_prex_or_die "mpirun python ../surf.py   -i $INPUTDIR -o $SURF__DIR -m $MASKFILE -s ave*nc"
 
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/bottom/
+TMPS=$OUTDIR/TMPS/${YEAR}
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $BOTTOMDIR -f Eu_0475 -a $BOTTOMDIR -d VarDescriptor_3.xml -o $OUTDIR -t $TMPS  -s "
 rm -rf $TMPS
 my_prex_or_die_with_tries "mpirun -np 100 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
 
 OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/surf/
+TMPS=$OUTDIR/TMPS/${YEAR}
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $SURF__DIR -f Eu_0475 -a $SURF__DIR -d VarDescriptor_3.xml -o $OUTDIR -t $TMPS  -s "
 rm -rf $TMPS
 my_prex_or_die_with_tries "mpirun -np 100 python ../compact_profiles.py -i $OUTDIR/STAT_PROFILES/ -o $OUTDIR/STAT_PROFILES/"
