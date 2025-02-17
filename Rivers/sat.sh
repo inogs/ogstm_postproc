@@ -38,4 +38,4 @@ done
 
 
 
-my_prex_or_die "python plot_pfts.py -i $SAT_VALID_DIR -o $VALIDATION_DIR/SAT/pfts/ -s $PERIOD"
+my_prex_or_die "python plot_pfts.py -i $SAT_VALID_DIR -o $VALIDATION_DIR/SAT/pfts/ $PERIOD"
