@@ -174,7 +174,7 @@ for VAR in   P_l  P1l    P2l    P3l    P4l; do
 done
 
 SAT_DIR=$SAT_KD_WEEKLY_DIR
-for var in kd490 ; do
+for VAR in kd490 ; do
    my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
 done
 

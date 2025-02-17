@@ -62,7 +62,7 @@ export SAT_RRSWEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STAT
 export SAT_KD_WEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/SAT/KD490/DT/WEEKLY_4_24
 
 export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
-export ONLINE_REPO=/g100_work/OGS_devC/V10C/RUNS_SETUP/ONLINE
+export ONLINE_REPO=/g100_work/OGS_devC/V11C/TRANSITION/ONLINE
 export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
 
 
@@ -94,7 +94,7 @@ if [ $RUN_PROFILER -eq 1 ] ; then
         cd $BITSEA
         git checkout floatsV11C
     fi
-
+    cd $HERE
     # float profiler
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " \
         -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler.tpl > profiler.py
@@ -107,6 +107,6 @@ if [ $RUN_PROFILER -eq 1 ] ; then
 fi
 
 
-# 1. sbatch job.POST.slurm.galileo -y 2020 # 2h
+# 1. sbatch job.POST.singleyear.slurm -y 2020 # 2h30
 # 2. sbatch job.serial.slurm               # 1h30
 
