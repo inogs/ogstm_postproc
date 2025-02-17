@@ -13,10 +13,8 @@ rm -rf $VALIDATION_DIR/TIMESERIES
 mkdir -p $VALIDATION_DIR/TIMESERIES
 
 
-my_prex_or_die "python ${BENCHMARK_DIR}/draw_timeseries.py -o ${VALIDATION_DIR}/TIMESERIES -m $MASKFILE -f ${BENCHMARK_DIR}/timeseries_user_settings.txt"
+my_prex_or_die "python ../draw_timeseries.py -o ${VALIDATION_DIR}/TIMESERIES -m $MASKFILE -f ${BENCHMARK_DIR}/timeseries_user_settings.txt"
 
-
-cd $BITSEA/validation/deliverables
 
 
 # moving optical variables in TIMESERIES/optics/
