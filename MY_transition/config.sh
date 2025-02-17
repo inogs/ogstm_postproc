@@ -50,7 +50,7 @@ export OPA_HOME=V11C/TRANSITION
 #
 export VALIDATION_DIR=/g100_work/OGS_devC/Benchmark/pub/gbolzon/V11C/TRANSITION  ## the path after pub/ will be published https://medeaf.inogs.it/internal-validation
 #
-# EDIT timeseries_user_setting.txt
+# EDIT timeseries_user_setting.tpl -- for multirun color settings
 #
 export CINECA_WORK=/g100_work/OGS_devC
 POSTPROCDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC  ## $CINECA_WORK or $CINECA_SCRATCH
@@ -98,6 +98,7 @@ if [ $RUN_PROFILER -eq 1 ] ; then
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${EBASEDIR}%g " \
         -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler_RA_N.tpl > profiler_RA_N.py
     python profiler_RA_N.py
+    sed -e "s%actual%${STATPROFILESDIR}%g " $HERE/timeseries_user_setting.tpl > timeseries_user_setting.txt
 
 fi
 
@@ -107,6 +108,6 @@ export SAT_CHLWEEKLY_DIR=/g100_work/OGS_devC/V11C/TRANSITION/POSTPROC/validation
 export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
 
 
-# 1. sbatch job.POST.slurm.galileo -y 2020 # 2h
-# 2. sbatch job.serial.slurm               # 1h30
+# 1. sbatch job.POST.singleyear.slurm -y 2020 # 02:30:00
+# 2. sbatch job.serial.slurm                  # 00:30:00
 
