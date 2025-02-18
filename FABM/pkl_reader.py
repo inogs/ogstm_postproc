@@ -73,7 +73,7 @@ INPUTFILE = args.inputfile
 MASK_file = args.maskfile
 VAR = args.variable
 
-TheMask=Mask(MASK_file)
+TheMask=Mask.from_file(MASK_file)
 z_levels = TheMask.zlevels
 
 PKL_values,PKL_TL = read_pickle_file(INPUTFILE)

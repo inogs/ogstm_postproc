@@ -1,12 +1,12 @@
+from pathlib import Path
 import flux_reader
 import pickle
 import numpy as np
-import glob
 import pylab as pl
 from bitsea.commons.Timelist import TimeList
 
-flux_dt =np.dtype([('adv-u',np.float),('adv-v',np.float),('adv-w',np.float),('sed-w',np.float),\
-                   ('hdf-x',np.float),('hdf-y',np.float),('zdf-z',np.float)])
+flux_dt =np.dtype([('adv-u',float),('adv-v',float),('adv-w',float),('sed-w',float),
+                   ('hdf-x',float),('hdf-y',float),('zdf-z',float)])
 
 Matrices_file="/gpfs/work/OGS18_PRACE_P_0/OPEN_BOUNDARY/preproc_Fluxes/FLUXES/Matrices.pkl"
 fid = open(Matrices_file,'rb'); Matrices = pickle.load(fid); fid.close()
@@ -44,9 +44,11 @@ fig.show()
 fig.savefig("Nitrate_monthly_flux_dardanelles.png")
 
 import matplotlib.dates as mdates
-from bitsea.commons.mask import Mask
+from bitsea.commons.mesh import Mesh
 from datetime import datetime
-TheMask=Mask("/gpfs/scratch/userexternal/gbolzon0/OPEN_BOUNDARY/TEST_02/wrkdir/MODEL/meshmask.nc",loadtmask=False)
+TheMask=Mesh.from_file(
+    Path("/gpfs/scratch/userexternal/gbolzon0/OPEN_BOUNDARY/TEST_02/wrkdir/MODEL/meshmask.nc")
+)
 L=TL.Timelist
 L.append(datetime(2018,1,15))
 fig,ax=pl.subplots()

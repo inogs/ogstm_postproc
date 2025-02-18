@@ -7,7 +7,7 @@ maskfile="/gss/gss_work/DRES_OGS_BiGe/gbolzon/masks/V4/mesh_mask_V1INGV.nc"
 # EDIT main (lon_cut = 149, Biscay_land = True)
 # python main.py
 maskfile="/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc"
-M=Mask(maskfile)
+M=Mask.from_file(maskfile)
 
 
 e3t=M.e3t

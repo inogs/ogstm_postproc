@@ -54,7 +54,7 @@ except:
 INPUTDIR=addsep(args.inputdir)
 OUTPUTDIR=addsep(args.outdir)
 
-TheMask=Mask(args.maskfile)
+TheMask=Mask.from_file(args.maskfile)
 var = args.var
 
 TI= TimeInterval('1999','2020', '%Y')
