@@ -1,6 +1,6 @@
 #! /bin/bash
 
-YEAR=2021 # not important here, not passed from job
+YEAR=2019 # not important here, not passed from job
 . ../profile.inc
 . ./config.sh -y $YEAR
 
