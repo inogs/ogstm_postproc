@@ -2,7 +2,7 @@ import netCDF4
 from bitsea.commons.mask import Mask
 import numpy as np
 maskfile="/gpfs/work/IscrC_REBIOMED/NRT_EAS6/PREPROC/MASK/ogstm/meshmask.nc"
-M=Mask(maskfile)
+M=Mask.from_file(maskfile)
 
 
 e3t=M.e3t

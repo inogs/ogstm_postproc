@@ -80,8 +80,8 @@ var = args.variable
 
 layer = Layer(0,200)
 
-#themask = Mask('/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc')
-themask= Mask(mask)
+#themask = Mask.from_file('/gpfs/work/IscrC_REBIOMED/REANALISI_24/PREPROC/MASK/gdept_3d/ogstm/meshmask.nc')
+themask= Mask.from_file(mask)
 bottom_indexes = themask.bathymetry_in_cells() - 1
 
 bottom_1 = bottom_indexes - 1

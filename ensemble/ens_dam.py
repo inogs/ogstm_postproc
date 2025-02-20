@@ -6,7 +6,7 @@ import netCDF4
 
 
 maskfile="/g100_work/OGS_prod100/OPA/V9C/RUNS_SETUP/PREPROC/MASK/meshmask.nc"
-TheMask=Mask(maskfile)
+TheMask=Mask.from_file(maskfile)
 coastmask = TheMask.mask_at_level(200.0)
 jpk,jpj,jpi = TheMask.shape
 

@@ -46,7 +46,7 @@ nranks =comm.size
 INPUTDIR=args.inputdir
 OUTPUTDIR=args.outdir
 
-TheMask=Mask(args.maskfile)
+TheMask=Mask.from_file(args.maskfile)
 
 
 filelist= tuple(INPUTDIR.glob(args.searchstring))

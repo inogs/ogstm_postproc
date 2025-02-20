@@ -68,7 +68,7 @@ inputdir_bottom=inputdir+starttime+'_'+endtime+'/'+'bottom/'
 inputdir_top=inputdir+starttime+'_'+endtime+'/'+'top/'
 outputdir_bottom = outputdir +starttime+'_'+endtime+'/'+'bottom/'
 outputdir_top    = outputdir +starttime+'_'+endtime+'/'+'top/'
-themask = Mask(mask)
+themask = Mask.from_file(mask)
 jpk, jpj, jpi = themask.shape
 
 TI=TimeInterval(starttime,endtime,'%Y')

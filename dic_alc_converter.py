@@ -64,8 +64,8 @@ except:
     nranks = 1
 
 
-TheMask=Mask(args.maskfile)
-IngvMask= Mask(args.Maskfile_ingv)
+TheMask=Mask.from_file(args.maskfile)
+IngvMask= Mask.from_file(args.Maskfile_ingv)
 INDIR = addsep(args.inputdir)
 OUTDIR = addsep(args.outdir)
 FORCDIR = addsep(args.forcingsdir)

@@ -58,9 +58,9 @@ except:
 
 
 
-MaskRA_24    = Mask('/g100_scratch/userexternal/gbolzon0/RA_24/meshmask.nc')
-Mask__NRT    = Mask('/g100_scratch/userexternal/gbolzon0/RA_24/meshmask_NRT.nc')
-Mask_006_014 = Mask('/g100_scratch/userexternal/gbolzon0/RA_24/meshmask_006_014.nc')
+MaskRA_24    = Mask.from_file('/g100_scratch/userexternal/gbolzon0/RA_24/meshmask.nc')
+Mask__NRT    = Mask.from_file('/g100_scratch/userexternal/gbolzon0/RA_24/meshmask_NRT.nc')
+Mask_006_014 = Mask.from_file('/g100_scratch/userexternal/gbolzon0/RA_24/meshmask_006_014.nc')
     
 cut = 80
 

@@ -38,7 +38,7 @@ args = argument()
 
 import netCDF4
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 from bitsea.commons.utils import addsep
 from bitsea.commons.mask import Mask
 from bitsea.commons.dataextractor_open import DataExtractor
@@ -72,7 +72,7 @@ for it, d in enumerate(DL_start):
 
 
 cut = 80 #1/24
-TheMask = Mask(maskfile,ylevelsmatvar="gphit", xlevelsmatvar="glamt")
+TheMask = Mask.from_file(maskfile, ylevels_var_name="gphit", xlevels_var_name="glamt")
 jpk, jpj, jpi = TheMask.shape
 nav_lev = TheMask.zlevels
 Lon = TheMask.xlevels[0,:].astype(np.float32)
