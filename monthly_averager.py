@@ -53,7 +53,11 @@ except:
 INPUTDIR=addsep(args.inputdir)
 OUTPUTDIR=addsep(args.outdir)
 
-TheMask=Mask.from_file(args.maskfile)
+try:
+    TheMask=Mask.from_file(args.maskfile)
+except AttributeError:
+    TheMask=Mask(args.maskfile)
+
 
 var = args.var
 TL=TimeList.fromfilenames(None, INPUTDIR, "ave*.nc" , filtervar=var)
