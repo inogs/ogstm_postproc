@@ -67,13 +67,13 @@ OUTLINES.append("  <dataset DatasetName=\"%s\">" % (dataset))
 
 
 for line in LINES:
-    iStart=line.find(dataset_startswith)
-    iEnd=line.find("/", iStart)
-    dataset=line[iStart:iEnd]
-    filename=line[iEnd+1:]
+    if len(line)>0:
+        iStart=line.find(dataset_startswith)
+        iEnd=line.find("/", iStart)
+        dataset=line[iStart:iEnd]
+        filename=line[iEnd+1:]
+        OUTLINES.append("<file FileName=\"%s\" > <KeyWord>Delete</KeyWord> </file> " %(filename))
 
-    OUTLINES.append("<file FileName=\"%s\" > <KeyWord>Delete</KeyWord> </file> " %(filename))
-    #print(dataset, filename)
     
 OUTLINES.append("  </dataset>")    
 OUTLINES.append("</delivery>")
