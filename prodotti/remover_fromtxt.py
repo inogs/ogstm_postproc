@@ -16,6 +16,11 @@ def argument():
                                 type = str,
                                 required = True,
                                 help = '')
+    parser.add_argument(   '--nomenclature', '-n',
+                                choices=["old","new"],
+                                type = str,
+                                required = True,
+                                help = '')
 
     return parser.parse_args()
 
@@ -46,7 +51,11 @@ line=LINES[0]
 iStart=line.find("MEDSEA")
 iEnd=line.find("/", iStart)
 PRODUCT_ID=line[iStart:iEnd]
-iStart=line.find("cmems_mod")
+if args.nomenclature=="new":
+    dataset_startswith="cmems_mod"
+else:
+    dataset_startswith="med-ogs"
+iStart=line.find(dataset_startswith)
 iEnd=line.find("/", iStart)
 dataset=line[iStart:iEnd]
 
@@ -58,7 +67,7 @@ OUTLINES.append("  <dataset DatasetName=\"%s\">" % (dataset))
 
 
 for line in LINES:
-    iStart=line.find("cmems_mod")
+    iStart=line.find(dataset_startswith)
     iEnd=line.find("/", iStart)
     dataset=line[iStart:iEnd]
     filename=line[iEnd+1:]
