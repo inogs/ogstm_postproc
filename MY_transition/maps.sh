@@ -31,7 +31,7 @@ cd $BITSEA/src/bitsea/validation/deliverables/
 
 COMMONS_PARAMS="-m $MASKFILE  -l Plotlist_bio.xml -s ${YEAR}0101 -e ${YEAR}1231"
 
-my_prex_or_die "python averager_and_plot_map_ppn_refScale.py -i $INPUTDIR  -v ppn  -t integral  -o $VALIDATION_DIR/MAPS/ppn/ $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map_ppn.py -i $INPUTDIR  -v ppn  -t integral  -o $VALIDATION_DIR/MAPS/ppn/ $COMMONS_PARAMS "
 #there is also a table
 
 
