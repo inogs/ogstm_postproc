@@ -60,7 +60,7 @@ var=args.var
 
 INPUTDIR=addsep(args.inputdir)
 OUTDIR  =addsep(args.outdir)
-TheMask= Mask(args.maskfile)
+TheMask= Mask.from_file(args.maskfile)
 _,jpj,jpi = TheMask.shape
 
 TL=TimeList.fromfilenames(None, INPUTDIR, "ave*nc", filtervar=var)
