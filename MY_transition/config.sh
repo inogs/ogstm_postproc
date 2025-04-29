@@ -64,7 +64,7 @@ BITSEA=${POSTPROCDIR}/bit.sea
 export PYTHONPATH=$BITSEA/src/
 HERE=$PWD
 
-export ONLINE_REPO=/g100_work/OGS_devC/V11C/TRANSITION/ONLINE
+export ONLINE_REPO=/g100_work/OGS_test2528/V12C_QUID/PREPROC/ONLINE
 export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
 
 
@@ -104,7 +104,7 @@ fi
 
 
 # static Validation dirs
-export SAT_CHLWEEKLY_DIR=/g100_work/OGS_devC/V11C/TRANSITION/POSTPROC/validation/SAT/CHL/DT/WEEKLY_4_24
+export SAT_CHLWEEKLY_DIR=/g100_scratch/usera07ogs/a07ogs00/V11C/ONLINE/SAT/CHL/DT/WEEKLY_4_24
 export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
 
 
