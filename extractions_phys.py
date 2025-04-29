@@ -76,8 +76,8 @@ endtime         = args.endtime
 
 layer = Layer(0,200)
 
-IngvMask= Mask(maskfile_ingv)
-themask = Mask(mask_f)
+IngvMask= Mask.from_file(maskfile_ingv)
+themask = Mask.from_file(mask_f)
 
 bottom_indexes_ingv=IngvMask.bathymetry_in_cells() - 1
 

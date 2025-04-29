@@ -27,7 +27,7 @@ from bitsea.commons.mask import Mask
 from bitsea.commons.utils import addsep
 
 
-TheMask=Mask(args.maskfile)
+TheMask=Mask.from_file(args.maskfile)
 
 INPUTDIR=addsep(args.inputdir)
 varname = args.var
