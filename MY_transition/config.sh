@@ -64,7 +64,7 @@ BITSEA=${POSTPROCDIR}/bit.sea
 export PYTHONPATH=$BITSEA/src/
 HERE=$PWD
 
-export ONLINE_REPO=/g100_work/OGS_devC/V11C/TRANSITION/ONLINE
+export ONLINE_REPO=/g100_work/OGS_test2528/V12C_QUID/PREPROC/ONLINE
 export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
 
 
@@ -87,7 +87,7 @@ if [ $RUN_PROFILER -eq 1 ] ; then
     if  ! [ -d bit.sea ] ; then
         git clone git@github.com:inogs/bit.sea.git
         cd $BITSEA
-        git checkout floatsV11C
+        git checkout floatsV11C_merged
     fi
     cd $HERE
     # float profiler
@@ -98,13 +98,13 @@ if [ $RUN_PROFILER -eq 1 ] ; then
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${EBASEDIR}%g " \
         -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler_RA_N.tpl > profiler_RA_N.py
     python profiler_RA_N.py
-    sed -e "s%actual%${STATPROFILESDIR}%g " $HERE/timeseries_user_setting.tpl > timeseries_user_setting.txt
+    sed -e "s%actual%${STATPROFILESDIR}%g " $HERE/timeseries_user_settings.tpl > timeseries_user_setting.txt
 
 fi
 
 
 # static Validation dirs
-export SAT_CHLWEEKLY_DIR=/g100_work/OGS_devC/V11C/TRANSITION/POSTPROC/validation/SAT/CHL/DT/WEEKLY_4_24
+export SAT_CHLWEEKLY_DIR=/g100_scratch/usera07ogs/a07ogs00/V11C/ONLINE/SAT/CHL/DT/WEEKLY_4_24
 export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
 
 

@@ -14,10 +14,10 @@ jpk,jpj,jpi =TheMask.shape
 mask200_2D = TheMask.mask_at_level(200.0)
 dtype = [(sub.name, np.bool) for sub in OGS.P]
 SUB = np.zeros((jpj,jpi),dtype=dtype)
-mask0 = TheMask.cut_at_level(0)
+#mask0 = TheMask.cut_at_level(0)
 
 for sub in OGS.Pred:
-    SUB[sub.name]  = SubMask(sub, mask0).mask[0,:]
+    SUB[sub.name]  = SubMask(sub,TheMask).mask[0,:]
     if 'atl' in sub.name: continue
     SUB['med'] = SUB['med'] | SUB[sub.name]
 

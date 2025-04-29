@@ -524,7 +524,7 @@ def has_point_profile(avefile):
     F = GB_lib.filename_manager(avefile)
     datestr=F.datestr
     puntifile = POINTSDIR + "punti_" + datestr + ".dat"
-    return isvalidpath(puntifile)
+    return Path(puntifile).exists()
 
 
 if doPointProfiles:
