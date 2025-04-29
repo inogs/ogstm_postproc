@@ -6,7 +6,7 @@ from bitsea.commons.utils import writetable
 
 maskfile="/g100_work/OGS21_PRACE_P/CLIMA_100/meshmask.nc"
 
-TheMask=Mask(maskfile)
+TheMask=Mask.from_file(maskfile)
 
 #basins
 nSUB = len(OGS.P.basin_list)
@@ -17,7 +17,7 @@ SUB = np.zeros((jpj,jpi),dtype=dtype)
 mask0 = TheMask.cut_at_level(0)
 
 for sub in OGS.Pred:
-    SUB[sub.name]  = SubMask(sub,maskobject=mask0).mask[0,:]
+    SUB[sub.name]  = SubMask(sub, mask0).mask[0,:]
     if 'atl' in sub.name: continue
     SUB['med'] = SUB['med'] | SUB[sub.name]
 
