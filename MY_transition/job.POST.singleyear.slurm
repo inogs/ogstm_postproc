@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=24
 #SBATCH --time=02:30:00
 #SBATCH --mem=300gb
-#SBATCH --account=OGS_devC
+#SBATCH --account=OGS_test2528
 #SBATCH --partition=g100_meteo_prod
 #SBATCH --qos=qos_meteo
 
