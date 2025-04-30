@@ -70,7 +70,7 @@ export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
  BASEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/PROFILATORE/
-EBASEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/PROFILATORE_EMODNET/
+
 export STATPROFILESDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES
 
 
@@ -94,10 +94,11 @@ if [ $RUN_PROFILER -eq 1 ] ; then
     sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${BASEDIR}%g " \
         -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler.tpl > profiler.py
     python profiler.py
-    # Nutrients profiler
-    sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${EBASEDIR}%g " \
-        -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler_RA_N.tpl > profiler_RA_N.py
-    python profiler_RA_N.py
+#EBASEDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/PROFILATORE_EMODNET/
+#   Nutrients profiler
+#   sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${EBASEDIR}%g " \
+#       -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler_RA_N.tpl > profiler_RA_N.py
+#    python profiler_RA_N.py
     sed -e "s%actual%${STATPROFILESDIR}%g " $HERE/timeseries_user_settings.tpl > timeseries_user_setting.txt
 
 fi

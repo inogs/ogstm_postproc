@@ -82,10 +82,8 @@ my_prex_or_die_with_tries "mpirun -np 120 python ../metrics_2d.py -i $MODEL_AVED
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $BASEDIR -t $TMPS -p $BASEDIR/PUNTI "
 my_prex_or_die "rm -rf $TMPS"
 
+# Emodnet my_prex_or_die "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $EBASEDIR -t $TMPS -p $EBASEDIR/PUNTI "
 
-# Emodnet
-my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $EBASEDIR -t $TMPS -p $EBASEDIR/PUNTI "
-my_prex_or_die "rm -rf $TMPS"
 
 
 ################ Kd #########################
