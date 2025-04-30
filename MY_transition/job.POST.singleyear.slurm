@@ -165,8 +165,30 @@ YEAR2=$(( YEAR + 1 ))
 PERIOD="-t ${YEAR}0101 -e ${YEAR2}0101"
 command="mpirun python $BITSEA/src/bitsea/validation/deliverables/ScMYvalidation_plan.py"
 for VAR in   P_l  P1l    P2l    P3l    P4l; do
-   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
+   commons="-s $SAT_DIR -i $INPUTDIR -l $LAYER $PERIOD -v $VAR -m $MASKFILE
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/16_SUBBASINS -c coast,open_sea "
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/RIVERS -c everywhere -z rivers"
 done
+
+
+SAT_DIR=$SAT_KD_WEEKLY_DIR
+for VAR in kd490 ; do
+   commons="-s $SAT_DIR -i $INPUTDIR -l $LAYER $PERIOD -v $VAR -m $MASKFILE"
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/16_SUBBASINS -c coast,open_sea"
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/RIVERS -c everywhere -z rivers"
+done
+
+SAT_DIR=$SAT_RRSWEEKLY_DIR
+for VAR in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
+   commons="-s $SAT_DIR -i $INPUTDIR -l 0 $PERIOD -v $VAR -m $MASKFILE"
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/16_SUBBASINS -c coast,open_sea"
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/RIVERS -c everywhere -z rivers"
+done
+
+
+
+
+
 
 ## COMPRESSION ##
 
