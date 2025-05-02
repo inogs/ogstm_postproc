@@ -14,7 +14,6 @@ YEAR=2021
 
 cd $SLURM_SUBMIT_DIR
 
-./timeseries.sh # 16m serial
 ./sat.sh
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/

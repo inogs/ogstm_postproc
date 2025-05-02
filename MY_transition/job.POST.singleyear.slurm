@@ -186,9 +186,9 @@ for VAR in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
 done
 
 
-
-
-
+### parallel plot generation  ##
+./timeseries.sh
+################################
 
 ## COMPRESSION ##
 

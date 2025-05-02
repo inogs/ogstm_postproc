@@ -73,7 +73,6 @@ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
 
 export STATPROFILESDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES
 
-
 # Robustness about mv ave files
 [[ -f $INPUTDIR/ave.${YEAR}0101-12:00:00.N1p.nc ]] ||  INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/${YEAR}
 
@@ -99,7 +98,6 @@ if [ $RUN_PROFILER -eq 1 ] ; then
 #   sed -e "s%\@\@INPUTDIR\@\@%${INPUTDIR}%g" -e "s%\@\@BASEDIR\@\@%${EBASEDIR}%g " \
 #       -e "s%\@\@YEAR1\@\@%${YEAR}%g" -e "s%\@\@YEAR2\@\@%${YEAR2}%g "    profiler_RA_N.tpl > profiler_RA_N.py
 #    python profiler_RA_N.py
-    sed -e "s%actual%${STATPROFILESDIR}%g " $HERE/timeseries_user_settings.tpl > timeseries_user_setting.txt
 
 fi
 
