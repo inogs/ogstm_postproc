@@ -27,3 +27,6 @@ export STAT_PROFILES_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FR
 ./float.sh           # 17 min
 ./static.sh -y $YEAR # 10 min
 ./clean.sh -y $YEAR
+
+./maps_MY.sh -s 2022 -e 2024
+

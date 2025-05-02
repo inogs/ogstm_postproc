@@ -2,17 +2,23 @@
 
 usage() {
 echo "SYNOPSIS"
-echo "./maps.sh -y [ YEAR ]"
+echo "./maps_MY.sh -s [ YEAR1 ] -e [ YEAR2 ]"
 }
 
-if [ $# -lt 2 ] ; then
+if [ $# -lt 4 ] ; then
   usage
   exit 1
 fi
-YEAR=$2
-YEAR_E=$(($(date -d "Jan 01, $YEAR" +"%Y") + 2))
-# End year is YEAR_E, in total we consider 3 years.
-echo $YEAR_E
+
+for I in 1 2; do
+   case $1 in
+      "-s" ) YEAR=$2;;
+      "-e" ) YEAR_E=$2;;
+        *  ) echo "Unrecognized option $1." ; usage;  exit 1;;
+   esac
+   shift 2
+done
+
 
 . ../profile.inc
 . ./config.sh -y $YEAR
