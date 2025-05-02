@@ -30,11 +30,7 @@ cd $BITSEA/src/bitsea/validation/deliverables
 
 COMMONS_PARAMS="-m $MASKFILE  -l Plotlist_bio.xml -s ${YEAR}0101 -e ${YEAR_E}1231"
 
-#my_prex_or_die "python averager_and_plot_map_ppn_refScale.py -i $INPUTDIR  -v ppn  -t integral  -o $VALIDATION_DIR/MAPS/ppn/ $COMMONS_PARAMS "
-#there is also a table
-
-
-#my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_l  -t mean -o $VALIDATION_DIR/MAPS/P_l $COMMONS_PARAMS "     # Fig4.1 CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_l  -t mean -o $VALIDATION_DIR/MAPS/P_l $COMMONS_PARAMS "     # Fig4.1 CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_c  -t mean -m $MASKFILE -o  $VALIDATION_DIR/MAPS/P_c  -l Plotlist_bio_Int.xml -s ${YEAR}0101 -e ${YEAR_E}1231"
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v Z_c  -t integral -o  $VALIDATION_DIR/MAPS/Z_c   $COMMONS_PARAMS "
 
