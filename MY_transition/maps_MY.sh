@@ -34,7 +34,7 @@ my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_l  -t mean -o
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_c  -t mean -m $MASKFILE -o  $VALIDATION_DIR/MAPS/P_c  -l Plotlist_bio_Int.xml -s ${YEAR}0101 -e ${YEAR_E}1231"
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v Z_c  -t integral -o  $VALIDATION_DIR/MAPS/Z_c   $COMMONS_PARAMS "
 
-my_prex_or_die "python averager_and_plot_map_ppn_refScale_16basin_RMSD.py -i $INPUTDIR  -v ppn  -t integral -o $VALIDATION_DIR/MAPS/ppn $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map_ppn.py -i $INPUTDIR  -v ppn  -t integral -o $VALIDATION_DIR/MAPS/ppn $COMMONS_PARAMS "
 
 
 #CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN from SATELLITE:
