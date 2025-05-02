@@ -17,27 +17,16 @@ echo $YEAR_E
 . ../profile.inc
 . ./config.sh -y $YEAR
 
-# DIRECTORY OF AVE_FREQ_2: 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/YEARLY
-#INPUTDIR=/g100_scratch/userexternal/lfeudale/V11C_TRANSITION/MODEL/AVE_FREQ_2
-VALIDATION_DIR=/g100_work/OGS_devC/Benchmark/pub/lfeudale/V11C/Benchmark 
-BITSEA=/g100_scratch/userexternal/lfeudale/dev/TRANSITION_V11/bit.sea/src
-export    MASKFILE=/g100_work/OGS_prodC/OPA/V11C-prod/wrkdir/analysis/2/MODEL/meshmask.nc
-SAT_CHLWEEKLY_DIR=/g100_work/OGS_devC/V11C/TRANSITION/POSTPROC/validation/SAT/CHL/DT/WEEKLY_4_24
 
-mkdir -p $VALIDATION_DIR/MAPS
- 
-SCRDIR=$BITSEA/bitsea/validation/deliverables/
 
-# CREATE MAP PPN INTEGRAL 0-200m 
-mkdir -p $VALIDATION_DIR/MAPS/P_l/
+mkdir -p $VALIDATION_DIR/MAPS/P_l/MY
 mkdir -p $VALIDATION_DIR/MAPS/ppn/
 mkdir -p $VALIDATION_DIR/MAPS/P_c/
 mkdir -p $VALIDATION_DIR/MAPS/Z_c/
 
-#/g100_scratch/userexternal/lfeudale/dev/TRANSITION_V11/bit.sea/src/bitsea/validation/deliverables/
 
-#cd $BITSEA/bitsea/validation/deliverables
+cd $BITSEA/src/bitsea/validation/deliverables
 
 COMMONS_PARAMS="-m $MASKFILE  -l Plotlist_bio.xml -s ${YEAR}0101 -e ${YEAR_E}1231"
 
@@ -45,7 +34,7 @@ COMMONS_PARAMS="-m $MASKFILE  -l Plotlist_bio.xml -s ${YEAR}0101 -e ${YEAR_E}123
 #there is also a table
 
 
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_l  -t mean -o $VALIDATION_DIR/MAPS/P_l $COMMONS_PARAMS "     # Fig4.1 CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN
+#my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_l  -t mean -o $VALIDATION_DIR/MAPS/P_l $COMMONS_PARAMS "     # Fig4.1 CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_c  -t mean -m $MASKFILE -o  $VALIDATION_DIR/MAPS/P_c  -l Plotlist_bio_Int.xml -s ${YEAR}0101 -e ${YEAR_E}1231"
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v Z_c  -t integral -o  $VALIDATION_DIR/MAPS/Z_c   $COMMONS_PARAMS "
 
