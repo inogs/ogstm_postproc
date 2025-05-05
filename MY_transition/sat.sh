@@ -27,4 +27,14 @@ for VAR in   P_l  P1l    P2l    P3l    P4l ; do
 
 done
 
+for VAR in   P_l ; do
+   my_prex_or_die "mkdir -p $VALIDATION_DIR/SAT/Fig4.2_Timeseries/Rivers/${VAR}"
+   my_prex_or_die "mkdir -p $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/Rivers/${VAR}"
+
+   my_prex_or_die "python plot_timeseries_STD.py      -v $VAR -i $SAT_VALID_DIR/RIVERS -o $VALIDATION_DIR/SAT/Fig4.2_Timeseries/Rivers/${VAR} -c everywhere $PERIOD -z rivers"
+   my_prex_or_die "python plot_timeseries_RMS_CORR.py -v $VAR -i $SAT_VALID_DIR/RIVERS -o $VALIDATION_DIR/SAT/Fig4.3_BiasRmsd/Rivers/${VAR}   -c everywhere $PERIOD -z rivers" # table4.1
+
+done
+
+
 my_prex_or_die "python plot_pfts.py -i $SAT_VALID_DIR -o $VALIDATION_DIR/SAT/pfts/ -s 20220101 -e 20250101"
