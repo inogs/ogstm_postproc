@@ -6,7 +6,6 @@
 #rm -rf $VALIDATION_DIR/STATIC
 mkdir -p $VALIDATION_DIR/STATIC
 
-mkdir -p $VALIDATION_DIR/STATIC/EMODnet/everywhere
 mkdir -p $VALIDATION_DIR/STATIC/EMODnet/OpenSea
 mkdir -p $VALIDATION_DIR/STATIC/EMODnet/OpenSea/Tables/
 
@@ -28,7 +27,6 @@ exit 0
 
 
 # COMPARISON WITH EMODnet CLIMATOLOGY:
-my_prex_or_die "python simulation_vs_clim_extended.py  -i $STAT_PROFILES_DIR -o $VALIDATION_DIR/STATIC/EMODnet/everywhere -s 20190101 -e 20200101 -m $MASKFILE"
 my_prex_or_die "python simulation_vs_clim_extended_OpenSea.py -i $STAT_PROFILES_DIR -o $VALIDATION_DIR/STATIC/EMODnet/OpenSea -s 20190101 -e 20200101 -m $MASKFILE"
 
 
