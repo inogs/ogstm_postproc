@@ -160,7 +160,8 @@ done
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 SAT_DIR=$SAT_CHLWEEKLY_DIR
 LAYER=10
-mkdir -p $SAT_VALID_DIR
+mkdir -p $SAT_VALID_DIR/16_SUBBASINS
+mkdir -p $SAT_VALID_DIR/RIVERS
 YEAR2=$(( YEAR + 1 ))
 PERIOD="-t ${YEAR}0101 -e ${YEAR2}0101"
 command="mpirun python $BITSEA/src/bitsea/validation/deliverables/ScMYvalidation_plan.py"
