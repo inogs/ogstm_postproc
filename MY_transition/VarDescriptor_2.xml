@@ -30,7 +30,10 @@
 <var name="R6c" ></var>
 
 <var name="O5c" ></var>
-
+<var name="P1l" ></var>
+<var name="P2l" ></var>
+<var name="P3l" ></var>
+<var name="P4l" ></var>
 </native>
 
 <aggregate>
