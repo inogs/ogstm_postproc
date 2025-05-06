@@ -22,19 +22,18 @@ for var in P1l P2l P3l P4l ; do
     my_prex_or_die "python plot_HPLC_clim.py -i $INDIR_HPLC_CLIM -p $var -o $VALIDATION_DIR/STATIC/HPLC "
 done
 
-exit 0
 
 
 # COMPARISON WITH EMODnet CLIMATOLOGY:
-my_prex_or_die "python simulation_vs_clim_extended_OpenSea.py -i $STAT_PROFILES_DIR -o $VALIDATION_DIR/STATIC/EMODnet/OpenSea -s 20190101 -e 20200101 -m $MASKFILE"
+my_prex_or_die "python simulation_vs_clim_extended_OpenSea.py -i $STATPROFILESDIR -o $VALIDATION_DIR/STATIC/EMODnet/OpenSea -s 20220101 -e 20250101 -m $MASKFILE"
 
-
-mkdir -p local_emodnet
-my_prex_or_die "python static_clim_validation_OpenSea.py -i $STAT_PROFILES_DIR -o local_emodnet -m $MASKFILE -s 20190101 -e 20200101"
+LOCAL_EMODNET=$PWD/local_emodnet
+mkdir -p $LOCAL_EMODNET
+my_prex_or_die "python static_clim_validation_OpenSea.py -i $STATPROFILESDIR -o $LOCAL_EMODNET -m $MASKFILE -s 20220101 -e 20250101"
 
 
 for var in ALK DIC N1p N3n N4n N5s O2o pH pCO2 ; do
-   my_prex "mv local_emodnet/*${var}*.txt $VALIDATION_DIR/STATIC/EMODnet/OpenSea/Tables/${var}/"
+   my_prex "mv $LOCAL_EMODNET/*${var}*.txt $VALIDATION_DIR/STATIC/EMODnet/OpenSea/Tables/${var}/"
 done
 
 
