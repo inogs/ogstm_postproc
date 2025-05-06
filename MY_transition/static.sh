@@ -15,11 +15,21 @@ done
 mkdir -p $VALIDATION_DIR/STATIC/Socat/
 mkdir -p $VALIDATION_DIR/STATIC/HPLC/
 
+ TABLES_DIR=$VALIDATION_DIR/STATIC/HPLC/tables
+FIGURES_DIR=$VALIDATION_DIR/STATIC/HPLC/figures
+mkdir -p $TABLES_DIR $FIGURES_DIR
+
 cd $BITSEA/src/bitsea/validation/deliverables/
 
-INDIR_HPLC_CLIM=/g100_work/OGS_devC/Benchmark/SETUP/POSTPROC/HPLC
+
+# generates the csv files for model and ref data with mean and std values for med basin
+# for summer and winter:
+my_prex_or_die "python static_clim_validation_HPLC.py -i $STATPROFILESDIR -o $TABLES_DIR -m $MASKFILE -s 20220101 -e 20250101"
+
+# plot the results for every pfts:
+#INDIR_HPLC_CLIM=/g100_work/OGS_devC/Benchmark/SETUP/POSTPROC/HPLC
 for var in P1l P2l P3l P4l ; do
-    my_prex_or_die "python plot_HPLC_clim.py -i $INDIR_HPLC_CLIM -p $var -o $VALIDATION_DIR/STATIC/HPLC "
+    my_prex_or_die "python plot_HPLC_clim.py -i $TABLES_DIR -p $var -o $FIGURES_DIR "
 done
 
 
