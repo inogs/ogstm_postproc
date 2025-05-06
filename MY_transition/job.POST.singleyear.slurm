@@ -166,7 +166,7 @@ YEAR2=$(( YEAR + 1 ))
 PERIOD="-t ${YEAR}0101 -e ${YEAR2}0101"
 command="mpirun python $BITSEA/src/bitsea/validation/deliverables/ScMYvalidation_plan.py"
 for VAR in   P_l  P1l    P2l    P3l    P4l; do
-   commons="-s $SAT_DIR -i $INPUTDIR -l $LAYER $PERIOD -v $VAR -m $MASKFILE
+   commons="-s $SAT_DIR -i $INPUTDIR -l $LAYER $PERIOD -v $VAR -m $MASKFILE"
    my_prex_or_die "$command $commons -o $SAT_VALID_DIR/16_SUBBASINS -c coast,open_sea "
    my_prex_or_die "$command $commons -o $SAT_VALID_DIR/RIVERS -c everywhere -z rivers"
 done
