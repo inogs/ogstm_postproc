@@ -42,7 +42,7 @@ mkdir -p $LOCAL_SOCAT
 #my_prex_or_die "python monthly_clim_socat_pCO2.py -o local_socat"                     # --> monthly_clim.socat, monthly_clim_socat_STD.txt, monthly_num_socat.txt
 cp /g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/CO2_socat/monthly_clim_socat.txt $LOCAL_SOCAT
 cp /g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/CO2_socat/monthly_num_socat.txt  $LOCAL_SOCAT
-my_prex_or_die "python monthly_surf.py -i $STATPROFILESDIR -y 2019 -o $LOCAL_SOCAT"  # -->monthly_var.txt
+my_prex_or_die "python monthly_surf.py -i $STATPROFILESDIR -o $LOCAL_SOCAT"  # -->monthly_var.txt
 my_prex_or_die "python table_pCO2vsSOCAT.py -i $LOCAL_SOCAT -o $VALIDATION_DIR/STATIC/Socat/ " # monthly_pCO2.txt, monthly_clim_socat.txt monthly_num_socat.txt --> table.py --> pCO2-SURF-M-CLASS4-CLIM-RMSD-BASIN.txt,TOT_RMSD_pCO2vsSOCAT.txt
 
 
