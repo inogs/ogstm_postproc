@@ -88,11 +88,11 @@ my_prex_or_die "rm -rf $TMPS"
 
 ################ Kd #########################
 
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
+OPTICSDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
 KD__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/${YEAR}
 KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 
-my_prex_or_die "mpirun python ../kd.py -i $INPUTDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
+my_prex_or_die "mpirun python ../kd.py -i $OPTICSDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
 my_prex_or_die "mpirun python ../weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t monday"
 
 
@@ -137,7 +137,7 @@ RRS_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/RRS_WEEKL
 
 mkdir -p $RRS__DAILY
 mkdir -p $RRS_WEEKLY
-my_prex_or_die "mpirun python ../rrs.py -i $INPUTDIR -m $MASKFILE -o $RRS__DAILY -l ave*.nc"
+my_prex_or_die "mpirun python ../rrs.py -i $OPTICSDIR -m $MASKFILE -o $RRS__DAILY -l ave*.nc"
 
 for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
     my_prex_or_die "python ../weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
