@@ -24,7 +24,9 @@ cd $BITSEA/src/bitsea/validation/deliverables/
 
 # generates the csv files for model and ref data with mean and std values for med basin
 # for summer and winter:
-my_prex_or_die "python static_clim_validation_HPLC.py -i $STATPROFILESDIR -o $TABLES_DIR -m $MASKFILE -s 20220101 -e 20250101"
+CLIMDIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/HPLC
+PARAMS="-c $CLIMDIR -m $MASKFILE -s 20220101 -e 20250101"
+my_prex_or_die "python static_clim_validation_HPLC.py $PARAMS -i $STATPROFILESDIR -o $TABLES_DIR"
 
 # plot the results for every pfts:
 #INDIR_HPLC_CLIM=/g100_work/OGS_devC/Benchmark/SETUP/POSTPROC/HPLC
