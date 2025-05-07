@@ -93,7 +93,7 @@ KD__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/${YEAR}
 KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 
 my_prex_or_die "mpirun python ../kd.py -i $OPTICSDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
-my_prex_or_die "mpirun python ../weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t monday"
+my_prex_or_die "mpirun python ../weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t thursday"
 
 
 
