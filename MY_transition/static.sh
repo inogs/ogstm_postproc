@@ -36,14 +36,14 @@ done
 
 
 
-# COMPARISON WITH EMODnet CLIMATOLOGY:
+# COMPARISON WITH MedBGCins CLIMATOLOGY:
 CLIMDIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/MedBGCins
 PARAMS="-c $CLIMDIR  -s 20220101 -e 20250101 -m $MASKFILE"
-my_prex_or_die "python simulation_vs_clim_extended_OpenSea.py $PARAMS -i $STATPROFILESDIR -o $VALIDATION_DIR/STATIC/EMODnet/OpenSea"
+my_prex_or_die "python simulation_vs_clim_extended_OpenSea.py $PARAMS -i $STATPROFILESDIR -o $VALIDATION_DIR/STATIC/MedBGCins/OpenSea"
 
-LOCAL_EMODNET=$PWD/local_emodnet
-mkdir -p $LOCAL_EMODNET
-my_prex_or_die "python static_clim_validation_OpenSea.py $PARAMS -i $STATPROFILESDIR -o $LOCAL_EMODNET"
+LOCAL_MedBGCins=$PWD/local_MedBGCins
+mkdir -p $LOCAL_MedBGCins
+my_prex_or_die "python static_clim_validation_OpenSea.py $PARAMS -i $STATPROFILESDIR -o $LOCAL_MedBGCins"
 
 
 for var in ALK DIC N1p N3n N4n N5s O2o pH pCO2 ; do
