@@ -24,7 +24,7 @@ DATE__END = '@@YEAR2@@0101'
 
 T_INT = TimeInterval(DATESTART,DATE__END, '%Y%m%d')
 TL = TimeList.fromfilenames(T_INT, INPUTDIR,"ave*.nc",filtervar="N1p")
-N = NutrientsReader("/g100_scratch/userexternal/vdibiagi/EMODnet_2022/NEW_int/toBeRead/savedforG100down/Dataset_Med_Nutrients.nc")
+N = NutrientsReader()
 ALL_PROFILES = N.Selector(None,T_INT, Rectangle(-6,36,30,46))
 
 

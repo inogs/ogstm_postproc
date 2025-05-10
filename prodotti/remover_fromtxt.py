@@ -71,7 +71,7 @@ for line in LINES:
         iStart=line.find(dataset_startswith)
         iEnd=line.find("/", iStart)
         dataset=line[iStart:iEnd]
-        filename=line[iEnd+1:]
+        filename=line[iEnd+1:-2]
         OUTLINES.append("<file FileName=\"%s\" > <KeyWord>Delete</KeyWord> </file> " %(filename))
 
     
