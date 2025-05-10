@@ -8,24 +8,17 @@
 
 cd $SLURM_SUBMIT_DIR
 
-YEAR=2021
+YEAR=2022
 . ../profile.inc
 . ./config.sh -y $YEAR
 
 cd $SLURM_SUBMIT_DIR
 
 ./sat.sh
-
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
-export STAT_PROFILES_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_2/STAT_PROFILES/
-
-
-
-
 ./maps.sh -y $YEAR   # 5 min
-./float.sh           # 17 min
-./static.sh -y $YEAR # 10 min
-./clean.sh -y $YEAR
+./float.sh           # 17 min/year
+./static.sh          # 10 min
 
 ./maps_MY.sh -s 2022 -e 2024
 
+./clean.sh -y $YEAR
