@@ -6,11 +6,11 @@
 #rm -rf $VALIDATION_DIR/STATIC
 mkdir -p $VALIDATION_DIR/STATIC
 
-mkdir -p $VALIDATION_DIR/STATIC/EMODnet/OpenSea
-mkdir -p $VALIDATION_DIR/STATIC/EMODnet/OpenSea/Tables/
+mkdir -p $VALIDATION_DIR/STATIC/MedBGCins/OpenSea
+mkdir -p $VALIDATION_DIR/STATIC/MedBGCins/OpenSea/Tables/
 
 for var in ALK DIC N1p N3n N4n N5s O2o pH pCO2 ; do
-    mkdir -p $VALIDATION_DIR/STATIC/EMODnet/OpenSea/Tables/${var}
+    mkdir -p $VALIDATION_DIR/STATIC/MedBGCins/OpenSea/Tables/${var}
 done
 mkdir -p $VALIDATION_DIR/STATIC/Socat/
 mkdir -p $VALIDATION_DIR/STATIC/HPLC/
@@ -47,7 +47,7 @@ my_prex_or_die "python static_clim_validation_OpenSea.py $PARAMS -i $STATPROFILE
 
 
 for var in ALK DIC N1p N3n N4n N5s O2o pH pCO2 ; do
-   my_prex "mv $LOCAL_EMODNET/*${var}*.txt $VALIDATION_DIR/STATIC/EMODnet/OpenSea/Tables/${var}/"
+   my_prex "mv $LOCAL_MedBGCins/*${var}*.txt $VALIDATION_DIR/STATIC/MedBGCins/OpenSea/Tables/${var}/"
 done
 
 
