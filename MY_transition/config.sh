@@ -104,6 +104,8 @@ fi
 
 # static Validation dirs
 export SAT_CHLWEEKLY_DIR=/g100_scratch/usera07ogs/a07ogs00/V11C/ONLINE/SAT/CHL/DT/WEEKLY_4_24
+export SAT_KD_WEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/SAT/KD490/DT/WEEKLY_4_24
+export SAT_RRSWEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC//SAT/RRS/DT/WEEKLY_4_24
 export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
 
 
