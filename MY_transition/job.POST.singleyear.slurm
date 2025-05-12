@@ -82,20 +82,18 @@ my_prex_or_die_with_tries "mpirun -np 120 python ../metrics_2d.py -i $MODEL_AVED
 my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $BASEDIR -t $TMPS -p $BASEDIR/PUNTI "
 my_prex_or_die "rm -rf $TMPS"
 
+# Emodnet my_prex_or_die "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $EBASEDIR -t $TMPS -p $EBASEDIR/PUNTI "
 
-# Emodnet
-my_prex_or_die_with_tries "mpirun python ../aveScan.py  -l ave*nc  -i $MODEL_AVEDIR -f O2o -a $MODEL_AVEDIR -d VarDescriptorB.xml -o $EBASEDIR -t $TMPS -p $EBASEDIR/PUNTI "
-my_prex_or_die "rm -rf $TMPS"
 
 
 ################ Kd #########################
 
-INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
+OPTICSDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_3/${YEAR}
 KD__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/${YEAR}
 KD_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 
-my_prex_or_die "mpirun python ../kd.py -i $INPUTDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
-my_prex_or_die "mpirun python ../weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t monday"
+my_prex_or_die "mpirun python ../kd.py -i $OPTICSDIR -m $MASKFILE -o $KD__DAILY -l ave*.nc"
+my_prex_or_die "mpirun python ../weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m $MASKFILE -v kd490 -t thursday"
 
 
 
@@ -139,7 +137,7 @@ RRS_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/RRS_WEEKL
 
 mkdir -p $RRS__DAILY
 mkdir -p $RRS_WEEKLY
-my_prex_or_die "mpirun python ../rrs.py -i $INPUTDIR -m $MASKFILE -o $RRS__DAILY -l ave*.nc"
+my_prex_or_die "mpirun python ../rrs.py -i $OPTICSDIR -m $MASKFILE -o $RRS__DAILY -l ave*.nc"
 
 for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
     my_prex_or_die "python ../weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
@@ -151,7 +149,7 @@ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 OUTPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/YEARLY
 mkdir -p $OUTPUTDIR
 
-for var in ppn P_l N3n N1p ALK DIC O2o; do
+for var in ppn P_l N3n N1p ALK DIC O2o P_c Z_c CO2airflux; do
     my_prex_or_die "python ../yearly_averager.py -i $INPUTDIR -o $OUTPUTDIR -v $var -m $MASKFILE"
 done
 
@@ -162,13 +160,36 @@ done
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 SAT_DIR=$SAT_CHLWEEKLY_DIR
 LAYER=10
-mkdir -p $SAT_VALID_DIR
+mkdir -p $SAT_VALID_DIR/16_SUBBASINS
+mkdir -p $SAT_VALID_DIR/RIVERS
 YEAR2=$(( YEAR + 1 ))
 PERIOD="-t ${YEAR}0101 -e ${YEAR2}0101"
 command="mpirun python $BITSEA/src/bitsea/validation/deliverables/ScMYvalidation_plan.py"
 for VAR in   P_l  P1l    P2l    P3l    P4l; do
-   my_prex_or_die "$command -s $SAT_DIR -i $INPUTDIR -l $LAYER -o $SAT_VALID_DIR -c coast,open_sea $PERIOD -v $VAR -m $MASKFILE"
+   commons="-s $SAT_DIR -i $INPUTDIR -l $LAYER $PERIOD -v $VAR -m $MASKFILE"
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/16_SUBBASINS -c coast,open_sea "
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/RIVERS -c everywhere -z rivers"
 done
+
+
+SAT_DIR=$SAT_KD_WEEKLY_DIR
+for VAR in kd490 ; do
+   commons="-s $SAT_DIR -i $INPUTDIR -l $LAYER $PERIOD -v $VAR -m $MASKFILE"
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/16_SUBBASINS -c coast,open_sea"
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/RIVERS -c everywhere -z rivers"
+done
+
+SAT_DIR=$SAT_RRSWEEKLY_DIR
+for VAR in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
+   commons="-s $SAT_DIR -i $INPUTDIR -l 0 $PERIOD -v $VAR -m $MASKFILE"
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/16_SUBBASINS -c coast,open_sea"
+   my_prex_or_die "$command $commons -o $SAT_VALID_DIR/RIVERS -c everywhere -z rivers"
+done
+
+
+### parallel plot generation  ##
+./timeseries.sh
+################################
 
 ## COMPRESSION ##
 
