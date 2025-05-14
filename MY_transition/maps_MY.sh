@@ -57,5 +57,6 @@ for year in $(seq $YEAR1 $YEAR2); do
     done
 done
 
+cd $BITSEA/src/bitsea/validation/deliverables
 
 my_prex_or_die "python sat_model_RMSD_and_plot.py -s $SAT_CHLWEEKLY_DIR -i $WEEKLY_DIR -m $MASKFILE -o $VALIDATION_DIR/MAPS/P_l/MY -st ${YEAR1}0101 -e ${YEAR2}1231"
