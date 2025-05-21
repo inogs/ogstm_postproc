@@ -11,7 +11,7 @@
 
 cd $SLURM_SUBMIT_DIR
 
-. ./profile.inc
+. ../profile.inc
 
 module load autoload
 module load intel/oneapi-2021--binary
@@ -45,5 +45,5 @@ done
 my_prex_or_die "mpirun -np 24 python ../aveScan.py  -l ave*nc  -i $MONTHLYDIR -f N1p -a $MONTHLYDIR -d VarDescriptor.xml -o $OUTDIR -t $TMPS  -p punti.dat"
 rm -rf $TMPS
 
-PROFILESDIR=OUTDIR/PROFILES
+PROFILESDIR=$OUTDIR/PROFILES
 my_prex_or_die "mpirun -np 24 python ../compact_pointprofiles.py -i $PROFILESDIR  -o $PROFILESDIR -p punti.dat"
