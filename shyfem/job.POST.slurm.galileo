@@ -1,0 +1,49 @@
+#! /bin/bash
+
+#SBATCH --job-name=POST
+#SBATCH -N1
+#SBATCH --ntasks-per-node=24
+#SBATCH --time=01:30:00
+#SBATCH --mem=300gb
+#SBATCH --account=OGS_test2528
+#SBATCH --partition=g100_meteo_prod
+#SBATCH --qos=qos_meteo
+
+cd $SLURM_SUBMIT_DIR
+
+. ./profile.inc
+
+module load autoload
+module load intel/oneapi-2021--binary
+module load intelmpi/oneapi-2021--binary
+module load mkl/oneapi-2021--binary
+module load netcdf/4.7.4--oneapi--2021.2.0-ifort
+module load netcdff/4.5.3--oneapi--2021.2.0-ifort
+source /g100_work/OGS23_PRACE_IT/COPERNICUS/py_env_3.9.18_new/bin/activate
+
+unset I_MPI_PMI_LIBRARY
+export UCX_TLS=ib
+export SLURM_PMIX_DIRECT_CONN_UCX=false
+
+export OPA_HOME=RA_24
+
+export    MASKFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/meshmask.nc
+export  KCOASTFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/mapser.npy
+
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+  OUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/MONTHLY
+    TMPS=$OUTDIR/TMPS
+
+MONTHLYDIR=$OUTDIR/AVE
+
+mkdir -p $MONTHLYDIR
+for var in $(cat bfm_state_vars) ; do
+ my_prex_or_die "mpirun -np 12 python ../monthly_averager.py -i $INPUTDIR -o $MONTHLYDIR -m $MASKFILE -v $var "
+done
+
+my_prex_or_die "mpirun -np 24 python ../aveScan.py  -l ave*nc  -i $MONTHLYDIR -f N1p -a $MONTHLYDIR -d VarDescriptor.xml -o $OUTDIR -t $TMPS  -p punti.dat"
+rm -rf $TMPS
+
+PROFILESDIR=OUTDIR/PROFILES
+my_prex_or_die "mpirun -np 24 python ../compact_pointprofiles.py -i $PROFILESDIR  -o $PROFILESDIR -p punti.dat"
