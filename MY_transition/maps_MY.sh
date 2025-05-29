@@ -30,6 +30,7 @@ mkdir -p $VALIDATION_DIR/MAPS/P_l/MY
 mkdir -p $VALIDATION_DIR/MAPS/ppn/
 mkdir -p $VALIDATION_DIR/MAPS/P_c/
 mkdir -p $VALIDATION_DIR/MAPS/Z_c/
+mkdir -p $VALIDATION_DIR/MAPS/O2o/
 
 
 cd $BITSEA/src/bitsea/validation/deliverables
