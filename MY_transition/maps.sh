@@ -43,13 +43,14 @@ my_prex_or_die "python averager_and_plot_map_ppn.py -i $INPUTDIR  -v ppn  -t int
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_l  -t mean -o $VALIDATION_DIR/MAPS/P_l $COMMONS_PARAMS "     # Fig4.1 CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N3n  -t mean -o $VALIDATION_DIR/MAPS/N3n $COMMONS_PARAMS "     # Fig4.10 NIT-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N1p  -t mean -o $VALIDATION_DIR/MAPS/N1p $COMMONS_PARAMS "     # Fig4.9  PHOS-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_c  -t mean  -t mean -m $MASKFILE -o  $VALIDATION_DIR/MAPS/P_c  -l Plotlist_bio_Int.xml -s 20220101 -e 20250101"
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v Z_c  -t integral -m $MASKFILE -o  $VALIDATION_DIR/MAPS/Z_c  -l Plotlist_bio.xml -s 20220101 -e 20250101"
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_c  -t mean -m $MASKFILE -o  $VALIDATION_DIR/MAPS/P_c  -l Plotlist_bio_Int.xml -s ${YEAR}0101 -e ${YEAR}1231"
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v Z_c  -t integral -o  $VALIDATION_DIR/MAPS/Z_c  $COMMONS_PARAMS " 
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v O2o  -t mean -o $VALIDATION_DIR/MAPS/O2o $COMMONS_PARAMS "
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v CO2airflux -t mean -o $VALIDATION_DIR/MAPS/CO2airflux $COMMONS_PARAMS " 
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v CO2airflux -t mean -o $VALIDATION_DIR/MAPS/CO2airflux -m $MASKFILE  -l Plotlist_bio.xml -s 20220101 -e 20250101"
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v ALK  -t mean -o $VALIDATION_DIR/MAPS/ALK $COMMONS_PARAMS"      # Ac-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN  --> not requested in the ScQP
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v DIC  -t mean -o $VALIDATION_DIR/MAPS/DIC $COMMONS_PARAMS "     # DIC-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN --> not requested in the ScQP
+
 
 
 #CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN from SATELLITE:
