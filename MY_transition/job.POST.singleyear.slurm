@@ -149,7 +149,7 @@ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 OUTPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/YEARLY
 mkdir -p $OUTPUTDIR
 
-for var in ppn P_l N3n N1p ALK DIC O2o P_c Z_c CO2airflux; do
+for var in ppn P_l N3n N1p N4n N5s ALK DIC O2o P_c Z_c CO2airflux; do
     my_prex_or_die "python ../yearly_averager.py -i $INPUTDIR -o $OUTPUTDIR -v $var -m $MASKFILE"
 done
 
