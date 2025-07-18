@@ -47,12 +47,10 @@
 <aggvar name="Z_c" formula="Z_c = Z3c + Z4c + Z5c + Z6c" > </aggvar>
 <aggvar name="Z_p" formula="Z_p = Z3p + Z4p + Z5p + Z6p" > </aggvar>
 <aggvar name="Z_n" formula="Z_n = Z3n + Z4n + Z5n + Z6n" > </aggvar>
-<aggvar name="R_c" formula="R_c = R1c + R2c + R6c + R3c" > </aggvar>
-<aggvar name="R_p" formula="R_p = R1p       + R6p      " > </aggvar>
+<aggvar name="R_c" formula="R_c = R1c + R2c + R3c + R6c + R8c" > </aggvar>
+<aggvar name="R_p" formula="R_p = R1p + R6p + R8p" > </aggvar>
 
-
-<aggvar name="exR2ac" formula= "exR2ac = BFM1D_exR2ac_iiP1 + BFM1D_exR2ac_iiP2  + BFM1D_exR2ac_iiP3 + BFM1D_exR2ac_iiP4  "  ></aggvar>
-<aggvar name="ppn"    formula= "ppn    = ruPPYc  - exR2ac - resPPYc "  ></aggvar>
+<aggvar name="ppn"    formula= "ppn = ruPPYc - resPPYc"  > </aggvar>
 </aggregate>
 
 </vars_for_All_Statistics>
