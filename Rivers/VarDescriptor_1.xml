@@ -16,8 +16,7 @@
 
 <aggvar name="P_l" formula="P_l = P1l + P2l + P3l + P4l" > </aggvar>
 <aggvar name="P_c" formula="P_c = P1c + P2c + P3c + P4c" > </aggvar>
-<aggvar name="exR2ac" formula= "exR2ac = BFM1D_exR2ac_iiP1 + BFM1D_exR2ac_iiP2  + BFM1D_exR2ac_iiP3 + BFM1D_exR2ac_iiP4  "  ></aggvar>
-<aggvar name="ppn"    formula= "ppn    = ruPPYc  - exR2ac - resPPYc "  ></aggvar>
+<aggvar name="ppn"    formula= "ppn    = ruPPYc - resPPYc "  ></aggvar>
 </aggregate>
 </vars_for_All_Statistics>
 
