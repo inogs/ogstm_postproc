@@ -86,7 +86,6 @@ if [ $RUN_PROFILER -eq 1 ] ; then
     if  ! [ -d bit.sea ] ; then
         git clone git@github.com:inogs/bit.sea.git
         cd $BITSEA
-        git checkout floatsV11C_merged
     fi
     cd $HERE
     # float profiler
