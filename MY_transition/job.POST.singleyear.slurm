@@ -140,7 +140,7 @@ mkdir -p $RRS_WEEKLY
 my_prex_or_die "mpirun python ../rrs.py -i $OPTICSDIR -m $MASKFILE -o $RRS__DAILY -l ave*.nc"
 
 for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
-    my_prex_or_die "python ../weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
+    my_prex_or_die "mpirun -np 53 python ../weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
 done
 
 ############     yearly averages   ###########################
