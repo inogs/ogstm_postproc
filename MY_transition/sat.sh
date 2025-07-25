@@ -42,4 +42,4 @@ for VAR in   P_l ; do
 done
 
 
-my_prex_or_die "python plot_pfts.py -i $SAT_VALID_DIR -o $VALIDATION_DIR/SAT/pfts/ -s 20220101 -e 20250101 -c open_sea"
+my_prex_or_die "python plot_pfts.py -i $SAT_VALID_DIR/16_SUBBASINS -o $VALIDATION_DIR/SAT/pfts/ -s 20220101 -e 20250101 -c open_sea"
