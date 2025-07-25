@@ -3,7 +3,7 @@
 #SBATCH --job-name=POST
 #SBATCH -N5
 #SBATCH --ntasks-per-node=24
-#SBATCH --time=02:30:00
+#SBATCH --time=03:30:00
 #SBATCH --mem=300gb
 #SBATCH --account=OGS_test2528
 #SBATCH --partition=g100_meteo_prod
@@ -133,14 +133,14 @@ my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDI
 ################ rrs #########################
 
 RRS__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/RRS_DAILY
-RRS_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/RRS_WEEKLY
+RRS_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 
 mkdir -p $RRS__DAILY
 mkdir -p $RRS_WEEKLY
 my_prex_or_die "mpirun python ../rrs.py -i $OPTICSDIR -m $MASKFILE -o $RRS__DAILY -l ave*.nc"
 
 for var in RRS412 RRS443 RRS490 RRS510 RRS555 RRS670; do
-    my_prex_or_die "python ../weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
+    my_prex_or_die "mpirun -np 53 python ../weekly_averager.py --inputdir ${RRS__DAILY} --maskfile ${MASKFILE} --outdir ${RRS_WEEKLY} --timeaverage thursday --var ${var}"
 done
 
 ############     yearly averages   ###########################
