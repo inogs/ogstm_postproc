@@ -51,6 +51,9 @@
 <aggvar name="Ratio_n_l" formula="Ratio_n_l = P_n/P_l" > </aggvar>
 <aggvar name="Ratio_p_l" formula="Ratio_p_l = P_p/P_l" > </aggvar>
 
+<aggvar name="Ratio_l_c" formula="Ratio_l_c = P_l/P_c" > </aggvar>
+<aggvar name="Ratio_n_c" formula="Ratio_n_c = P_n/P_c" > </aggvar>
+<aggvar name="Ratio_p_c" formula="Ratio_p_c = P_p/P_c" > </aggvar>
 
 <aggvar name="exR2ac" formula= "exR2ac = BFM1D_exR2ac_iiP1 + BFM1D_exR2ac_iiP2  + BFM1D_exR2ac_iiP3 + BFM1D_exR2ac_iiP4  "  ></aggvar>
 <aggvar name="ppn"    formula= "ppn    = ruPPYc  - exR2ac - resPPYc "  ></aggvar>
