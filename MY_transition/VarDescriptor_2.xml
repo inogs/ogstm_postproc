@@ -48,8 +48,8 @@
 <aggvar name="R_p" formula="R_p = R1p       + R6p      " > </aggvar>
 
 <aggvar name="Ratio_c_l" formula="Ratio_c_l = P_c/P_l" > </aggvar>
-<aggvar name="Ratio_n_l" formula="Ratio_c_n = P_n/P_l" > </aggvar>
-<aggvar name="Ratio_p_l" formula="Ratio_c_p = P_p/P_l" > </aggvar>
+<aggvar name="Ratio_n_l" formula="Ratio_n_l = P_n/P_l" > </aggvar>
+<aggvar name="Ratio_p_l" formula="Ratio_p_l = P_p/P_l" > </aggvar>
 
 
 <aggvar name="exR2ac" formula= "exR2ac = BFM1D_exR2ac_iiP1 + BFM1D_exR2ac_iiP2  + BFM1D_exR2ac_iiP3 + BFM1D_exR2ac_iiP4  "  ></aggvar>
