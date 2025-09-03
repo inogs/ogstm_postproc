@@ -55,6 +55,36 @@
 <aggvar name="Ratio_n_c" formula="Ratio_n_c = P_n/P_c" > </aggvar>
 <aggvar name="Ratio_p_c" formula="Ratio_p_c = P_p/P_c" > </aggvar>
 
+<aggvar name="Ratio1_c_l" formula ="Ratio1_c_l = P1c/P1l" > </aggvar>
+<aggvar name="Ratio2_c_l" formula ="Ratio2_c_l = P2c/P2l" > </aggvar>
+<aggvar name="Ratio3_c_l" formula ="Ratio3_c_l = P3c/P3l" > </aggvar>
+<aggvar name="Ratio4_c_l" formula ="Ratio4_c_l = P4c/P4l" > </aggvar>
+
+<aggvar name="Ratio1_n_l" formula="Ratio1_n_l = P1n/P1l"> </aggvar>
+<aggvar name="Ratio2_n_l" formula="Ratio2_n_l = P2n/P2l"> </aggvar>
+<aggvar name="Ratio3_n_l" formula="Ratio3_n_l = P3n/P3l"> </aggvar>
+<aggvar name="Ratio4_n_l" formula="Ratio4_n_l = P4n/P4l"> </aggvar>
+
+<aggvar name="Ratio1_p_l" formula="Ratio1_p_l = P1p/P1l"> </aggvar>
+<aggvar name="Ratio2_p_l" formula="Ratio2_p_l = P2p/P2l"> </aggvar>
+<aggvar name="Ratio3_p_l" formula="Ratio3_p_l = P3p/P3l"> </aggvar>
+<aggvar name="Ratio4_p_l" formula="Ratio4_p_l = P4p/P4l"> </aggvar>
+
+<aggvar name="Ratio1_n_c" formula="Ratio1_n_c = P1n/P1c"> </aggvar>
+<aggvar name="Ratio2_n_c" formula="Ratio2_n_c = P2n/P2c"> </aggvar>
+<aggvar name="Ratio3_n_c" formula="Ratio3_n_c = P3n/P3c"> </aggvar>
+<aggvar name="Ratio4_n_c" formula="Ratio4_n_c = P4n/P4c"> </aggvar>
+
+<aggvar name="Ratio1_p_c" formula="Ratio1_p_c = P1p/P1c"> </aggvar>
+<aggvar name="Ratio2_p_c" formula="Ratio2_p_c = P2p/P2c"> </aggvar>
+<aggvar name="Ratio3_p_c" formula="Ratio3_p_c = P3p/P3c"> </aggvar>
+<aggvar name="Ratio4_p_c" formula="Ratio4_p_c = P4p/P4c"> </aggvar>
+
+<aggvar name="Ratio1_l_c" formula="Ratio1_l_c = P1l/P1c"> </aggvar>
+<aggvar name="Ratio2_l_c" formula="Ratio2_l_c = P2l/P2c"> </aggvar>
+<aggvar name="Ratio3_l_c" formula="Ratio3_l_c = P3l/P3c"> </aggvar>
+<aggvar name="Ratio4_l_c" formula="Ratio4_l_c = P4l/P4c"> </aggvar>
+
 <aggvar name="exR2ac" formula= "exR2ac = BFM1D_exR2ac_iiP1 + BFM1D_exR2ac_iiP2  + BFM1D_exR2ac_iiP3 + BFM1D_exR2ac_iiP4  "  ></aggvar>
 <aggvar name="ppn"    formula= "ppn    = ruPPYc  - exR2ac - resPPYc "  ></aggvar>
 </aggregate>
