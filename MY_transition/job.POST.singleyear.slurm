@@ -133,7 +133,7 @@ my_prex_or_die_with_tries "mpirun -np 16 python ../compact_profiles.py -i $OUTDI
 ################ rrs #########################
 
 RRS__DAILY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/AVE_FREQ_3/RRS_DAILY
-RRS_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
+RRS_WEEKLY=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 
 mkdir -p $RRS__DAILY
 mkdir -p $RRS_WEEKLY
