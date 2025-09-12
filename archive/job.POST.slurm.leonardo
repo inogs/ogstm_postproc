@@ -1,0 +1,77 @@
+#!/bin/bash
+
+#SBATCH --job-name=POST
+#SBATCH -N1
+#SBATCH --ntasks-per-node=64
+#SBATCH --time=00:30:00
+#SBATCH --mem=300gb
+#SBATCH --account=OGS_dev2528_0
+#SBATCH --partition=dcgp_usr_prod
+#SBATCH --qos=dcgp_qos_dbg
+
+
+cd $SLURM_SUBMIT_DIR
+
+module load intel-oneapi-compilers/2023.2.1 netcdf-fortran/4.6.1--intel-oneapi-mpi--2021.10.0--oneapi--2023.2.0
+source /leonardo_work/OGS23_PRACE_IT_0/COPERNICUS/python-3.11.12-venv/bin/activate
+
+unset I_MPI_PMI_LIBRARY
+export UCX_TLS=ib
+export SLURM_PMIX_DIRECT_CONN_UCX=false
+
+
+export OPA_HOME=TRANSITION_24
+
+. ../profile.inc
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2_tar
+my_prex_or_die "./tar_avedir.sh -i $INPUTDIR -o $TARDIR -n 64 -v N1p"
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
+  TARDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS_tar
+my_prex_or_die "./tar_rstdir.sh -i $INPUTDIR -o $TARDIR -n 64"
+
+ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+OUTPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2_compressed
+mkdir -p $OUTPUTDIR
+my_prex_or_die "mpirun -np 64 python netcdf4_compress.py -i $INPUTDIR -o $OUTPUTDIR -l *nc"
+
+# general use of compress.py or uncompress.py
+my_prex_or_die "mpirun -np 64 python compress.py -i $ARCHIVE_DIR -o $ARCHIVE_DIR -l ave*nc  --erase"
+
+
+ARCHIVE_DIR=/pico/scratch/userexternal/ddelross/eas2_v6_out/
+UNZIPPED_DIR=/pico/scratch/userexternal/plazzari/eas2_v6/FORCINGS/UNZIPPED/
+my_prex_or_die "mpirun -np 64 python uncompress.py -i $ARCHIVE_DIR -o $UNZIPPED_DIR -l *20141*gz"
+my_prex_or_die "mpirun -np 64 python compress.py -i $ARCHIVE_DIR -o $ARCHIVE_DIR -l ave*nc  --erase"
+
+
+
+# general ARCHIVE procedure
+
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+mkdir $INPUTDIR/zipped
+mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *nc
+TARDIR=$ARCHIVE_DIR/tar
+mkdir -p $TARDIR
+#ls ave.201001* | cut -d "." -f 3 > allvarlist.txt
+my_prex_or_die " mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v allvarlist.txt"
+
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+mkdir $INPUTDIR/zipped
+my_prex_or_die "mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *nc"
+TARDIR=$ARCHIVE_DIR/tar
+mkdir -p $TARDIR
+my_prex_or_die "mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v HF_varlist.txt"
+
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/RESTARTS
+mkdir $INPUTDIR/zipped
+my_prex_or_die "mpirun python compress.py -i $INPUTDIR -o $INPUTDIR/zipped -l *nc"
+TARDIR=$ARCHIVE_DIR/tar
+mkdir -p $TARDIR
+#ls *N1p.nc | cut -d "-" -f 1 > rsttimes
+my_prex_or_die "mpirun python pack.py -i $INPUTDIR/zipped -o $TARDIR -v rsttimes"
+
