@@ -36,7 +36,7 @@ OUTDIR=addsep(args.outdir)
 
 
 PushingEntity="MED-OGS-TRIESTE-IT"
-DntTime=datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+DntTime=datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
 
