@@ -12,8 +12,7 @@
 usage() {
 echo "Uploads Reanalysis product files"
 echo "SYNOPSYS"
-echo "Phase2_DU_uploader_dataset_006_008_monthly.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y YEAR ] [ -l LOGDIR ]  [ -p PRODUCT_TYPE ]"
-echo "PRODUCT_TYPE can be 'interim' or 'extension' "
+echo "Phase2_DU_uploader_dataset_006_008_monthly.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y YEAR ] [ -l LOGDIR ] "
 echo "TYPE can be 'BIOL','CARB','CO2F','NUTR','PFTC'"
 
 echo ""
@@ -24,62 +23,40 @@ if [ $# -lt 8 ] ; then
   exit 1
 fi
 
-for I in 1 2 3 4 5; do
+for I in 1 2 3 4; do
    case $1 in
       "-i" ) PROD_DIR=$2;;
       "-t" ) type=$2;;
       "-y" ) YEAR=$2;;
       "-l" ) logDir=$2;;
-      "-p" ) PRODUCT_TYPE=$2;;
         *  ) echo "Unrecognized option $1." ; usage;  exit 1;;
    esac
    shift 2
 done
 
 
-BINDIR=/g100_work/OGS23_PRACE_IT/COPERNICUS/bin/
+
 
 
 
 FILES_TO_SEND="${YEAR}*${type}*.nc"
 
-if [[ "$PRODUCT_TYPE" == "interim" ]]; then
-
-	if [[ "$type" == "BIOL" ]]; then
-   	dataset=cmems_mod_med_bgc-bio_myint_4.2km_P1M-m_202112
-	fi
-	if [[ "$type" == "CARB" ]]; then
-   	dataset=cmems_mod_med_bgc-car_myint_4.2km_P1M-m_202112
-	fi
-	if [[ "$type" == "CO2F" ]]; then
-   	dataset=cmems_mod_med_bgc-co2_myint_4.2km_P1M-m_202112
-	fi
-	if [[ "$type" == "NUTR" ]]; then
-   	dataset=cmems_mod_med_bgc-nut_myint_4.2km_P1M-m_202112
-	fi
-	if [[ "$type" == "PFTC" ]]; then
-   	dataset=cmems_mod_med_bgc-pft_myint_4.2km_P1M-m_202112
-	fi
+if [[ "$type" == "BIOL" ]]; then
+   dataset=cmems_mod_med_bgc-bio_my_4.2km_P1M-m_202511
+fi
+if [[ "$type" == "CARB" ]]; then
+   dataset=cmems_mod_med_bgc-car_my_4.2km_P1M-m_202511
+fi
+if [[ "$type" == "CO2F" ]]; then
+   dataset=cmems_mod_med_bgc-co2_my_4.2km_P1M-m_202511
+fi
+if [[ "$type" == "NUTR" ]]; then
+   dataset=cmems_mod_med_bgc-nut_my_4.2km_P1M-m_202511
+fi
+if [[ "$type" == "PFTC" ]]; then
+   dataset=cmems_mod_med_bgc-plankton_my_4.2km_P1M-m_202511
 fi
 
-if [[ "$PRODUCT_TYPE" == "extension" ]]; then
-
-	if [[ "$type" == "BIOL" ]]; then
-        dataset=med-ogs-bio-rean-m_202105
-        fi
-        if [[ "$type" == "CARB" ]]; then
-        dataset=med-ogs-car-rean-m_202105
-        fi
-        if [[ "$type" == "CO2F" ]]; then
-        dataset=med-ogs-co2-rean-m_202105
-        fi
-        if [[ "$type" == "NUTR" ]]; then
-        dataset=med-ogs-nut-rean-m_202105
-        fi
-        if [[ "$type" == "PFTC" ]]; then
-        dataset=med-ogs-pft-rean-m_202105
-        fi
-fi
 
 PushingEntity="MED-OGS-TRIESTE-IT"
 
@@ -117,7 +94,7 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
    
 	for i in `seq 1 10`;do
 
-                  stderr=$( $BINDIR/ncftpput -P $port -u $username -p $password -T .tmp. $host $remotedir ${file} 2>&1 )
+                  stderr=$( ncftpput -P $port -u $username -p $password -T .tmp. $host $remotedir ${file} 2>&1 )
 		  errCod=$?
 
 		  if [ ${errCod} -eq 0 ];then
