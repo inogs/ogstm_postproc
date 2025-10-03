@@ -3,16 +3,76 @@
 
 #SBATCH --job-name=POST
 #SBATCH -N1
-#SBATCH --ntasks-per-node=12
-#SBATCH --time=01:30:00
+#SBATCH --ntasks-per-node=5
+#SBATCH --time=0:30:00
 #SBATCH --mem=100gb
-#SBATCH --account=OGS_devC
-#SBATCH --partition=g100_usr_prod
-#SBATCH --qos=g100_qos_dbg
+#SBATCH --account=OGS_test2528_0
+#SBATCH --partition=dcgp_usr_prod
+#SBATCH --qos=dcgp_qos_dbg
 
 unset I_MPI_PMI_LIBRARY
 
 . ../profile.inc
+
+
+INPUTDIR=/leonardo_scratch/large/userexternal/gbolzon0/V12C/Samples/AVE_DAILY
+OUTPUTDIR=/leonardo_scratch/large/userexternal/gbolzon0/V12C/Samples/PROD/DAILY/RE
+MASKFILE=/leonardo_scratch/large/userexternal/gbolzon0/V12C/Samples/meshmask.nc
+
+mkdir -p $OUTPUTDIR
+HERE=$PWD
+
+
+cat<<EOF > timelist
+20250801
+20250802
+20250803
+20250804
+20250805
+EOF
+
+#my_prex_or_die "mpirun -np 5 python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist -m $MASKFILE -b 20250901 --tr daily --bulltype analysis"
+
+
+OUTPUTDIR=/leonardo_scratch/large/userexternal/gbolzon0/V12C/Samples/PROD/DAILY/IN
+cat<<EOF > timelist
+20250821
+20250822
+20250823
+20250824
+20250825
+EOF
+
+#my_prex_or_die "mpirun -np 5 python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist -m $MASKFILE -b 20250901 --tr daily --bulltype interim"
+
+INPUTDIR=/leonardo_scratch/large/userexternal/gbolzon0/V12C/Samples/AVE_MONTHLY
+OUTPUTDIR=/leonardo_scratch/large/userexternal/gbolzon0/V12C/Samples/PROD/MONTHLY/RE
+cat<<EOF > timelist
+20250101
+20250201
+20250301
+20250401
+20250501
+EOF
+
+my_prex_or_die "mpirun -np 5 python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist -m $MASKFILE -b 20250901 --tr monthly --bulltype analysis"
+
+OUTPUTDIR=/leonardo_scratch/large/userexternal/gbolzon0/V12C/Samples/PROD/MONTHLY/IN
+cat<<EOF > timelist
+20250801
+20250901
+20251001
+20251101
+20251201
+EOF
+
+my_prex_or_die "mpirun -np 5 python prodotti_copernicus_rea.py -i $INPUTDIR -o $OUTPUTDIR -t timelist -m $MASKFILE -b 20250901 --tr monthly --bulltype interim"
+
+
+exit 0
+
+
+
 INPUTDIR=/g100_scratch/userexternal/gbolzon0/RA_24/AVE/MONTHLY
 OUTPUTDIR=/g100_scratch/userexternal/gbolzon0/RA_24/AVE/CLIM
 MASKFILE=/g100_scratch/userexternal/gbolzon0/RA_24/meshmask.nc
