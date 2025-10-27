@@ -4,7 +4,6 @@ OUTDIR=$PWD/out
 
 mkdir -p $OUTDIR
 PRODUCT_ID=MEDSEA_ANALYSISFORECAST_BGC_006_014
-
 DATASETS="
 cmems_mod_med_bgc-bio_anfc_4.2km_P1M-m
 cmems_mod_med_bgc-car_anfc_4.2km_P1M-m
@@ -13,11 +12,18 @@ cmems_mod_med_bgc-pft_anfc_4.2km_P1M-m
 cmems_mod_med_bgc-co2_anfc_4.2km_P1M-m
 cmems_mod_med_bgc-optics_anfc_4.2km_P1M-m
 "
-# DATASETS="
-# med-ogs-bio-rean-d
-# "
 
-JUNKFILE=junk.txt
+
+#PRODUCT_ID=MEDSEA_MULTIYEAR_BGC_006_008
+#DATASETS="
+#cmems_mod_med_bgc-bio_my_4.2km_P1D-m
+#cmems_mod_med_bgc-car_my_4.2km_P1D-m
+#cmems_mod_med_bgc-nut_my_4.2km_P1D-m
+#cmems_mod_med_bgc-plankton_my_4.2km_P1D-m
+#cmems_mod_med_bgc-co2_my_4.2km_P1D-m
+#"
+
+
 PARAMS="s3 ls --endpoint-url https://s3.waw3-1.cloudferro.com --no-sign-request"
 for dataset in $DATASETS ; do  
 
