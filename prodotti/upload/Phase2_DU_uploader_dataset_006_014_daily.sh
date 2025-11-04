@@ -188,7 +188,7 @@ echo "    </dataset>"  >> $DNT_FILE
 echo "</delivery>" >> $DNT_FILE
 
 if [ $upload_xml == "True" ] ; then
-   echo "Now upload $DNT_FILE"
+   echo "Now uploading $DNT_FILE"
 else
-   echo "Don't upload $DNT_FILE"
+   echo "$DNT_FILE can be manually uploaded to MDS"
 fi
