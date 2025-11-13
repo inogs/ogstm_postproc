@@ -36,15 +36,17 @@ import os
 from bitsea.commons.utils import addsep
 import glob
 from bitsea.commons.netcdf4 import lon_dimension_name, lat_dimension_name, depth_dimension_name
+from bitsea.utilities.mpi_serial_interface import get_mpi_communicator
 
 try:
     from mpi4py import MPI
-    comm  = MPI.COMM_WORLD
-    rank  = comm.Get_rank()
-    nranks =comm.size
-except:
-    rank   = 0
-    nranks = 1
+except Exception:
+    LOGGER.info("MPI not available; running in serial")
+
+comm  = get_mpi_communicator()
+rank  = comm.Get_rank()
+nranks =comm.size
+
 
 INPUTDIR  = addsep(args.inputdir)
 OUTPUTDIR = addsep(args.outputdir)
@@ -78,29 +80,29 @@ def WRITE_AVE(inputfile, outfile,var):
         ncvar = ncOUT.createVariable('depth'   ,'f', ('depth',))
         setattr(ncvar,'units','meter')
         setattr(ncvar,'positive','down')
-        ncvar[:]=np.array(ncIN[depth_orig_name])
+        ncvar[:] = np.asarray(ncIN[depth_orig_name])
     
     ncvar = ncOUT.createVariable(lon_orig_name   ,'f',   (lon_orig_name,))
     setattr(ncvar,'units','degrees_east')
     setattr(ncvar,'long_name','Longitude')
-    ncvar[:]=np.array(ncIN[lon_orig_name])
+    ncvar[:] = np.asarray(ncIN[lon_orig_name])
 
     ncvar = ncOUT.createVariable(lat_orig_name   ,'f',   (lat_orig_name,))
     setattr(ncvar,'units','degrees_north')
     setattr(ncvar,'long_name','Latitude')
-    ncvar[:]=np.array(ncIN[lat_orig_name])
+    ncvar[:] = np.asarray(ncIN[lat_orig_name])
 
 
     OUT = np.array(ncIN[var])
     if 'time' in ncIN.dimensions:
         if len(OUT.shape)==4:
             ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20)
-            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'missing_value', ncvar._FillValue)
             setattr(ncvar,'long_name',var)
             ncvar[:] = OUT
         if len(OUT.shape)==3:
             ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20)
-            setattr(ncvar,'missing_value',ncvar._FillValue)
+            setattr(ncvar,'missing_value', ncvar._FillValue)
             setattr(ncvar,'long_name',var)
             ncvar[:] =  OUT
     else:
@@ -162,11 +164,11 @@ def WRITE_RST(inputfile, outfile,var, precision="double"):
     if precision=='double':
         ncvar = ncOUT.createVariable("TRN" + var, 'd', ('time','z','y','x'),zlib=True, fill_value=1.0e+20)
         setattr(ncvar,'missing_value',ncvar._FillValue)
-        ncvar[:] = np.array(ncIN["TRN" + var])
+        ncvar[:] = np.asarray(ncIN["TRN" + var])
     else:
         ncvar = ncOUT.createVariable("TRN" + var, 'f', ('time','z','y','x'),zlib=True, fill_value=1.0e+20, complevel=9)
         setattr(ncvar,'missing_value',ncvar._FillValue)
-        ncvar[:] = np.array(ncIN["TRN" + var]).astype(np.float32)
+        ncvar[:] = np.asarray(ncIN["TRN" + var], dtype=np.float32)
     ncIN.close()
     ncOUT.close()
     
