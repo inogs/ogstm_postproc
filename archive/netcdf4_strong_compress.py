@@ -1,4 +1,18 @@
 import argparse
+import logging
+
+import numpy as np
+from bitsea.utilities.mpi_serial_interface import get_mpi_communicator
+
+from netcdf4_compress import compress_nc4
+from netcdf4_compress import configure_logger
+
+
+if __name__ == '__main__':
+    LOGGER = logging.getLogger()
+else:
+    LOGGER = logging.getLogger(__name__)
+
 
 def argument():
     parser = argparse.ArgumentParser(description = '''
@@ -33,156 +47,39 @@ def argument():
     return parser.parse_args()
 
 
-args = argument()
+def main():
+    args = argument()
 
-import netCDF4
-import numpy as np
-import os
-from bitsea.commons.utils import addsep
-import glob
-from bitsea.commons.netcdf4 import lon_dimension_name, lat_dimension_name, depth_dimension_name
+    try:
+        from mpi4py import MPI
+    except Exception:
+        LOGGER.info("MPI not available; running in serial")
 
-try:
-    from mpi4py import MPI
-    comm  = MPI.COMM_WORLD
-    rank  = comm.Get_rank()
-    nranks =comm.size
-except:
-    rank   = 0
-    nranks = 1
+    comm = get_mpi_communicator()
+    configure_logger(logger=LOGGER, rank=comm.Get_rank())
 
-INPUTDIR  = addsep(args.inputdir)
-OUTPUTDIR = addsep(args.outputdir)
-PATH_NAME = args.filelist
-os.chdir(INPUTDIR)
-FILELIST=glob.glob(PATH_NAME)
-FILELIST.sort()
-digits = args.significant_digits
+    input_dir = args.inputdir
+    output_dir = args.outputdir
+    path_mask = args.filelist
+    cut_level = args.cutlevel
+    significant_digits = args.significant_digits
 
-def WRITE_AVE(inputfile, outfile,var):
-    
-    #De=DataExtractor(TheMask,filename,var)
-    
-    ncIN = netCDF4.Dataset(inputfile,"r")    
-    ncOUT = netCDF4.Dataset(outfile,"w",format="NETCDF4")
-    
-    setattr(ncOUT,"Convenctions","COARDS")
-    if "DateStart" in ncIN.ncattrs():
-        setattr(ncOUT,"DateStart",ncIN.DateStart)
-        setattr(ncOUT,"Date__End",ncIN.Date__End)
-    
-    DIMS=ncIN.dimensions
-    for dimName,dimObj in DIMS.items():
-        ncOUT.createDimension(dimName,dimObj.size)
-    lon_orig_name=lon_dimension_name(ncIN)
-    lat_orig_name=lat_dimension_name(ncIN)
-    depth_orig_name=depth_dimension_name(ncIN)
+    compress_nc4(
+        input_dir=input_dir,
+        output_dir=output_dir,
+        path_mask=path_mask,
+        cut_level=cut_level,
+        var_args={
+            "zlib": True,
+            "complevel": 9,
+            "fill_value": np.float32(1.0e+20),
+            "least_significant_digit": significant_digits
+        },
+        rst_da_var_args = {
+            "least_significant_digit": 3,
+        }
+    )
 
 
-    if 'depth' in ncIN.variables:
-        ncvar = ncOUT.createVariable('depth'   ,'f', ('depth',))
-        setattr(ncvar,'units','meter')
-        setattr(ncvar,'positive','down')
-        ncvar[:]=np.array(ncIN[depth_orig_name])
-    
-    ncvar = ncOUT.createVariable(lon_orig_name   ,'f',   (lon_orig_name,))
-    setattr(ncvar,'units','degrees_east')
-    setattr(ncvar,'long_name','Longitude')
-    ncvar[:]=np.array(ncIN[lon_orig_name])
-
-    ncvar = ncOUT.createVariable(lat_orig_name   ,'f',   (lat_orig_name,))
-    setattr(ncvar,'units','degrees_north')
-    setattr(ncvar,'long_name','Latitude')
-    ncvar[:]=np.array(ncIN[lat_orig_name])
-
-
-    OUT = np.array(ncIN[var])
-    if 'time' in ncIN.dimensions:
-        if len(OUT.shape)==4:
-            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=digits)
-            setattr(ncvar,'missing_value',ncvar._FillValue)
-            setattr(ncvar,'long_name',var)
-            ncvar[:] = OUT
-        if len(OUT.shape)==3:
-            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=digits)
-            setattr(ncvar,'missing_value',ncvar._FillValue)
-            setattr(ncvar,'long_name',var)
-            ncvar[:] =  OUT
-    else:
-        ncOUT.createDimension('time',0)
-        if len(OUT.shape)==3:
-            ncvar = ncOUT.createVariable(var, 'f', ('time','depth',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=digits)
-            setattr(ncvar,'missing_value',ncvar._FillValue)
-            setattr(ncvar,'long_name',var)
-            ncvar[0,:] = OUT
-        if len(OUT.shape)==2:
-            ncvar = ncOUT.createVariable(var, 'f', ('time',lat_orig_name,lon_orig_name),zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=digits)
-            setattr(ncvar,'missing_value',ncvar._FillValue)
-            setattr(ncvar,'long_name',var)
-            ncvar[0,:] =  OUT
-    ncIN.close()
-    ncOUT.close()
-
-def WRITE_RST_DA(inputfile, outfile,var,jkcut=None):
-    
-    ncIN = netCDF4.Dataset(inputfile,"r")    
-    ncOUT = netCDF4.Dataset(outfile,"w",format="NETCDF4")
-
-    DIMS=ncIN.dimensions
-    for dimName,dimObj in DIMS.items():
-        if ((jkcut is not None ) & (dimName in ["z","depth"])) :
-            ncOUT.createDimension(dimName,jkcut)
-        else:
-            ncOUT.createDimension(dimName,dimObj.size)
-
-    if 'time' not in DIMS.keys():
-        ncOUT.createDimension('time',1)
-    dims=('time',depth_dimension_name(ncIN),lat_dimension_name(ncIN) ,lon_dimension_name(ncIN))
-    ncvar = ncOUT.createVariable("TRN" + var, 'f', dims ,zlib=True, fill_value=1.0e+20,complevel=9, least_significant_digit=3)
-    setattr(ncvar,'missing_value',ncvar._FillValue)
-    if var in ncIN.variables:
-        x=np.array(ncIN[var])
-    else:
-        x=np.array(ncIN["TRN" + var])
-
-    if (len(x.shape)==4):
-        ncvar[:] = x[:,:jkcut,:,:]
-    else:
-        ncvar[0,:] = x[:jkcut,:,:]
-    ncIN.close()
-    ncOUT.close()
-
-def WRITE_RST(inputfile, outfile,var):
-    '''
-    Valid for true restarts (51 variables, double)
-    '''
-    
-    ncIN = netCDF4.Dataset(inputfile,"r")    
-    ncOUT = netCDF4.Dataset(outfile,"w",format="NETCDF4")
-        
-    DIMS=ncIN.dimensions
-    for dimName,dimObj in DIMS.items():
-        ncOUT.createDimension(dimName,dimObj.size)
-
-    ncvar = ncOUT.createVariable("TRN" + var, 'd', ('time','z','y','x'),zlib=True, fill_value=1.0e+20)            
-    setattr(ncvar,'missing_value',ncvar._FillValue)
-    ncvar[:] = np.array(ncIN["TRN" + var])
-    ncIN.close()
-    ncOUT.close()
-    
-
-for filename in FILELIST[rank::nranks]:
-    basename=os.path.basename(filename)
-    outfile=OUTPUTDIR + basename
-    print(outfile,flush=True)
-    prefix, datestr, var, _ = basename.rsplit(".")
-    if prefix == 'ave':
-        WRITE_AVE(filename, outfile, var)
-    if prefix == "RST":
-        if datestr.count("0000"):
-            WRITE_RST_DA(filename, outfile, var, args.cutlevel)
-        else:
-            WRITE_RST(filename, outfile, var)
-    if prefix in ["RST_after", "RSTbefore"]:
-        WRITE_RST_DA(filename, outfile, var, args.cutlevel)
-
+if __name__ == '__main__':
+    main()
