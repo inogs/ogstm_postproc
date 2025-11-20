@@ -159,7 +159,7 @@ def WRITE_RST(inputfile, outfile,var, output_dtype=np.float64):
                 fill_value=np.float32(1.0e+20)
             )
             setattr(ncvar,'missing_value', ncvar._FillValue)
-            ncvar[:] = np.asarray(ncIN["TRN" + var]).astype(output_dtype)
+            ncvar[:] = np.asarray(ncIN["TRN" + var][:], dtype=output_dtype)
 
 
 def compress_nc4(
