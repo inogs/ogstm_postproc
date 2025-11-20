@@ -2,6 +2,7 @@ import argparse
 import logging
 
 import numpy as np
+from bitsea.utilities.argparse_types import existing_dir_path
 from bitsea.utilities.mpi_serial_interface import get_mpi_communicator
 
 from netcdf4_compress import compress_nc4
@@ -21,12 +22,12 @@ def argument():
     Parallel executable, can be called by mpirun.
    ''',formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(   '--inputdir', '-i',
-                                type = str,
+                                type = existing_dir_path,
                                 required = True,
                                 help ='The directory wrkdir/MODEL/AVE_FREQ_1/ where chain has run.'
                                 )
     parser.add_argument(   '--outputdir',"-o",
-                                type = str,
+                                type = existing_dir_path,
                                 required = True,
                                 help = 'Path of existing dir')
     parser.add_argument(   '--filelist',"-l",
