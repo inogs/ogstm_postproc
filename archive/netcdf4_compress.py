@@ -225,9 +225,9 @@ def compress_nc4(
         LOGGER.info("Writing file %s", outfile)
 
         prefix, datestr, var, _ = basename.rsplit(".")
-        if prefix.startswith('ave'):
+        if prefix=='ave':
             WRITE_AVE(filename, outfile, var, var_args=var_args)
-        if prefix.startswith("RST"):
+        if prefix=="RST":
             if datestr.count("0000"):
                 WRITE_RST_DA(
                     filename,
