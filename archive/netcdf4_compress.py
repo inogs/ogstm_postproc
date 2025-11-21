@@ -140,7 +140,7 @@ def WRITE_RST_DA(inputfile, outfile,var, jkcut: int | None = None, var_args: dic
                 ncvar[0,:] = x[:jkcut,:,:]
 
 
-def WRITE_RST(inputfile, outfile,var, output_dtype=np.float64):
+def WRITE_RST(inputfile, outfile,var, output_dtype=np.float64, var_args: dict | None = None):
     """
     Valid for true restarts (51 variables, double)
     """
@@ -155,8 +155,7 @@ def WRITE_RST(inputfile, outfile,var, output_dtype=np.float64):
                 "TRN" + var,
                 output_dtype,
                 ('time','z','y','x'),
-                zlib=True,
-                fill_value=np.float32(1.0e+20)
+                **var_args,
             )
             setattr(ncvar,'missing_value', ncvar._FillValue)
             ncvar[:] = np.asarray(ncIN["TRN" + var][:], dtype=output_dtype)
@@ -171,6 +170,36 @@ def compress_nc4(
         rst_da_var_args: dict | None = None,
         communicator = None
 ):
+    """Compresses NetCDF4 files with optional parallel processing using MPI.
+
+    This function processes NetCDF4 files by applying compression settings and
+    writing them to a new location. It handles different file types (ave, RST,
+    RST_after, RSTbefore) with specific processing for each type.
+    The function can operate in parallel using MPI by distributing files
+    across available ranks.
+
+    Args:
+        input_dir: Directory containing input NetCDF4 files.
+        output_dir: Directory where compressed files will be written.
+        path_mask: Glob pattern to match input files (e.g. "*.nc").
+        cut_level: Number of depth levels to include in output.
+            If None, all levels are kept.
+        var_args (dict | None): Dictionary of the arguments that will be
+            passed to the netCDF4.createVariable function. Usually it contains
+            values like "complevel" and "zlib". Defaults to empty dict if None.
+        rst_da_var_args (dict | None): Additional variable creation arguments
+            for RST_DA files. These values are added to the var_args dictionary
+            when creating the variables of the RST_DA files. If there is a
+            conflict, the values of this dictionary are used. Defaults to empty
+            dict if None.
+        communicator: MPI communicator object for parallel processing.
+            If None, the global communicator is used if MPI has been imported,
+            otherwise it will run in serial.
+
+    Note:
+        The function processes files in parallel when run with MPI,
+        distributing files across ranks in a round-robin fashion.
+    """
     if communicator is None:
         communicator = get_mpi_communicator()
 
@@ -184,8 +213,8 @@ def compress_nc4(
     rst_da_var_args_complete = var_args.copy()
     rst_da_var_args_complete.update(rst_da_var_args)
 
-    rank  = communicator.Get_rank()
-    nranks =communicator.size
+    rank = communicator.Get_rank()
+    nranks = communicator.size
 
     file_list = sorted(input_dir.glob(path_mask))
 
@@ -200,16 +229,48 @@ def compress_nc4(
             WRITE_AVE(filename, outfile, var, var_args=var_args)
         if prefix.startswith("RST"):
             if datestr.count("0000"):
-                WRITE_RST_DA(filename, outfile, var, cut_level, rst_da_var_args_complete)
+                WRITE_RST_DA(
+                    filename,
+                    outfile,
+                    var,
+                    cut_level,
+                    var_args=rst_da_var_args_complete,
+                )
             else:
-                WRITE_RST(filename, outfile, var, output_dtype=np.float64)
+                WRITE_RST(
+                    filename,
+                    outfile,
+                    var,
+                    output_dtype=np.float64,
+                    var_args=var_args
+                )
         if prefix in ["RST_after", "RSTbefore"]:
-            WRITE_RST_DA(filename, outfile, var, cut_level)
+            WRITE_RST_DA(
+                filename,
+                outfile,
+                var,
+                cut_level,
+                var_args=rst_da_var_args_complete
+            )
 
 
-def configure_logger(logger = None, rank: int = 0) -> None:
-    if logger is None:
-        logger = LOGGER
+
+def configure_logger(root_logger = None, rank: int = 0) -> None:
+    """Configure logging settings for the application.
+
+    Sets up logging with a specific format that includes timestamp,
+    rank number, logger name, log level and message. Creates a StreamHandler
+    that outputs to stdout and adds it to the root logger.
+
+    Args:
+        root_logger: The logger instance to configure. If None, uses the
+            module's LOGGER instance. Defaults to None.
+        rank: MPI rank number to include in log messages. Useful for
+            identifying messages from different processes in parallel
+            execution. Defaults to 0.
+    """
+    if root_logger is None:
+        root_logger = LOGGER
 
     format_string = (
         f"%(asctime)s [rank={rank:0>3}] - %(name)s - "
@@ -217,7 +278,7 @@ def configure_logger(logger = None, rank: int = 0) -> None:
     )
     formatter = logging.Formatter(format_string)
 
-    logger.setLevel(logging.INFO)
+    root_logger.setLevel(logging.INFO)
 
     handler = logging.StreamHandler()
     handler.setLevel(logging.DEBUG)

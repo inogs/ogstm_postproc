@@ -57,7 +57,7 @@ def main():
         LOGGER.info("MPI not available; running in serial")
 
     comm = get_mpi_communicator()
-    configure_logger(logger=LOGGER, rank=comm.Get_rank())
+    configure_logger(root_logger=LOGGER, rank=comm.Get_rank())
 
     input_dir = args.inputdir
     output_dir = args.outputdir
