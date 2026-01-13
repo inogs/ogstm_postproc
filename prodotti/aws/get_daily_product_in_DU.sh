@@ -10,8 +10,7 @@
 ##################################################
 
 usage() {
-echo "Returns the name of a product in DU phase 2 production position"
-echo "Needs in PATH the path of ncftp "
+echo "Returns the name of a product in MDS"
 echo "type can be: BIOL, CARB, NUTR, PFTC, CO2F EXCO"
 echo ""
 echo "SYNOPSYS"
@@ -22,7 +21,7 @@ echo ""
 }
 
 if [ $# -lt 4 ] ; then
-  usagec
+  usage
   exit 1
 fi
 
