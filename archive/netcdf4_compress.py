@@ -9,6 +9,8 @@ from bitsea.utilities.argparse_types import existing_dir_path
 from bitsea.utilities.mpi_serial_interface import get_mpi_communicator
 import netCDF4
 import numpy as np
+from typing import Optional
+
 
 
 if __name__ == '__main__':
@@ -44,8 +46,7 @@ def argument():
  
     return parser.parse_args()
 
-
-def WRITE_AVE(inputfile, outfile, var, var_args: dict | None = None):
+def WRITE_AVE(inputfile, outfile, var, var_args: Optional[dict] = None):
     if var_args is None:
         var_args = {}
 
@@ -104,8 +105,7 @@ def WRITE_AVE(inputfile, outfile, var, var_args: dict | None = None):
                     setattr(ncvar,'long_name',var)
                     ncvar[0,:] =  OUT
 
-
-def WRITE_RST_DA(inputfile, outfile,var, jkcut: int | None = None, var_args: dict | None = None):
+def WRITE_RST_DA(inputfile, outfile, var, jkcut: Optional[int] = None, var_args: Optional[dict] = None):
     if var_args is None:
         var_args = {}
     
@@ -139,8 +139,7 @@ def WRITE_RST_DA(inputfile, outfile,var, jkcut: int | None = None, var_args: dic
             else:
                 ncvar[0,:] = x[:jkcut,:,:]
 
-
-def WRITE_RST(inputfile, outfile,var, output_dtype=np.float64, var_args: dict | None = None):
+def WRITE_RST(inputfile, outfile, var, output_dtype=np.float64, var_args: Optional[dict] = None):
     """
     Valid for true restarts (51 variables, double)
     """
@@ -160,16 +159,18 @@ def WRITE_RST(inputfile, outfile,var, output_dtype=np.float64, var_args: dict | 
             setattr(ncvar,'missing_value', ncvar._FillValue)
             ncvar[:] = np.asarray(ncIN["TRN" + var][:], dtype=output_dtype)
 
+from pathlib import Path
 
 def compress_nc4(
         input_dir: Path,
-        output_dir:Path,
+        output_dir: Path,
         path_mask: str,
-        cut_level: int | None,
-        var_args: dict | None = None,
-        rst_da_var_args: dict | None = None,
+        cut_level: Optional[int] = None,
+        var_args: Optional[dict] = None,
+        rst_da_var_args: Optional[dict] = None,
         communicator = None
 ):
+
     """Compresses NetCDF4 files with optional parallel processing using MPI.
 
     This function processes NetCDF4 files by applying compression settings and
