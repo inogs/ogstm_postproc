@@ -34,6 +34,10 @@
 <var name="P2l" ></var>
 <var name="P3l" ></var>
 <var name="P4l" ></var>
+<var name="P1c" ></var>
+<var name="P2c" ></var>
+<var name="P3c" ></var>
+<var name="P4c" ></var>
 </native>
 
 <aggregate>
