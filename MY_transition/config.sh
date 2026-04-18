@@ -31,13 +31,7 @@ for I in 1 2 ; do
 done
 
 
-module load autoload
-module load intel/oneapi-2021--binary
-module load intelmpi/oneapi-2021--binary
-module load mkl/oneapi-2021--binary
-module load netcdf/4.7.4--oneapi--2021.2.0-ifort
-module load netcdff/4.5.3--oneapi--2021.2.0-ifort
-source /g100_work/OGS23_PRACE_IT/COPERNICUS/py_env_3.9.18_new/bin/activate
+source /g100_work/OGS23_PRACE_IT/COPERNICUS/sequence.sh
 
 
 #Hypotheses:
@@ -46,9 +40,10 @@ source /g100_work/OGS23_PRACE_IT/COPERNICUS/py_env_3.9.18_new/bin/activate
 
 
 #  user settings #########################
-export OPA_HOME=V11C/TRANSITION
+export OPA_HOME=V13C/run01
 #
-export VALIDATION_DIR=/g100_work/OGS_devC/Benchmark/pub/gbolzon/V11C/TRANSITION  ## the path after pub/ will be published https://medeaf.inogs.it/internal-validation
+## the path after pub/ will be published https://medeaf.inogs.it/internal-validation
+export VALIDATION_DIR=/g100_work/OGS_test2528/internal-validation/pub/gbolzon/V13C/HC
 #
 # EDIT timeseries_user_setting.tpl -- for multirun color settings
 #
@@ -102,7 +97,7 @@ fi
 
 
 # static Validation dirs
-export SAT_CHLWEEKLY_DIR=/g100_scratch/usera07ogs/a07ogs00/V11C/ONLINE/SAT/CHL/DT/WEEKLY_4_24
+export SAT_CHLWEEKLY_DIR=/g100_scratch/usera07ogs/a07ogs00/V12C/ONLINE/SAT/CHL/DT/WEEKLY_4_24
 export SAT_KD_WEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC/SAT/KD490/DT/WEEKLY_4_24
 export SAT_RRSWEEKLY_DIR=/g100_work/OGS_test2528/Observations/TIME_RAW_DATA/STATIC//SAT/RRS/DT/WEEKLY_4_24
 export SAT_VALID_DIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/validation/SAT
