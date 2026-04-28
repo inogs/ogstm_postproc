@@ -151,7 +151,7 @@ for var in VARLIST[COMM.Get_rank()::COMM.size]:
 
         time_var = ncOUT.createVariable('time', np.int64, ('nFrames',))
         time_var.units = 'seconds since 1970-01-01 00:00:00'
-        time_var[:] = time_array
+        time_var[:] = np.asarray(time_array-np.datetime64('1970-01-01','s'), dtype=np.int64)
 
         setattr(ncOUT, "frame_list", FrameDesc)
         for attribute, attribute_value in file_attributes.items():

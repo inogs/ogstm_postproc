@@ -1,6 +1,6 @@
 #!/bin/bash
 
-##  Phase2_DU_uploader_dataset_006_014_monthly.sh ##
+##  Phase2_DU_uploader_dataset_006_014_daily.sh   ##
 #   Sends products to COPERNICUS phase II DU       #
 #      generates delivery note xml file            #
 #                                                  #
@@ -11,7 +11,7 @@
 usage() {
 echo "Uploads chain product files"
 echo "SYNOPSYS"
-echo "Phase2_DU_uploader_dataset_006_014_monthly.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y $YEAR ] [ -l LOGDIR ]"
+echo "Phase2_DU_uploader_dataset_006_014_daily.sh [ -i PRODUCTDIR] [ -t TYPE ] [ -y $YEAR ] [ -l LOGDIR ]"
 echo ""
 }
 
@@ -20,7 +20,7 @@ if [ $# -lt 8 ] ; then
   exit 1
 fi
 
-for I in 1 2 3 4 ; do
+for I in 1 2 3 4; do
    case $1 in
       "-i" ) PROD_DIR=$2;;
       "-t" ) TYPE=$2;;
@@ -45,16 +45,20 @@ function decide_action {
    remotefile=$2
 
    remotebul_time=${remotefile:34:8}
+       remotetype=${remotefile:43:2}
    local_bul_time=${local_file:34:8}
-   local_type=${local_file:43:2}
-   
-   if [[ $local_type == fc ]] || [[ $local_type == sm ]]  ; then return 4 ; fi
+       local_type=${local_file:43:2}
+
    if [[ $remotefile == $local_file ]]   ; then return 1 ; fi
    if [[ $remotefile == "" ]]            ; then return 2 ; fi
 
-   
-   if [[ $local_bul_time > $remotebul_time ]]   ; then return 3 ; fi
-   if [[ $local_bul_time < $remotebul_time ]]   ; then return 4 ; fi
+   if ( [[ $remotetype == fc ]] || [[ $remotetype == sm ]]  ) && [[ $local_type == an ]] ; then return 3 ; fi
+   if [[ $remotetype == fc ]] && [[ $local_type == sm ]]                                 ; then return 3 ; fi
+   if [[ $remotetype == an ]] && ( [[ $local_type == sm ]] || [[ $local_type == fc ]] )  ; then return 4 ; fi
+   if [[ $remotetype == sm ]] && [[ $local_type == fc ]]                                 ; then return 4 ; fi
+
+   if [[ $local_bul_time > $remotebul_time ]]                                            ; then return 3 ; fi
+   if [[ $remotetype == $local_type ]] && [[ $local_bul_time < $remotebul_time ]]        ; then return 4 ; fi
 
 }
 
@@ -62,14 +66,13 @@ function decide_action {
 BINDIR=/g100_work/OGS23_PRACE_IT/COPERNICUS/bin/
 FILES_TO_SEND="${YEAR}*${TYPE}*.nc"
 
-
 case $TYPE in
-   "BIOL" ) dataset=cmems_mod_med_bgc-bio_anfc_4.2km_P1M-m_202411 ;;
-   "CARB" ) dataset=cmems_mod_med_bgc-car_anfc_4.2km_P1M-m_202411 ;;
-   "NUTR" ) dataset=cmems_mod_med_bgc-nut_anfc_4.2km_P1M-m_202411 ;;
-   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1M-m_202411 ;;
-   "CO2F" ) dataset=cmems_mod_med_bgc-co2_anfc_4.2km_P1M-m_202411 ;;
-   "EXCO" ) dataset=cmems_mod_med_bgc-optics_anfc_4.2km_P1M-m_202411 ;;
+   "BIOL" ) dataset=cmems_mod_med_bgc-bio_anfc_4.2km_P1D-m_202511 ;;
+   "CARB" ) dataset=cmems_mod_med_bgc-car_anfc_4.2km_P1D-m_202511 ;;
+   "NUTR" ) dataset=cmems_mod_med_bgc-nut_anfc_4.2km_P1D-m_202511 ;;
+   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1D-m_202511 ;;
+   "CO2F" ) dataset=cmems_mod_med_bgc-co2_anfc_4.2km_P1D-m_202511 ;;
+   "EXCO" ) dataset=cmems_mod_med_bgc-optics_anfc_4.2km_P1D-m_202511 ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac
 
@@ -81,6 +84,7 @@ product=MEDSEA_ANALYSISFORECAST_BGC_006_014
 username=cmems_med_ogs
 password=9J2e+uLU
 host=ftp-nrt.marine.copernicus.eu
+#logDir=. #log
 port=21
 ###
 
@@ -96,34 +100,38 @@ echo "    <dataset DatasetName=\"${dataset}\">" >> $DNT_FILE
 upload_xml=False
 
 for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
+
+
     basefile=`basename $file `
     yyyy=${basefile:0:4}
       mm=${basefile:4:2}
+     day=${basefile:0:8}
 
     # -------------------------------------
-    remote_name=`./get_monthly_product_in_DU.sh -d ${yyyy}${mm} -t $TYPE `
+    remote_name=`./get_daily_product_in_DU.sh -d $day -t $TYPE `
     decide_action $basefile $remote_name
     ACTION=$?
     # -------------------------------------
+
  case $ACTION in
    1) echo "$basefile already in DU" ;;
    2|3) echo "$basefile has to be sent"
     if [ $ACTION -eq 3 ]; then echo " and $remote_name will be removed "; fi
-    remotedir=/${product}/${dataset}/$yyyy
-    remotefile="${yyyy}/${basefile}"
+    remotedir=/${product}/${dataset}/$yyyy/$mm
+    remotefile="${yyyy}/${mm}/${basefile}"
     md5s=`md5sum $file|awk '{print $1}'`
 	StarTime=`date --utc +%Y%m%dT%H%M%SZ`
 	EndTime=${StarTime}
 	NumberOfAttempts=1
 	errCod=0
-
-    to_remove_file=$yyyy/$remote_name
+	
+	to_remove_file=$yyyy/$mm/$remote_name
 	DELETE_STR="<file FileName=\"${to_remove_file}\" > <KeyWord>Delete</KeyWord> </file>"
 
    
 	for i in `seq 1 10`;do
 
-          stderr=$( $BINDIR/ncftpput -P $port -u $username -p $password -T .tmp. $host $remotedir ${file} 2>&1 )
+                  stderr=$( $BINDIR/ncftpput -P $port -u $username -p $password -T .tmp. $host $remotedir ${file} 2>&1 )
 		  errCod=$?
 
 		  if [ ${errCod} -eq 0 ];then
@@ -155,11 +163,11 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
 	fi
 	FINAL_STR="<file FileName=\"${remotefile}\" StartUploadTime=\"${StarTime}\"  StopUploadTime=\"${EndTime}\" Checksum=\"${md5s}\"  FinalStatus=\"${status}\"${close}>"
 	echo "             $FINAL_STR" >> $DNT_FILE
-     if [ $status == Delivered ] && [ $ACTION -eq 3 ] ; then
+    if [ $status == Delivered ] && [ $ACTION -eq 3 ] ; then
         echo "             $DELETE_STR"  >> $DNT_FILE
     fi
 	
-	
+
 	if [ ${NumberOfAttempts} -ne 1 ]; then
 	  close=""
 	  RESEND_STR="<resendAttempt DueToErrorCode=\"${lastErrCod}\" DueToErrorMsg=\"${lastError}\" NumberOfAttempts=\"${NumberOfAttempts}\"/>"
@@ -180,7 +188,7 @@ echo "    </dataset>"  >> $DNT_FILE
 echo "</delivery>" >> $DNT_FILE
 
 if [ $upload_xml == "True" ] ; then
-   echo "Now upload $DNT_FILE"
+   echo "Now uploading $DNT_FILE"
 else
-   echo "Don't upload $DNT_FILE"
+   echo "$DNT_FILE can be manually uploaded to MDS"
 fi

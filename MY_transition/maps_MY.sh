@@ -48,13 +48,13 @@ my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_l  -t mean -o
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v P_c  -t mean -m $MASKFILE -o  $VALIDATION_DIR/MAPS/P_c  -l Plotlist_bio_Int.xml -s ${YEAR1}0101 -e ${YEAR2}1231"
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v Z_c  -t integral -o  $VALIDATION_DIR/MAPS/Z_c   $COMMONS_PARAMS "
 
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v O2o -t mean -m $VALIDATION_DIR/MAPS/O2o $COMMONS_PARAMS "
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N1p -t mean -m $VALIDATION_DIR/MAPS/N1p $COMMONS_PARAMS "
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N3n -t mean -m $VALIDATION_DIR/MAPS/N3n $COMMONS_PARAMS "
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N4n -t mean -m $VALIDATION_DIR/MAPS/N4n $COMMONS_PARAMS "
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N5s -t mean -m $VALIDATION_DIR/MAPS/N5s $COMMONS_PARAMS "
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v ALK -t mean -m $VALIDATION_DIR/MAPS/ALK $COMMONS_PARAMS "
-my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v DIC -t mean -m $VALIDATION_DIR/MAPS/DIC $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v O2o -t mean -o $VALIDATION_DIR/MAPS/O2o $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N1p -t mean -o $VALIDATION_DIR/MAPS/N1p $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N3n -t mean -o $VALIDATION_DIR/MAPS/N3n $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N4n -t mean -o $VALIDATION_DIR/MAPS/N4n $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N5s -t mean -o $VALIDATION_DIR/MAPS/N5s $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v ALK -t mean -o $VALIDATION_DIR/MAPS/ALK $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v DIC -t mean -o $VALIDATION_DIR/MAPS/DIC $COMMONS_PARAMS "
 
 my_prex_or_die "python averager_and_plot_map_ppn.py -i $INPUTDIR  -v ppn  -t integral -o $VALIDATION_DIR/MAPS/ppn $COMMONS_PARAMS "
 

@@ -30,7 +30,6 @@ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/${YEAR}
 cd $INPUTDIR
 echo "Erasing original $INPUTDIR"
 rm -f ave*nc
-cd $CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/
 VARLIST="
 N3n
 N1p
@@ -58,8 +57,7 @@ O3h
 pCO2
 "
 for var in $VARLIST ; do
-    echo "Unarchiving $var"
-    my_prex_or_die "tar -xf ../AVE_FREQ_1_tar/${YEAR}/${var}.tar"
+    my_prex_or_die "tar -xf ${TARDIR}/${var}.tar"
 done
 
 
@@ -70,10 +68,8 @@ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 cd $INPUTDIR
 echo "Erasing original $INPUTDIR"
 rm -f ave*nc ave*bkp;
-cd $CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/
 for var in N1p N3n O2o P_l P_c O3c O3h DIC ALK ppn P1l P2l P3l P4l; do
-    echo "Unarchiving $var"
-     my_prex_or_die "tar -xf ../AVE_FREQ_2_tar/${YEAR}/${var}.tar"
+     my_prex_or_die "tar -xf ${TARDIR}/${var}.tar"
 done
 
 

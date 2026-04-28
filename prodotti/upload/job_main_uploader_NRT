@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#SBATCH --job-name=uploader
+#SBATCH -N1 -n1
+#SBATCH --time=4:00:00
+#SBATCH --account=OGS23_PRACE_IT
+#SBATCH --partition=g100_all_serial
+
+
+cd $SLURM_SUBMIT_DIR
+
+. ../../profile.inc
+
+PROD_DIR=/g100_scratch/userexternal/spiani00/PRODOTTI_TRANSITION/NRT_PRODOTTI_DAILY/
+
+for year in 2023 2024 2025; do
+   logDir=./XML_daily_$year
+   mkdir -p $logDir
+
+   for type in BIOL CARB NUTR PFTC CO2F EXCO; do
+      my_prex_or_die "./Phase2_DU_uploader_dataset_006_014_daily.sh -i $PROD_DIR -t $type -y $year -l $logDir"
+   done
+
+done
+
+
+PROD_DIR=/g100_scratch/userexternal/spiani00/PRODOTTI_TRANSITION/NRT_PRODOTTI_MONTHLY/
+
+for year in 2023 2024 2025; do
+   
+   logDir=./XML_monthly_$year
+   mkdir -p $logDir
+ 
+   for type in BIOL CARB NUTR PFTC CO2F EXCO; do
+      my_prex_or_die "./Phase2_DU_uploader_dataset_006_014_monthly.sh -i $PROD_DIR -t $type -y $year -l $logDir"
+   done
+
+done

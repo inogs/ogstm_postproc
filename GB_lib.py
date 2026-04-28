@@ -193,13 +193,14 @@ def WriteAggregateAvefiles(mask, N1pfile,INPUT_AVEDIR, AGGREGATE_AVEDIR, OUTDIR,
         setattr(ncOUT.variables['lat'],"long_name","Latitude")
 
         ncvar=ncOUT.createVariable(var,'f',('time','depth','lat','lon'))
+        data = {}
         for lvar in aggrlist:
             avefile = F.get_filename(N1pfile, lvar, INPUT_AVEDIR, AGGREGATE_AVEDIR)
             actual_var=F.netcdf_var(avefile, lvar)
             DE = DataExtractor(mask,avefile,actual_var,dimvar=3)
-            commandstr=lvar + "= DE.values"
-            exec(commandstr)
-        junk = eval(RS)
+            data[lvar] = DE.values
+        
+        junk = eval(RS, {}, data)
         junk[~mask.mask] = 1.e+20
         ncvar[:]=junk
         setattr(ncvar,"long_name",var)

@@ -33,25 +33,24 @@ for I in 1 2 3 4; do
 done
 
 
-BINDIR=/g100_work/OGS23_PRACE_IT/COPERNICUS/bin
 
 
 FILES_TO_SEND="${YEAR}*${type}*.nc"
 
 if [[ "$type" == "BIOL" ]]; then
-   dataset=med-ogs-bio-rean-d_202105
+   dataset=cmems_mod_med_bgc-bio_my_4.2km_P1D-m_202511
 fi
 if [[ "$type" == "CARB" ]]; then
-   dataset=med-ogs-car-rean-d_202105
+   dataset=cmems_mod_med_bgc-car_my_4.2km_P1D-m_202511
 fi
 if [[ "$type" == "CO2F" ]]; then
-   dataset=med-ogs-co2-rean-d_202105
+   dataset=cmems_mod_med_bgc-co2_my_4.2km_P1D-m_202511
 fi
 if [[ "$type" == "NUTR" ]]; then
-   dataset=med-ogs-nut-rean-d_202105
+   dataset=cmems_mod_med_bgc-nut_my_4.2km_P1D-m_202511
 fi
 if [[ "$type" == "PFTC" ]]; then
-   dataset=med-ogs-pft-rean-d_202105
+   dataset=cmems_mod_med_bgc-plankton_my_4.2km_P1D-m_202511
 fi
 
 
@@ -87,11 +86,11 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
 	EndTime=${StarTime}
 	NumberOfAttempts=1
 	errCod=0
-	
+	echo "sending $file"
 	TOTAL_RESEND_STR= 
    
 	for i in `seq 1 10`;do
-		  stderr=$( $BINDIR/ncftpput -P $port -u $username -p $password -T .tmp. $host $remotedir ${file} 2>&1 )
+		  stderr=$( ncftpput -P $port -u $username -p $password -T .tmp. $host $remotedir ${file} 2>&1 )
 		  errCod=$?
 
 		  if [ ${errCod} -eq 0 ];then
