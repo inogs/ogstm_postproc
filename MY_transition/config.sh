@@ -47,7 +47,7 @@ export VALIDATION_DIR=/g100_work/OGS_test2528/internal-validation/pub/gbolzon/V1
 #
 # EDIT timeseries_user_setting.tpl -- for multirun color settings
 #
-export CINECA_WORK=/g100_work/OGS_devC
+export CINECA_WORK=/g100_work/OGS_test2528
 POSTPROCDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC  ## $CINECA_WORK or $CINECA_SCRATCH
 ##########################################
 
@@ -60,7 +60,7 @@ export PYTHONPATH=$BITSEA/src/
 HERE=$PWD
 
 export ONLINE_REPO=/g100_work/OGS_test2528/V12C_QUID/PREPROC/ONLINE
-export    MASKFILE=/g100_work/OGS_devC/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
+export    MASKFILE=/g100_work/OGS_test2528/V13C/QUID/SETUP/PREPROC/MASK/OGS/meshmask.nc
 
 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_1/

@@ -29,7 +29,7 @@ PARAMS="-c $CLIMDIR -m $MASKFILE -s 20220101 -e 20250101"
 my_prex_or_die "python static_clim_validation_HPLC.py $PARAMS -i $STATPROFILESDIR -o $TABLES_DIR"
 
 # plot the results for every pfts:
-#INDIR_HPLC_CLIM=/g100_work/OGS_devC/Benchmark/SETUP/POSTPROC/HPLC
+#INDIR_HPLC_CLIM=/g100_work/OGS_test2528/Benchmark/SETUP/POSTPROC/HPLC
 for var in P1l P2l P3l P4l ; do
     my_prex_or_die "python plot_HPLC_clim.py -i $TABLES_DIR -p $var -o $FIGURES_DIR "
 done
