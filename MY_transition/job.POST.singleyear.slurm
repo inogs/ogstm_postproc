@@ -40,7 +40,6 @@ export UCX_TLS=ib
 export SLURM_PMIX_DIRECT_CONN_UCX=false
 
 
-export    MASKFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/meshmask.nc
 export  KCOASTFILE=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/mapser.npy
 
 export PATH=$PATH:..
