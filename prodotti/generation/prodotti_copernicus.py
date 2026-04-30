@@ -265,7 +265,8 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'long_name'    ,'Diatoms Carbon Biomass')
             setattr(ncvar,'standard_name','mole_concentration_of_diatoms_expressed_as_carbon_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            M = readdata(timestr, "P1c")
+            M = readdata(timestr, "P1c")* (1./12.)
+            M[~tmask] = 1.e+20
             ncvar[0,:] = M
 
             ncvar = ncOUT.createVariable('nanoC', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
@@ -274,7 +275,8 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'long_name'    ,'Nanophytoplankton Carbon Biomass')
             setattr(ncvar,'standard_name','mole_concentration_of_nanophytoplankton_expressed_as_carbon_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            M = readdata(timestr, "P2c")
+            M = readdata(timestr, "P2c")* (1./12.)
+            M[~tmask] = 1.e+20
             ncvar[0,:] = M
 
             ncvar = ncOUT.createVariable('picoC', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
@@ -283,7 +285,8 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'long_name'    ,'Picophytoplankton Carbon Biomass')
             setattr(ncvar,'standard_name','mole_concentration_of_picophytoplankton_expressed_as_carbon_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            M = readdata(timestr, "P3c")
+            M = readdata(timestr, "P3c")* (1./12.)
+            M[~tmask] = 1.e+20
             ncvar[0,:] = M
 
             ncvar = ncOUT.createVariable('dinoC', 'f', ('time','depth','latitude','longitude'),zlib=True, fill_value=1.0e+20)
@@ -292,7 +295,8 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'long_name'    ,'Dinoflagellates Carbon Biomass')
             setattr(ncvar,'standard_name','mole_concentration_of_dinoflagellates_expressed_as_carbon_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            M = readdata(timestr, "P4c")
+            M = readdata(timestr, "P4c")* (1./12.)
+            M[~tmask] = 1.e+20
             ncvar[0,:] = M
 
 
