@@ -48,8 +48,8 @@ date
 
 # get varlist
 cd ${INPUT_AVEDIR}
-FIRST_TIME=`ls ave*${REF_VAR}.nc | head -1 | cut -c 1-22`
-ls ${FIRST_TIME}*nc | cut -d "." -f 3  > $HERE/allvarlist.txt
+SECOND_TIME=`ls ave*${REF_VAR}.nc | head -2 | tail -1 | cut -c 1-22`
+ls ${SECOND_TIME}*nc | cut -d "." -f 3  > $HERE/allvarlist.txt
 
 
 # creating tars
