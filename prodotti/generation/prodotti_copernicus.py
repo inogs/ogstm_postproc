@@ -120,7 +120,7 @@ def create_Structure(filename, fgroup):
     if (fgroup not in [ 'CO2F','EXCO']) : ncOUT.createDimension('depth'    ,jpk)
     ncOUT.createDimension('time'     ,  0)
     
-    setattr(ncOUT,'Conventions'  ,'CF-1.0' )
+    setattr(ncOUT,'Conventions'  ,'CF-1.4' )
     setattr(ncOUT,'references'   , ref     )
     setattr(ncOUT,'institution'  , inst    )
     setattr(ncOUT,'source'       , '3DVAR-OGSTM-BFM')
@@ -411,7 +411,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'units'        ,'1')
             setattr(ncvar,'long_name'    ,'Ocean pH')
             setattr(ncvar,'standard_name','sea_water_ph_reported_on_total_scale')
-            setattr(ncvar,'info'         , 'pH reported on total scale at in situ Temp and Press conditions')
+            setattr(ncvar,'comment'         , 'pH reported on total scale at in situ Temp and Press conditions')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             ph = readdata(timestr, "pH")
             ncvar[0,:] =ph
@@ -422,7 +422,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'long_name'    ,"Dissolved Inorganic Carbon")
             setattr(ncvar,'standard_name','mole_concentration_of_dissolved_inorganic_carbon_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            setattr(ncvar,'info'         , 'In order to calculate DIC in [micro mol / kg of seawater], dissic has to be multiplied by (1.e+6 / seawater density [kg/m3])')
+            setattr(ncvar,'comment'         , 'In order to calculate DIC in [micro mol / kg of seawater], dissic has to be multiplied by (1.e+6 / seawater density [kg/m3])')
             dic = readdata(timestr, "O3c")/(12*1000) # conversion mg/mol
             dic[~tmask] = 1.e+20
             ncvar[0,:] =dic
@@ -433,7 +433,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'long_name'    ,"Alkalinity")
             setattr(ncvar,'standard_name','sea_water_alkalinity_expressed_as_mole_equivalent')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            setattr(ncvar,'info'         , 'In order to calculate ALK in [micro mol / kg of seawater], talk has to be multiplied by (1.e+6 / seawater density [kg/m3])')
+            setattr(ncvar,'comment'         , 'In order to calculate ALK in [micro mol / kg of seawater], talk has to be multiplied by (1.e+6 / seawater density [kg/m3])')
             alk = readdata(timestr, "O3h")/1000 # conversion mg/mol
             alk[~tmask] = 1.e+20
             ncvar[0,:] = alk
@@ -447,7 +447,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'units'        ,'kg m-2 s-1')
             setattr(ncvar,'long_name'    ,"Surface CO2 flux")
             setattr(ncvar,'standard_name','surface_downward_mass_flux_of_carbon_dioxide_expressed_as_carbon')
-            setattr(ncvar,'info'    ,"surface downward flux at air-sea interface of carbon dioxide expressed as kg of carbon per square meter per second")
+            setattr(ncvar,'comment'    ,"surface downward flux at air-sea interface of carbon dioxide expressed as kg of carbon per square meter per second")
             setattr(ncvar,'coordinates'  ,'time latitude longitude')
             co2_airflux = readdata(timestr, "CO2airflux", ndims=2) *12 * 1.e-6 /86400 # conversion from mmol m-2 day-1 to kg/m2/s
             co2_airflux[~tmask[0,:,:]] = 1.e+20
