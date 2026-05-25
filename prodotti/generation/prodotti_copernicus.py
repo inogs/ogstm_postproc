@@ -112,7 +112,7 @@ def readdata(time, var, ndims=3):
     return readfile(inputfile,var,ndims=ndims)
 
 def create_Structure(filename, fgroup):
-    ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_ANALYSISFORECAST_BGC_006_014 - http://marine.copernicus.eu/'
+    ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_ANALYSISFORECAST_BGC_006_014 - https://marine.copernicus.eu/'
     inst  ='OGS (Istituto Nazionale di Oceanografia e di Geofisica Sperimentale) , Sgonico (Trieste) - Italy'
     ncOUT = netCDF4.Dataset(filename,"w",format="NETCDF4")
     ncOUT.createDimension('longitude', jpi-cut)
@@ -179,7 +179,7 @@ def create_Structure(filename, fgroup):
 
 
 def set_filename(timeobj,FGroup):
-    return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM4-MED-b" + bulletin_date +"_" + DType + "-sv10.00.nc"
+    return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM4.4-MED-b" + bulletin_date +"_" + DType + "-sv11.00.nc"
 
 for timestr in TIMELIST[rank::nranks]:
     timeobj = datetime.datetime.strptime(timestr,"%Y%m%d")
