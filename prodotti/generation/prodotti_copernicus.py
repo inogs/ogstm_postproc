@@ -8,6 +8,8 @@ def argument():
    http://cfconventions.org/Data/cf-standard-names/30/build/cf-standard-name-table.html.
 
    Files have been checked from http://puma.nerc.ac.uk/cgi-bin/cf-checker.pl.
+   Requirements from:[AD8] CMEMS Interface Requirement PU-MDS V2.6.pdf available at
+   https://mercatoroceanfr.sharepoint.com/sites/COP2TechnicalWG/Documents partages/General/Applicable Documents/[AD8] CMEMS Interface Requirement PU-MDS V2.6.pdf
 
    Parallel executable, can be called by mpirun.
    ''',formatter_class=argparse.RawTextHelpFormatter)
@@ -95,9 +97,15 @@ tmask = tmask[:,:,cut:]
 
 FGROUPS = ['NUTR', 'PFTC', 'BIOL', 'CARB','CO2F','EXCO']
 
-if DType == "an": bulletin_type='analysis'
-if DType == "sm": bulletin_type='simulation'
-if DType == "fc": bulletin_type='forecast'
+if DType == "an": 
+    bulletin_type='analysis'
+    StatusFlag = 0
+if DType == "sm": 
+    bulletin_type='simulation'
+    StatusFlag = 1
+if DType == "fc": 
+    bulletin_type='forecast'
+    StatusFlag = 1
 
 bulletin_time = datetime.datetime.strptime(bulletin_date,"%Y%m%d")
 
@@ -121,14 +129,16 @@ def create_Structure(filename, fgroup):
     ncOUT.createDimension('time'     ,  0)
     
     setattr(ncOUT,'Conventions'  ,'CF-1.4' )
-    setattr(ncOUT,'references'   , ref     )
+    setattr(ncOUT,'reference'   , "https://marine.copernicus.eu/") # requirement BO-113
     setattr(ncOUT,'institution'  , inst    )
     setattr(ncOUT,'source'       , '3DVAR-OGSTM-BFM')
+    setattr(ncOUT,'licence', 'http://marine.copernicus.eu/services-portfolio/service-commitments-and-licence/')
     setattr(ncOUT,'comment'      , ref)
     setattr(ncOUT,'contact'      ,'servicedesk.cmems@mercator-ocean.eu')
     setattr(ncOUT,'bulletin_date', bulletin_time.strftime("%Y-%m-%d") )
     setattr(ncOUT,'bulletin_type', bulletin_type)
-    setattr(ncOUT,'field_type'   , field_type)
+    setattr(ncOUT,'history', "Output of MEDBFM4.4 model, post-processed by OGS, Sgonico (Trieste) - Italy, " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") )
+
     
     basename = os.path.basename(filename)
     if args.tr=='daily'   : timestr = basename[:8] + "-12:00:00"
@@ -136,6 +146,8 @@ def create_Structure(filename, fgroup):
     D = datetime.datetime.strptime(timestr,'%Y%m%d-%H:%M:%S')
     Dref = datetime.datetime(1970,1,1,0,0,0)
     Diff = D-Dref
+    if DType in ["sm", "fc"]:
+        Diff_forecast = bulletin_time - Dref
     
     ncvar = ncOUT.createVariable('time','d',('time',))
     setattr(ncvar,'units',       'seconds since 1970-01-01 00:00:00')
@@ -152,8 +164,6 @@ def create_Structure(filename, fgroup):
         setattr(ncvar,'standard_name','depth')
         setattr(ncvar,'positive'     ,'down')
         setattr(ncvar,'axis'         ,'Z')
-        setattr(ncvar,'valid_min'    ,nav_lev.min())
-        setattr(ncvar,'valid_max'    ,nav_lev.max())
         ncvar[:] = nav_lev
     
     ncvar = ncOUT.createVariable('latitude','f' ,('latitude',))
@@ -161,8 +171,6 @@ def create_Structure(filename, fgroup):
     setattr(ncvar,'long_name'    ,'latitude')
     setattr(ncvar,'standard_name','latitude')
     setattr(ncvar, 'axis'         ,'Y')
-    setattr(ncvar,'valid_min'    , Lat.min())
-    setattr(ncvar, 'valid_max'    ,Lat.max())
     ncvar[:]=Lat
 
     ncvar = ncOUT.createVariable('longitude','f',('longitude',))
@@ -170,9 +178,24 @@ def create_Structure(filename, fgroup):
     setattr(ncvar,'long_name'    ,'longitude')
     setattr(ncvar, 'standard_name','longitude')
     setattr(ncvar, 'axis'         ,'X')
-    setattr(ncvar, 'valid_min'    , Lon.min())
-    setattr(ncvar, 'valid_max'    , Lon.max())
     ncvar[:]=Lon
+
+    if DType in ["sm", "fc"]:
+        ncvar = ncOUT.createVariable('Forecast_Reference_Time','d',('time',)) # requirement BO-115
+        ncvar[:] = Diff_forecast.days*3600*24 + Diff_forecast.seconds
+        setattr(ncvar, 'units', 'seconds since 1970-01-01 00:00:00')
+        setattr(ncvar, 'standard_name', 'forecast_reference_time')
+        setattr(ncvar, 'long_name', 'Reference time that initiates the forecast')
+        setattr(ncvar, 'calendar', 'standard')
+        setattr(ncvar, 'comment', 'For analysis products, the value is the same as the time variable, for forecast products, the value is the time of the first forecast step')
+
+    ncvar = ncOUT.createVariable('Processing_Status','i','time') # requirement BO-116
+    ncvar[:] = StatusFlag
+    setattr(ncvar, 'standard_name','status_flag')
+    setattr(ncvar, 'long_name'   ,'Data processing status flag')
+    setattr(ncvar, 'flag_values' , [0,1])
+    setattr(ncvar, 'flag_meanings', 'consolidated intermediate')
+    setattr(ncvar, 'comment'  ,'Value of 0 means that the field is consolidated, value of 1 means that the field is intermediate and will be updated in the next bulletin')
     
     
     return ncOUT
