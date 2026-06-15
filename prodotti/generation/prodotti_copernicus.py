@@ -146,8 +146,7 @@ def create_Structure(filename, fgroup):
     D = datetime.datetime.strptime(timestr,'%Y%m%d-%H:%M:%S')
     Dref = datetime.datetime(1970,1,1,0,0,0)
     Diff = D-Dref
-    if DType in ["sm", "fc"]:
-        Diff_forecast = bulletin_time - Dref
+    time_values =Diff.days*3600*24 + Diff.seconds
     
     ncvar = ncOUT.createVariable('time','d',('time',))
     setattr(ncvar,'units',       'seconds since 1970-01-01 00:00:00')
@@ -155,7 +154,7 @@ def create_Structure(filename, fgroup):
     setattr(ncvar,'standard_name','time')
     setattr(ncvar,'axis'         ,'T')
     setattr(ncvar,'calendar'     ,'standard')
-    ncvar[:] = Diff.days*3600*24 + Diff.seconds
+    ncvar[:] = time_values
     
     if (fgroup not in [ 'CO2F', 'EXCO'] ) :
         ncvar = ncOUT.createVariable('depth'   ,'f', ('depth',))
@@ -180,14 +179,18 @@ def create_Structure(filename, fgroup):
     setattr(ncvar, 'axis'         ,'X')
     ncvar[:]=Lon
 
+    
+    ncvar = ncOUT.createVariable('Forecast_Reference_Time','d',('time',)) # requirement BO-115
     if DType in ["sm", "fc"]:
-        ncvar = ncOUT.createVariable('Forecast_Reference_Time','d',('time',)) # requirement BO-115
+        Diff_forecast = bulletin_time - Dref
         ncvar[:] = Diff_forecast.days*3600*24 + Diff_forecast.seconds
-        setattr(ncvar, 'units', 'seconds since 1970-01-01 00:00:00')
-        setattr(ncvar, 'standard_name', 'forecast_reference_time')
-        setattr(ncvar, 'long_name', 'Reference time that initiates the forecast')
-        setattr(ncvar, 'calendar', 'standard')
-        setattr(ncvar, 'comment', 'For analysis products, the value is the same as the time variable, for forecast products, the value is the time of the first forecast step')
+    else:
+        ncvar[:] = time_values
+    setattr(ncvar, 'units', 'seconds since 1970-01-01 00:00:00')
+    setattr(ncvar, 'standard_name', 'forecast_reference_time')
+    setattr(ncvar, 'long_name', 'Reference time that initiates the forecast')
+    setattr(ncvar, 'calendar', 'standard')
+    setattr(ncvar, 'comment', 'For analysis products, the value is the same as the time variable, for forecast products, the value is the time of the first forecast step')
 
     ncvar = ncOUT.createVariable('Processing_Status','i','time') # requirement BO-116
     ncvar[:] = StatusFlag
