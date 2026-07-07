@@ -91,7 +91,7 @@ def configure_logger(communicator=comm):
         )
     else:
         formatter = logging.Formatter(
-            f"%(asctime)s%(msecs)03d - rank {communicator.Get_rank():0>3} - %(name)s - "
+            f"%(asctime)s.%(msecs)03d - rank {communicator.Get_rank():0>3} - %(name)s - "
             f"%(levelname)s - %(message)s",
             datefmt=DATEFORMAT
         )
