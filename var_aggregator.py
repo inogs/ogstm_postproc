@@ -68,6 +68,7 @@ from bitsea.utilities.mpi_serial_interface import DummyCommunicator
 from bitsea.utilities.mpi_serial_interface import get_mpi_communicator
 
 LOGGER = logging.getLogger()
+DATEFORMAT = "%Y%m%d-%H:%M:%S"
 
 
 if args.serial:
@@ -85,12 +86,14 @@ else:
 def configure_logger(communicator=comm):
     if communicator.size == 1:
         formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            "%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s",
+            datefmt=DATEFORMAT
         )
     else:
         formatter = logging.Formatter(
-            f"%(asctime)s - RANK {communicator.Get_rank():0>3} - %(name)s - "
-            f"%(levelname)s - %(message)s"
+            f"%(asctime)s%(msecs)03d - rank {communicator.Get_rank():0>3} - %(name)s - "
+            f"%(levelname)s - %(message)s",
+            datefmt=DATEFORMAT
         )
 
     LOGGER.setLevel(logging.INFO)
@@ -105,8 +108,9 @@ def configure_logger(communicator=comm):
 configure_logger()
 AVEDIR  = args.inputdir
 
-RD = read_descriptor.read_descriptor(args.descriptor)
-LOGGER.info("INPUT_DIR = %s", AVEDIR)
+RD = read_descriptor.read_descriptor(str(args.descriptor))
+if comm.Get_rank() == 0:
+    LOGGER.info("INPUT_DIR = %s", AVEDIR)
 
 
 if args.archivedir:
@@ -139,7 +143,6 @@ except AttributeError:
 rank  = comm.Get_rank()
 nranks = comm.size
 for N1pfile in SingleVar_filelist[rank::nranks]:
-    LOGGER.info("Writing %s", N1pfile.name)
 
     if args.tmpdir:
         G.WriteAggregateAvefiles(
