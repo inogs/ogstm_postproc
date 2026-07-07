@@ -3,6 +3,8 @@ import os,time
 import scipy.io.netcdf as NC
 from bitsea.commons.dataextractor import DataExtractor
 import netCDF4
+import logging
+LOGGER = logging.getLogger(__name__)
 
 def recognize_terms(formula):
 
@@ -70,7 +72,7 @@ class filename_manager():
             if var in d.variables:
                 d.close()
                 return file_try2
-        for file_try in [file_try1,file_try2]: print("try", file_try)
+        for file_try in [file_try1,file_try2]: LOGGER.info("try %s", file_try)
         raise ValueError("File not found")        
 
 
@@ -97,7 +99,7 @@ class filename_manager():
                     d.close()
                 return file_try
 
-        for file_try in [file_try1,file_try2,file_try3,file_try4]: print("try", file_try)
+        for file_try in [file_try1,file_try2,file_try3,file_try4]: LOGGER.info("try %s", file_try)
         raise ValueError("File not found")
 
 
@@ -207,6 +209,7 @@ def WriteAggregateAvefiles(mask, N1pfile,INPUT_AVEDIR, AGGREGATE_AVEDIR, OUTDIR,
         setattr(ncvar,"missing_value",1.e+20)
         del DE
         ncOUT.close()
+        LOGGER.info("%s", outfile)
 
 def WriteAggregateAvefiles_old(mask, N1pfile,OUTDIR,VarDescriptor):
     '''
@@ -256,7 +259,7 @@ def WriteAggregateAvefiles_old(mask, N1pfile,OUTDIR,VarDescriptor):
 def WriteBigAve(Mask,N1pfile, outfile, VARS):
       
     if len(VARS)==0:
-        print("No variables in archive list")
+        LOGGER.info("No variables in archive list")
         return
 
     nc=NC.netcdf_file(N1pfile,"r");
@@ -322,10 +325,10 @@ if __name__ == "__main__" :
     formula= "ppn    = ppg - 0.1 * exR2cc - exR2ac - Resp "
     formula = "limpar_1 = 1 - exp( -irr * alpha )"
     left_side, right_side, outlist = recognize_terms(formula)
-    print(outlist)
+    LOGGER.info("Recognized terms: %s", outlist)
     filename = "/g100_work/OGS_prod100/OPA/V9C/RUNS_SETUP/PREPROC/IC/from_V7C/RST.20180101-00:00:00.P1c.nc"
     F=filename_manager(filename)
-    print(F.netcdf_var(filename,'P1c'))
+    LOGGER.info("NetCDF variable for %s: %s", filename, F.netcdf_var(filename, 'P1c'))
 
     import sys
     sys.exit()
@@ -346,7 +349,7 @@ if __name__ == "__main__" :
     filename=avelist[0]
     filename='FORCINGS/Upippo.nc'
     F=filename_manager(filename)
-    print(F.get_filename(filename, 'vozocrtx',INPUT_AVEDIR,AGGREGATE_AVEDIR))
+    LOGGER.info("Generated filename: %s", F.get_filename(filename, 'vozocrtx',INPUT_AVEDIR,AGGREGATE_AVEDIR))
 
-    #print F.get_filename(filename, var,INPUT_AVEDIR,AGGREGATE_AVEDIR)
+    #LOGGER.info("Generated filename: %s", F.get_filename(filename, var,INPUT_AVEDIR,AGGREGATE_AVEDIR))
 
