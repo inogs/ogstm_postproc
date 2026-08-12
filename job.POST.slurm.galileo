@@ -102,8 +102,30 @@ my_prex_or_die "mpirun python weekly_averager.py -i $KD__DAILY -o $KD_WEEKLY -m 
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
 OUTPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/MONTHLY/AVE
 mkdir -p $OUTPUTDIR
+cat<<EOF > varlist_daily
+N1p
+N3n
+N4n
+P_l
+P_c
+O2o
+ppn
+pCO2
+pH
+O3c
+O3h
+CO2airflux
+EOF
+
+my_prex_or_die "mpirun python monthly_averager.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v varlist_daily"
+
+ls /g100_work/OGS_test2528/RA_24/MONTHLY/ave.202201* | cut -d "." -f 3 > varlist_weekly
+grep -F -v -x -f varlist_daily varlist_weekly > varlist_only_weekly
+INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
+my_prex_or_die "mpirun python monthly_averager.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v varlist_only_weekly"
+
+
 for var in N1p N3n ppn ; do
- my_prex_or_die "mpirun -np 24 python monthly_averager.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v $var "
  my_prex_or_die "mpirun -np 24 python yearly_averager.py  -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v $var "
 done
 
