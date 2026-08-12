@@ -31,6 +31,8 @@ mkdir -p $VALIDATION_DIR/MAPS/P_c/
 mkdir -p $VALIDATION_DIR/MAPS/ppn/
 mkdir -p $VALIDATION_DIR/MAPS/Z_c/
 mkdir -p $VALIDATION_DIR/MAPS/CO2airflux/
+mkdir -p $VALIDATION_DIR/MAPS/pH/
+mkdir -p $VALIDATION_DIR/MAPS/pCO2/
 
 cd $BITSEA/src/bitsea/validation/deliverables/
 
@@ -50,8 +52,8 @@ my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v CO2airflux -t m
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v CO2airflux -t mean -o $VALIDATION_DIR/MAPS/CO2airflux -m $MASKFILE  -l Plotlist_bio.xml -s 20220101 -e 20250101"
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v ALK  -t mean -o $VALIDATION_DIR/MAPS/ALK $COMMONS_PARAMS"      # Ac-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN  --> not requested in the ScQP
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v DIC  -t mean -o $VALIDATION_DIR/MAPS/DIC $COMMONS_PARAMS "     # DIC-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN --> not requested in the ScQP
-
-
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v pH   -t mean -o $VALIDATION_DIR/MAPS/pH  $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v pCO2 -t mean -o $VALIDATION_DIR/MAPS/pCO2  $COMMONS_PARAMS "
 
 #CHL-LAYER-Y-CLASS1-[CLIM/LIT]-MEAN from SATELLITE:
 my_prex_or_die "python sat_ave_and_plot.py -i $SAT_CHLWEEKLY_DIR -m $MASKFILE  -o  $VALIDATION_DIR/MAPS/P_l   -s ${YEAR}0101 -e ${YEAR}1231 "
