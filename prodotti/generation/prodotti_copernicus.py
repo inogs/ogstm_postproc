@@ -8,6 +8,8 @@ def argument():
    http://cfconventions.org/Data/cf-standard-names/30/build/cf-standard-name-table.html.
 
    Files have been checked from http://puma.nerc.ac.uk/cgi-bin/cf-checker.pl.
+   Requirements from:[AD8] CMEMS Interface Requirement PU-MDS V2.6.pdf available at
+   https://mercatoroceanfr.sharepoint.com/sites/COP2TechnicalWG/Documents partages/General/Applicable Documents/[AD8] CMEMS Interface Requirement PU-MDS V2.6.pdf
 
    Parallel executable, can be called by mpirun.
    ''',formatter_class=argparse.RawTextHelpFormatter)
@@ -95,9 +97,15 @@ tmask = tmask[:,:,cut:]
 
 FGROUPS = ['NUTR', 'PFTC', 'BIOL', 'CARB','CO2F','EXCO']
 
-if DType == "an": bulletin_type='analysis'
-if DType == "sm": bulletin_type='simulation'
-if DType == "fc": bulletin_type='forecast'
+if DType == "an": 
+    bulletin_type='analysis'
+    StatusFlag = 0
+if DType == "sm": 
+    bulletin_type='simulation'
+    StatusFlag = 1
+if DType == "fc": 
+    bulletin_type='forecast'
+    StatusFlag = 1
 
 bulletin_time = datetime.datetime.strptime(bulletin_date,"%Y%m%d")
 
@@ -112,7 +120,7 @@ def readdata(time, var, ndims=3):
     return readfile(inputfile,var,ndims=ndims)
 
 def create_Structure(filename, fgroup):
-    ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_ANALYSISFORECAST_BGC_006_014 - http://marine.copernicus.eu/'
+    ref=  'Please check in CMEMS catalogue the INFO section for product MEDSEA_ANALYSISFORECAST_BGC_006_014 - https://marine.copernicus.eu/'
     inst  ='OGS (Istituto Nazionale di Oceanografia e di Geofisica Sperimentale) , Sgonico (Trieste) - Italy'
     ncOUT = netCDF4.Dataset(filename,"w",format="NETCDF4")
     ncOUT.createDimension('longitude', jpi-cut)
@@ -120,15 +128,17 @@ def create_Structure(filename, fgroup):
     if (fgroup not in [ 'CO2F','EXCO']) : ncOUT.createDimension('depth'    ,jpk)
     ncOUT.createDimension('time'     ,  0)
     
-    setattr(ncOUT,'Conventions'  ,'CF-1.0' )
-    setattr(ncOUT,'references'   , ref     )
+    setattr(ncOUT,'Conventions'  ,'CF-1.4' )
+    setattr(ncOUT,'reference'   , "https://marine.copernicus.eu/") # requirement BO-113
     setattr(ncOUT,'institution'  , inst    )
     setattr(ncOUT,'source'       , '3DVAR-OGSTM-BFM')
+    setattr(ncOUT,'licence', 'http://marine.copernicus.eu/services-portfolio/service-commitments-and-licence/')
     setattr(ncOUT,'comment'      , ref)
     setattr(ncOUT,'contact'      ,'servicedesk.cmems@mercator-ocean.eu')
     setattr(ncOUT,'bulletin_date', bulletin_time.strftime("%Y-%m-%d") )
     setattr(ncOUT,'bulletin_type', bulletin_type)
-    setattr(ncOUT,'field_type'   , field_type)
+    setattr(ncOUT,'history', "Output of MEDBFM4.4 model, post-processed by OGS, Sgonico (Trieste) - Italy, " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") )
+
     
     basename = os.path.basename(filename)
     if args.tr=='daily'   : timestr = basename[:8] + "-12:00:00"
@@ -136,6 +146,7 @@ def create_Structure(filename, fgroup):
     D = datetime.datetime.strptime(timestr,'%Y%m%d-%H:%M:%S')
     Dref = datetime.datetime(1970,1,1,0,0,0)
     Diff = D-Dref
+    time_values =Diff.days*3600*24 + Diff.seconds
     
     ncvar = ncOUT.createVariable('time','d',('time',))
     setattr(ncvar,'units',       'seconds since 1970-01-01 00:00:00')
@@ -143,7 +154,7 @@ def create_Structure(filename, fgroup):
     setattr(ncvar,'standard_name','time')
     setattr(ncvar,'axis'         ,'T')
     setattr(ncvar,'calendar'     ,'standard')
-    ncvar[:] = Diff.days*3600*24 + Diff.seconds
+    ncvar[:] = time_values
     
     if (fgroup not in [ 'CO2F', 'EXCO'] ) :
         ncvar = ncOUT.createVariable('depth'   ,'f', ('depth',))
@@ -152,8 +163,6 @@ def create_Structure(filename, fgroup):
         setattr(ncvar,'standard_name','depth')
         setattr(ncvar,'positive'     ,'down')
         setattr(ncvar,'axis'         ,'Z')
-        setattr(ncvar,'valid_min'    ,nav_lev.min())
-        setattr(ncvar,'valid_max'    ,nav_lev.max())
         ncvar[:] = nav_lev
     
     ncvar = ncOUT.createVariable('latitude','f' ,('latitude',))
@@ -161,8 +170,6 @@ def create_Structure(filename, fgroup):
     setattr(ncvar,'long_name'    ,'latitude')
     setattr(ncvar,'standard_name','latitude')
     setattr(ncvar, 'axis'         ,'Y')
-    setattr(ncvar,'valid_min'    , Lat.min())
-    setattr(ncvar, 'valid_max'    ,Lat.max())
     ncvar[:]=Lat
 
     ncvar = ncOUT.createVariable('longitude','f',('longitude',))
@@ -170,16 +177,35 @@ def create_Structure(filename, fgroup):
     setattr(ncvar,'long_name'    ,'longitude')
     setattr(ncvar, 'standard_name','longitude')
     setattr(ncvar, 'axis'         ,'X')
-    setattr(ncvar, 'valid_min'    , Lon.min())
-    setattr(ncvar, 'valid_max'    , Lon.max())
     ncvar[:]=Lon
+
+    
+    ncvar = ncOUT.createVariable('Forecast_Reference_Time','d',('time',)) # requirement BO-115
+    if DType in ["sm", "fc"]:
+        Diff_forecast = bulletin_time - Dref
+        ncvar[:] = Diff_forecast.days*3600*24 + Diff_forecast.seconds
+    else:
+        ncvar[:] = time_values
+    setattr(ncvar, 'units', 'seconds since 1970-01-01 00:00:00')
+    setattr(ncvar, 'standard_name', 'forecast_reference_time')
+    setattr(ncvar, 'long_name', 'Reference time that initiates the forecast')
+    setattr(ncvar, 'calendar', 'standard')
+    setattr(ncvar, 'comment', 'For analysis products, the value is the same as the time variable, for forecast products, the value is the time of the first forecast step')
+
+    ncvar = ncOUT.createVariable('Processing_Status','i','time') # requirement BO-116
+    ncvar[:] = StatusFlag
+    setattr(ncvar, 'standard_name','status_flag')
+    setattr(ncvar, 'long_name'   ,'Data processing status flag')
+    setattr(ncvar, 'flag_values' , [0,1])
+    setattr(ncvar, 'flag_meanings', 'consolidated intermediate')
+    setattr(ncvar, 'comment'  ,'Value of 0 means that the field is consolidated, value of 1 means that the field is intermediate and will be updated in the next bulletin')
     
     
     return ncOUT
 
 
 def set_filename(timeobj,FGroup):
-    return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM4-MED-b" + bulletin_date +"_" + DType + "-sv10.00.nc"
+    return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM4.4-MED-b" + bulletin_date +"_" + DType + "-sv13.00.nc"
 
 for timestr in TIMELIST[rank::nranks]:
     timeobj = datetime.datetime.strptime(timestr,"%Y%m%d")
@@ -411,7 +437,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'units'        ,'1')
             setattr(ncvar,'long_name'    ,'Ocean pH')
             setattr(ncvar,'standard_name','sea_water_ph_reported_on_total_scale')
-            setattr(ncvar,'info'         , 'pH reported on total scale at in situ Temp and Press conditions')
+            setattr(ncvar,'comment'         , 'pH reported on total scale at in situ Temp and Press conditions')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
             ph = readdata(timestr, "pH")
             ncvar[0,:] =ph
@@ -422,7 +448,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'long_name'    ,"Dissolved Inorganic Carbon")
             setattr(ncvar,'standard_name','mole_concentration_of_dissolved_inorganic_carbon_in_sea_water')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            setattr(ncvar,'info'         , 'In order to calculate DIC in [micro mol / kg of seawater], dissic has to be multiplied by (1.e+6 / seawater density [kg/m3])')
+            setattr(ncvar,'comment'         , 'In order to calculate DIC in [micro mol / kg of seawater], dissic has to be multiplied by (1.e+6 / seawater density [kg/m3])')
             dic = readdata(timestr, "O3c")/(12*1000) # conversion mg/mol
             dic[~tmask] = 1.e+20
             ncvar[0,:] =dic
@@ -433,7 +459,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'long_name'    ,"Alkalinity")
             setattr(ncvar,'standard_name','sea_water_alkalinity_expressed_as_mole_equivalent')
             setattr(ncvar,'coordinates'  ,'time depth latitude longitude')
-            setattr(ncvar,'info'         , 'In order to calculate ALK in [micro mol / kg of seawater], talk has to be multiplied by (1.e+6 / seawater density [kg/m3])')
+            setattr(ncvar,'comment'         , 'In order to calculate ALK in [micro mol / kg of seawater], talk has to be multiplied by (1.e+6 / seawater density [kg/m3])')
             alk = readdata(timestr, "O3h")/1000 # conversion mg/mol
             alk[~tmask] = 1.e+20
             ncvar[0,:] = alk
@@ -447,7 +473,7 @@ for timestr in TIMELIST[rank::nranks]:
             setattr(ncvar,'units'        ,'kg m-2 s-1')
             setattr(ncvar,'long_name'    ,"Surface CO2 flux")
             setattr(ncvar,'standard_name','surface_downward_mass_flux_of_carbon_dioxide_expressed_as_carbon')
-            setattr(ncvar,'info'    ,"surface downward flux at air-sea interface of carbon dioxide expressed as kg of carbon per square meter per second")
+            setattr(ncvar,'comment'    ,"surface downward flux at air-sea interface of carbon dioxide expressed as kg of carbon per square meter per second")
             setattr(ncvar,'coordinates'  ,'time latitude longitude')
             co2_airflux = readdata(timestr, "CO2airflux", ndims=2) *12 * 1.e-6 /86400 # conversion from mmol m-2 day-1 to kg/m2/s
             co2_airflux[~tmask[0,:,:]] = 1.e+20

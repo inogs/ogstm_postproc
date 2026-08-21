@@ -114,7 +114,7 @@ def readfile(filename,var,ndims):
 
 def readdata(time, var, ndims=3):
     
-    inputfile = INPUTDIR + "ave."  + time + "-12:00:00." + var + ".nc"
+    inputfile = INPUTDIR + "ave."  + time + "." + var + ".nc"
     return readfile(inputfile,var,ndims=ndims)
 
 def create_Structure(filename, fgroup):
@@ -196,7 +196,7 @@ def V5_filename(timeobj,FGroup):
         return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM3i-MED-b" + bulletin_date +"_" + DType + "-sv05.00.nc"
 
 for timestr in TIMELIST[rank::nranks]:
-    timeobj = datetime.datetime.strptime(timestr,"%Y%m%d")
+    timeobj = datetime.datetime.strptime(timestr,"%Y%m%d-%H:%M:%S")
     for FGroup in FGROUPS:
         product_file = V5_filename(timeobj, FGroup)
         print("rank =", rank, product_file, flush=True)
