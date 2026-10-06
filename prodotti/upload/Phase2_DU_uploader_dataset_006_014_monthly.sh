@@ -64,12 +64,12 @@ FILES_TO_SEND="${YEAR}*${TYPE}*.nc"
 
 
 case $TYPE in
-   "BIOL" ) dataset=cmems_mod_med_bgc-bio_anfc_4.2km_P1M-m_202511 ;;
-   "CARB" ) dataset=cmems_mod_med_bgc-car_anfc_4.2km_P1M-m_202511 ;;
-   "NUTR" ) dataset=cmems_mod_med_bgc-nut_anfc_4.2km_P1M-m_202511 ;;
-   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1M-m_202511 ;;
-   "CO2F" ) dataset=cmems_mod_med_bgc-co2_anfc_4.2km_P1M-m_202511 ;;
-   "EXCO" ) dataset=cmems_mod_med_bgc-optics_anfc_4.2km_P1M-m_202511 ;;
+   "BIOL" ) dataset=cmems_mod_med_bgc-bio_anfc_4.2km_P1M-m_202611 ;;
+   "CARB" ) dataset=cmems_mod_med_bgc-car_anfc_4.2km_P1M-m_202611 ;;
+   "NUTR" ) dataset=cmems_mod_med_bgc-nut_anfc_4.2km_P1M-m_202611 ;;
+   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1M-m_202611 ;;
+   "CO2F" ) dataset=cmems_mod_med_bgc-co2_anfc_4.2km_P1M-m_202611 ;;
+   "EXCO" ) dataset=cmems_mod_med_bgc-optics_anfc_4.2km_P1M-m_202611 ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac
 
@@ -101,9 +101,9 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
       mm=${basefile:4:2}
 
     # -------------------------------------
-    remote_name=`./get_monthly_product_in_DU.sh -d ${yyyy}${mm} -t $TYPE `
-    decide_action $basefile $remote_name
-    ACTION=$?
+    #remote_name=`./get_monthly_product_in_DU.sh -d ${yyyy}${mm} -t $TYPE `
+    #decide_action $basefile $remote_name
+    ACTION=2
     # -------------------------------------
  case $ACTION in
    1) echo "$basefile already in DU" ;;

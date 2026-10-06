@@ -67,12 +67,12 @@ BINDIR=/g100_work/OGS23_PRACE_IT/COPERNICUS/bin/
 FILES_TO_SEND="${YEAR}*${TYPE}*.nc"
 
 case $TYPE in
-   "BIOL" ) dataset=cmems_mod_med_bgc-bio_anfc_4.2km_P1D-m_202511 ;;
-   "CARB" ) dataset=cmems_mod_med_bgc-car_anfc_4.2km_P1D-m_202511 ;;
-   "NUTR" ) dataset=cmems_mod_med_bgc-nut_anfc_4.2km_P1D-m_202511 ;;
-   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1D-m_202511 ;;
-   "CO2F" ) dataset=cmems_mod_med_bgc-co2_anfc_4.2km_P1D-m_202511 ;;
-   "EXCO" ) dataset=cmems_mod_med_bgc-optics_anfc_4.2km_P1D-m_202511 ;;
+   "BIOL" ) dataset=cmems_mod_med_bgc-bio_anfc_4.2km_P1D-m_202611 ;;
+   "CARB" ) dataset=cmems_mod_med_bgc-car_anfc_4.2km_P1D-m_202611 ;;
+   "NUTR" ) dataset=cmems_mod_med_bgc-nut_anfc_4.2km_P1D-m_202611 ;;
+   "PFTC" ) dataset=cmems_mod_med_bgc-pft_anfc_4.2km_P1D-m_202611 ;;
+   "CO2F" ) dataset=cmems_mod_med_bgc-co2_anfc_4.2km_P1D-m_202611 ;;
+   "EXCO" ) dataset=cmems_mod_med_bgc-optics_anfc_4.2km_P1D-m_202611 ;;
    * )  echo Wrong type ; usage; exit 1 ;;
 esac
 
@@ -108,9 +108,9 @@ for file in `ls ${PROD_DIR}/${FILES_TO_SEND} ` ; do
      day=${basefile:0:8}
 
     # -------------------------------------
-    remote_name=`./get_daily_product_in_DU.sh -d $day -t $TYPE `
-    decide_action $basefile $remote_name
-    ACTION=$?
+    #remote_name=`./get_daily_product_in_DU.sh -d $day -t $TYPE `
+    #decide_action $basefile $remote_name
+    ACTION=2
     # -------------------------------------
 
  case $ACTION in
