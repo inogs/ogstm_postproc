@@ -38,6 +38,8 @@ mkdir -p $VALIDATION_DIR/MAPS/N5s/
 mkdir -p $VALIDATION_DIR/MAPS/DIC/
 mkdir -p $VALIDATION_DIR/MAPS/ALK/
 mkdir -p $VALIDATION_DIR/MAPS/CO2airflux/
+mkdir -p $VALIDATION_DIR/MAPS/pH/
+mkdir -p $VALIDATION_DIR/MAPS/pCO2/
 
 
 cd $BITSEA/src/bitsea/validation/deliverables
@@ -55,6 +57,8 @@ my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N4n -t mean -o 
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v N5s -t mean -o $VALIDATION_DIR/MAPS/N5s $COMMONS_PARAMS "
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v ALK -t mean -o $VALIDATION_DIR/MAPS/ALK $COMMONS_PARAMS "
 my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v DIC -t mean -o $VALIDATION_DIR/MAPS/DIC $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v pH   -t mean -o $VALIDATION_DIR/MAPS/pH  $COMMONS_PARAMS "
+my_prex_or_die "python averager_and_plot_map.py -i $INPUTDIR  -v pCO2 -t mean -o $VALIDATION_DIR/MAPS/pCO2  $COMMONS_PARAMS "
 
 my_prex_or_die "python averager_and_plot_map_ppn.py -i $INPUTDIR  -v ppn  -t integral -o $VALIDATION_DIR/MAPS/ppn $COMMONS_PARAMS "
 
