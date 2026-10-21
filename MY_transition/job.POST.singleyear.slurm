@@ -161,6 +161,8 @@ O2o
 P_c
 Z_c
 CO2airflux
+pH
+pCO2
 EOF
 
 my_prex_or_die "mpirun -np 24 python ../yearly_averager.py -i $INPUTDIR -o $OUTPUTDIR -v varlist -m $MASKFILE"
