@@ -37,7 +37,6 @@ args = argument()
 from bitsea.commons.Timelist import TimeList
 from bitsea.commons.mask import Mask
 from bitsea.commons.time_averagers import TimeAverager3D, TimeAverager2D
-import netCDF4 as NC
 from bitsea.commons import netcdf4
 from bitsea.commons.utils import file2stringlist
 import numpy as np
@@ -66,7 +65,7 @@ except AttributeError:
 VARLIST=file2stringlist(args.varlistfile)
 var = VARLIST[0]
 nvars=len(VARLIST)
-TL=TimeList.fromfilenames(None, INPUTDIR, "ave*.nc" , filtervar=var)
+TL=TimeList.fromfilenames(None, INPUTDIR, "ave*.nc", filtervar=var)
 MONTHLY_REQS = TL.getMonthlist()
 nOutTimes = len(MONTHLY_REQS)
 
@@ -80,7 +79,6 @@ for ip in PROCESSES[rank::nranks]:
     indexes,weights=TL.select(req)
 
     inputvar=var
-    #if var=='pH': inputvar='PH'
 
     outfile = OUTPUTDIR / f"ave.{req.string}01-00:00:00.{var}.nc"
     print(outfile,flush=True)
