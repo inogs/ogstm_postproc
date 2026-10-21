@@ -56,7 +56,6 @@ INPUTDIR=args.inputdir
 OUTPUTDIR=args.outdir
 
 TheMask=Mask.from_file(args.maskfile)
-var = args.var
 
 TI= TimeInterval('1999','2020', '%Y')
 VARLIST=file2stringlist(args.varlistfile)
@@ -85,8 +84,8 @@ for ip in PROCESSES[rank::nranks]:
         filename = INPUTDIR / f"ave.{t.strftime('%Y%m%d-%H:%M:%S')}.{inputvar}.nc"
         filelist.append(filename)
     if netcdf4.dimfile(filename, var)==3:
-        M3d = TimeAverager3D(filelist, weights, inputvar, TheMask, compression=True)
-        netcdf4.write_3d_file(M3d, var, outfile, TheMask)
+        M3d = TimeAverager3D(filelist, weights, inputvar, TheMask)
+        netcdf4.write_3d_file(M3d, var, outfile, TheMask, compression=True)
     else:
-        M2d = TimeAverager2D(filelist, weights, inputvar, TheMask, compression=True)
-        netcdf4.write_2d_file(M2d, var, outfile, TheMask)
+        M2d = TimeAverager2D(filelist, weights, inputvar, TheMask)
+        netcdf4.write_2d_file(M2d, var, outfile, TheMask, compression=True)
