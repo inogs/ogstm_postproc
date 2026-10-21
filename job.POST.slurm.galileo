@@ -124,10 +124,8 @@ grep -F -v -x -f varlist_daily varlist_weekly > varlist_only_weekly
 INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2
 my_prex_or_die "mpirun python monthly_averager.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v varlist_only_weekly"
 
+ my_prex_or_die "mpirun -np 24 python yearly_averager.py  -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v varlist "
 
-for var in N1p N3n ppn ; do
- my_prex_or_die "mpirun -np 24 python yearly_averager.py  -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v $var "
-done
 
 ################ O3c Orh converter #########################
 

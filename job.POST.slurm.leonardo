@@ -111,9 +111,8 @@ ppn
 EOF
 my_prex_or_die "mpirun python monthly_averager.py -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v varlist "
 
-for var in $(cat varlist.txt); do
- my_prex_or_die "mpirun -np 24 python yearly_averager.py  -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v $var "
-done
+my_prex_or_die "mpirun -np 24 python yearly_averager.py  -i $INPUTDIR -o $OUTPUTDIR -m $MASKFILE -v varlist "
+
 
 ################ O3c Orh converter #########################
 
