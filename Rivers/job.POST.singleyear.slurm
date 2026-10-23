@@ -151,9 +151,18 @@ INPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/MODEL/AVE_FREQ_2/${YEAR}
 OUTPUTDIR=$CINECA_SCRATCH/$OPA_HOME/wrkdir/POSTPROC/output/YEARLY
 mkdir -p $OUTPUTDIR
 
-for var in ppn P_l N3n N1p ALK DIC O2o; do
-    my_prex_or_die "python ../yearly_averager.py -i $INPUTDIR -o $OUTPUTDIR -v $var -m $MASKFILE"
-done
+cat<<EOF > varlist
+ppn
+P_l
+N3n
+N1p
+ALK
+DIC
+O2o
+EOF
+
+my_prex_or_die "mpirun -np 24 python ../yearly_averager.py -i $INPUTDIR -o $OUTPUTDIR -v varlist -m $MASKFILE"
+
 
 
 ###### Sat Validation ############
