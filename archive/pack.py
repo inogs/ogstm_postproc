@@ -41,9 +41,11 @@ try:
     comm  = MPI.COMM_WORLD
     rank  = comm.Get_rank()
     nranks =comm.size
+    print("pack: using mpi4py.", flush=True)
 except:
     rank   = 0
     nranks = 1
+    print("pack: mpi4py not found, using serial.", flush=True)
 
 
 args = argument()
