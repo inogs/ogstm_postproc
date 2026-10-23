@@ -7,9 +7,9 @@ PRODUCT=MEDSEA_ANALYSISFORECAST_BGC_006_014
 
 # daily section
 
-for YEAR in $(seq 2023 2029) ; do
+for YEAR in $(seq 2024 2030) ; do
 	for group in bio car nut co2 optics pft; do
-	    dataset=cmems_mod_med_bgc-${group}_anfc_4.2km_P1D-m_202511
+	    dataset=cmems_mod_med_bgc-${group}_anfc_4.2km_P1D-m_202611
 	    ncftp -P 21 -u cmems_med_ogs -p 9J2e+uLU $HOST <<EOF
 cd /${PRODUCT}/${dataset}
 mkdir ${YEAR}
@@ -23,9 +23,9 @@ done
 
 # monthly section
 
-for YEAR in $(seq 2023 2029) ; do
+for YEAR in $(seq 2024 2030) ; do
         for group in bio car nut co2 optics pft; do
-            dataset=cmems_mod_med_bgc-${group}_anfc_4.2km_P1M-m_202511
+            dataset=cmems_mod_med_bgc-${group}_anfc_4.2km_P1M-m_202611
             ncftp -P 21 -u cmems_med_ogs -p 9J2e+uLU $HOST <<EOF
 cd /${PRODUCT}/${dataset}
 mkdir ${YEAR}
