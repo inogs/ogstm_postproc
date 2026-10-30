@@ -10,36 +10,33 @@
 
 cd $SLURM_SUBMIT_DIR
 
-module load autoload
-module load intel/oneapi-2021--binary
-module load intelmpi/oneapi-2021--binary
-module load mkl/oneapi-2021--binary
-module load netcdf/4.7.4--oneapi--2021.2.0-ifort
-module load netcdff/4.5.3--oneapi--2021.2.0-ifort
-source /g100_work/OGS23_PRACE_IT/COPERNICUS/py_env_3.9.18_new/bin/activate
+source /g100_work/OGS23_PRACE_IT/COPERNICUS/sequence.sh
 
 
 
 . ../../profile.inc
 #daily
-bulltime=20261005
-INPUTDIR=/g100_scratch/userexternal/gbolzon0/V13C/products/Samples/AVE
-OUTPUTDIR=/g100_scratch/userexternal/gbolzon0/V13C/products/Samples/daily/out
-MASKFILE=/g100_work/OGS_test2528/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
-#/g100_work/OGS_test2528/V13C/QUID/SETUP/PREPROC/MASK/OGS/meshmask.nc
+bulltime=20261019
+INPUTDIR=/g100_scratch/userexternal/gbolzon0/V13C/TRANSITION/wrkdir/MODEL/AVE_FREQ_1/
+DAILY_PROD_DIR=/g100_scratch/userexternal/gbolzon0/V13C/TRANSITION/wrkdir/POSTPROC/PRODUCTS/DAILY
+MASKFILE_PROD=/g100_work/OGS_test2528/Benchmark/SETUP/PREPROC/MASK/meshmask.nc
+MASKFILE=/g100_work/OGS_test2528/V13C/QUID/SETUP/PREPROC/MASK/OGS/meshmask.nc
 
-mkdir -p $OUTPUTDIR
+mkdir -p $DAILY_PROD_DIR
 
-my_prex_or_die "python TimeList_generator.py -s 20240101-12:00:00 -e 20240105-12:00:00 --days 1 --dateformat %Y%m%d > timelist_daily_NRT"
-my_prex_or_die "mpirun python prodotti_copernicus.py -i $INPUTDIR -o $OUTPUTDIR -t timelist_daily_NRT -m $MASKFILE -b $bulltime --tr daily  -d an"
+my_prex_or_die "python TimeList_generator.py -s 20240901-12:00:00 -e 20261018-12:00:00 --days 1> timelist_daily_NRT"
+my_prex_or_die "mpirun python prodotti_copernicus.py -i $INPUTDIR -o $DAILY_PROD_DIR -t timelist_daily_NRT -m $MASKFILE_PROD -b $bulltime --tr daily  -d an"
 
 
 #monthly
+MONTHLY_AVE=/g100_scratch/userexternal/gbolzon0/V13C/TRANSITION/wrkdir/POSTPROC/PRODUCTS/MONTHLY_AVE
+my_prex_or_die "mpirun python ../../monthly_averager.py -i $INPUTDIR -o $MONTHLY_AVE -m $MASKFILE -v varlist_monthly.txt"
 
-INPUTDIR=/g100_scratch/userexternal/gbolzon0/V13C/products/Samples/AVE_MONTHLY
-OUTPUTDIR=/g100_scratch/userexternal/gbolzon0/V13C/products/Samples/monthly
 
 
-mkdir -p $OUTPUTDIR
-my_prex_or_die "python TimeList_generator.py -s 20240101-12:00:00 -e 20240501-12:00:00 --months 1 --dateformat %Y%m%d > timelist_monthly_NRT"
-my_prex_or_die "mpirun python prodotti_copernicus.py -i $INPUTDIR -o $OUTPUTDIR -t timelist_monthly_NRT -m $MASKFILE -b $bulltime --tr monthly -d an "
+MONTHLY_PROD_DIR=/g100_scratch/userexternal/gbolzon0/V13C/TRANSITION/wrkdir/POSTPROC/PRODUCTS/MONTHLY
+
+
+mkdir -p $MONTHLY_PROD_DIR
+my_prex_or_die "python TimeList_generator.py -s 20240901-00:00:00 -e 20260901-00:00:00 --months 1> timelist_monthly_NRT"
+my_prex_or_die "mpirun python prodotti_copernicus.py -i $MONTHLY_AVE -o $MONTHLY_PROD_DIR -t timelist_monthly_NRT -m $MASKFILE_PROD -b $bulltime --tr monthly -d an "

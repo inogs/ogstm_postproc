@@ -1,4 +1,5 @@
 import argparse
+from bitsea.utilities.argparse_types import existing_dir_path, existing_file_path
 
 def argument():
     parser = argparse.ArgumentParser(description = '''
@@ -14,18 +15,18 @@ def argument():
    Parallel executable, can be called by mpirun.
    ''',formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(   '--inputdir', '-i',
-                                type = str,
+                                type = existing_dir_path,
                                 required = True,
                                 help ='The directory wrkdir/MODEL/AVE_FREQ_1/ where chain has run.'
                                 )
 
     parser.add_argument(   '--outputdir',"-o",
-                                type = str,
+                                type = existing_dir_path,
                                 required = True,
                                 help = 'Path of existing dir')
 
     parser.add_argument(    '--time',"-t", 
-                                type = str,
+                                type = existing_file_path,
                                 required = True,
                                 help = '''Path of input text file with the yyyymmdd list''' )
     parser.add_argument(    '--DType',"-d", 
@@ -39,7 +40,7 @@ def argument():
                                 required = True,
                                 help = '''The bulletin time a string time in the format yyyymmdd ''')
     parser.add_argument(    '--maskfile', "-m",
-                                type = str,
+                                type = existing_file_path,
                                 required = True,
                                 help = '''Path for the maskfile ''')
     parser.add_argument(    '--tr',
@@ -55,7 +56,7 @@ args = argument()
 import netCDF4
 import numpy as np
 import datetime,os
-from bitsea.commons.utils import addsep, file2stringlist
+from bitsea.commons.utils import file2stringlist
 from bitsea.commons.mask import Mask
 from bitsea.commons.dataextractor_open import DataExtractor
 
@@ -70,8 +71,8 @@ except:
 
 
 
-INPUTDIR  = addsep(args.inputdir)
-OUTPUTDIR = addsep(args.outputdir)
+INPUTDIR  = args.inputdir
+OUTPUTDIR = args.outputdir
 TIMELIST  = file2stringlist(args.time)
 DType     = args.DType
 bulletin_date = args.bulltime
@@ -116,7 +117,7 @@ def readfile(filename,var,ndims):
 
 def readdata(time, var, ndims=3):
     
-    inputfile = INPUTDIR + "ave."  + time + "-12:00:00." + var + ".nc"
+    inputfile = INPUTDIR / f"ave.{time}.{var}.nc"
     return readfile(inputfile,var,ndims=ndims)
 
 def create_Structure(filename, fgroup):
@@ -212,7 +213,7 @@ for timestr in TIMELIST[rank::nranks]:
     for FGroup in FGROUPS:
         product_file = set_filename(timeobj, FGroup)
         print("rank =", rank, product_file, flush=True)
-        ncOUT = create_Structure(OUTPUTDIR + product_file,FGroup)
+        ncOUT = create_Structure(OUTPUTDIR / product_file,FGroup)
         
         
         if FGroup == 'NUTR':
