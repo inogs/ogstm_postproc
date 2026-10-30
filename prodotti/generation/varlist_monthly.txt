@@ -6,15 +6,7 @@ P1c
 P2c
 P3c
 P4c
-P1c
-P2c
-P3c
-P4c
 P_l
-P1l
-P2l
-P3l
-P4l
 P1l
 P2l
 P3l
