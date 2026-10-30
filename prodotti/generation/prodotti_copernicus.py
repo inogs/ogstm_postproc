@@ -209,7 +209,7 @@ def set_filename(timeobj,FGroup):
     return timeobj.strftime('%Y%m%d_') + tr + "-OGS--" + FGroup + "-MedBFM4.4-MED-b" + bulletin_date +"_" + DType + "-sv13.00.nc"
 
 for timestr in TIMELIST[rank::nranks]:
-    timeobj = datetime.datetime.strptime(timestr,"%Y%m%d")
+    timeobj = datetime.datetime.strptime(timestr,"%Y%m%d-%H:%M:%S")
     for FGroup in FGROUPS:
         product_file = set_filename(timeobj, FGroup)
         print("rank =", rank, product_file, flush=True)
