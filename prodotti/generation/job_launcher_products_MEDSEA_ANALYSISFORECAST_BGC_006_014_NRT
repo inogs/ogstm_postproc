@@ -24,12 +24,13 @@ MASKFILE=/g100_work/OGS_test2528/V13C/QUID/SETUP/PREPROC/MASK/OGS/meshmask.nc
 
 mkdir -p $DAILY_PROD_DIR
 
-my_prex_or_die "python TimeList_generator.py -s 20240901-12:00:00 -e 20261018-12:00:00 --days 1> timelist_daily_NRT"
+my_prex_or_die "python TimeList_generator.py -s 20240901-12:00:00 -e 20261018-12:00:00 --days 1 > timelist_daily_NRT"
 my_prex_or_die "mpirun python prodotti_copernicus.py -i $INPUTDIR -o $DAILY_PROD_DIR -t timelist_daily_NRT -m $MASKFILE_PROD -b $bulltime --tr daily  -d an"
 
 
 #monthly
 MONTHLY_AVE=/g100_scratch/userexternal/gbolzon0/V13C/TRANSITION/wrkdir/POSTPROC/PRODUCTS/MONTHLY_AVE
+mkdir -p $MONTHLY_AVE
 my_prex_or_die "mpirun python ../../monthly_averager.py -i $INPUTDIR -o $MONTHLY_AVE -m $MASKFILE -v varlist_monthly.txt"
 
 
@@ -38,5 +39,5 @@ MONTHLY_PROD_DIR=/g100_scratch/userexternal/gbolzon0/V13C/TRANSITION/wrkdir/POST
 
 
 mkdir -p $MONTHLY_PROD_DIR
-my_prex_or_die "python TimeList_generator.py -s 20240901-00:00:00 -e 20260901-00:00:00 --months 1> timelist_monthly_NRT"
+my_prex_or_die "python TimeList_generator.py -s 20240901-00:00:00 -e 20260901-00:00:00 --months 1 > timelist_monthly_NRT"
 my_prex_or_die "mpirun python prodotti_copernicus.py -i $MONTHLY_AVE -o $MONTHLY_PROD_DIR -t timelist_monthly_NRT -m $MASKFILE_PROD -b $bulltime --tr monthly -d an "
