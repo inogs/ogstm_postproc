@@ -1,11 +1,11 @@
 import netCDF4
 from bitsea.commons.mask import Mask
 import numpy as np
-maskfile="/gpfs/work/IscrC_REBIOMED/NRT_EAS6/PREPROC/MASK/ogstm/meshmask.nc"
+maskfile="/g100_work/OGS_test2528/Benchmark/SETUP/PREPROC/MASK/meshmask.nc"
 M=Mask.from_file(maskfile)
 
 
-e3t=M.e3t
+e3t=M.e3t.copy()
 e3t[~M.mask]=1.e+20
 
 jpk, jpj, jpi=M.shape
